@@ -44,10 +44,12 @@ keys.addEventListener("click", (e) => {
 
       if (firstValue && operator !== "operator") {
         const calcValue = calculate(firstValue, operator, secondValue);
+
         display.textContent = calcValue;
         calculator.dataset.firstValue = calcValue;
       } else {
         calculator.dataset.firstValue = displayNum;
+        console.log("displayNum", displayNum);
       }
       calculator.dataset.previousKeyType = "operator";
       calculator.dataset.operator = action;
@@ -76,6 +78,8 @@ keys.addEventListener("click", (e) => {
       const secondValue = displayNum;
       if (firstValue) {
         display.textContent = calculate(firstValue, operator, secondValue);
+      } else {
+        display.textContent = displayNum;
       }
       calculator.dataset.previousKeyType = "calculate";
     }
