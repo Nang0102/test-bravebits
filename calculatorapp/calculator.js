@@ -36,12 +36,16 @@ keys.addEventListener("click", (e) => {
       const secondValue = displayNum;
       if (firstValue && operator !== "operator") {
         const calcValue = calculate(firstValue, operator, secondValue);
+
         display.textContent = calcValue;
-        calculator.dataset.firstValue = calcValue; // cap nhat lai gtri dau tien
+        calculator.dataset.firstValue = calcValue; //  update firstValue
+        console.log('calc', operator);
+
       } else {
         calculator.dataset.firstValue = displayNum;
+        console.log("displayNum", displayNum);
       }
-      calculator.dataset.previousKeyType = "operator"; //goi phim da nhap truoc do la 1 toan tu(operator)
+      calculator.dataset.previousKeyType = "operator"; //goi phim da nhap truoc do la 1 operator
       calculator.dataset.operator = action;
     }
     if (action === "decimal") {
@@ -50,7 +54,7 @@ keys.addEventListener("click", (e) => {
       } else if (previousKeyType === "operator") {
         display.textContent = "0.";
       }
-      // cập nhật previousKeyType cho phím được nhập
+      // update previousKeyType for key entered
       calculator.dataset.previousKeyType = "decimal";
     }
     if (action === "clear") {
@@ -68,6 +72,8 @@ keys.addEventListener("click", (e) => {
       const secondValue = displayNum;
       if (firstValue) {
         display.textContent = calculate(firstValue, operator, secondValue);
+      } else{
+        display.textContent=displayNum
       }
       calculator.dataset.previousKeyType = "calculate";
     }
