@@ -24,13 +24,16 @@ keys.addEventListener("click", (e) => {
       }
     };
     if (!action) {
-      if (displayNum === "0" || previousKeyType === "operator" || previousKeyType === 'calculate') {
+      if (
+        displayNum === "0" ||
+        previousKeyType === "operator" ||
+        previousKeyType === "calculate"
+      ) {
         display.textContent = keyContent;
       } else {
         display.textContent = displayNum + keyContent;
       }
       calculator.dataset.previousKeyType = "number";
-
     }
     if (
       action === "add" ||
@@ -43,14 +46,12 @@ keys.addEventListener("click", (e) => {
       const secondValue = displayNum;
 
       if (
-        (firstValue && operator && previousKeyType !== "operator") &&
+        firstValue &&
+        operator &&
+        previousKeyType !== "operator" &&
         previousKeyType !== "calculate"
       ) {
         const calcValue = calculate(firstValue, operator, secondValue);
-        console.log("firstValue", firstValue);
-        console.log("operator", operator);
-        console.log("secondValue", secondValue);
-
         display.textContent = calcValue;
         calculator.dataset.firstValue = calcValue; //  update firstValue
       } else {
@@ -60,6 +61,7 @@ keys.addEventListener("click", (e) => {
       calculator.dataset.previousKeyType = "operator";
       calculator.dataset.operator = action;
     }
+
     if (action === "decimal") {
       if (!displayNum.includes(".")) {
         display.textContent = displayNum + ".";
@@ -72,6 +74,7 @@ keys.addEventListener("click", (e) => {
 
       calculator.dataset.previousKeyType = "decimal";
     }
+
     if (action === "clear") {
       if ((key.textContent = "AC")) {
         calculator.dataset.firstValue = "";
@@ -84,10 +87,12 @@ keys.addEventListener("click", (e) => {
       display.textContent = 0;
       calculator.dataset.previousKeyType = "clear";
     }
+
     if (action !== "clear") {
       const clearButton = calculator.querySelector("[data-action=clear]");
       clearButton.textContent = "CE";
     }
+
     if (action === "calculate") {
       const firstValue = calculator.dataset.firstValue;
       const operator = calculator.dataset.operator;
@@ -97,8 +102,6 @@ keys.addEventListener("click", (e) => {
         if (previousKeyType === "calculate") {
           firstValue = displayNum;
           calculator.dataset.modValue = secondValue;
-          console.log(display, "first");
-          console.log(secondValue, "firstSeco");
         }
         display.textContent = calculate(firstValue, operator, secondValue);
       }
