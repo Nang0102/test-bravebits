@@ -15,15 +15,22 @@ keys.addEventListener("click", (e) => {
       if (operator === "add") return firstNum + secondNum;
       if (operator === "subtract") return firstNum - secondNum;
       if (operator === "multiply") return firstNum * secondNum;
-      if (operator === "divide") return firstNum / secondNum;
+      if (operator === "divide") {
+        if (secondNum === 0) {
+          return 0;
+        } else {
+          return firstNum / secondNum;
+        }
+      }
     };
     if (!action) {
-      if (displayNum === "0" || previousKeyType === "operator") {
+      if (displayNum === "0" || previousKeyType === "operator" || previousKeyType === 'calculate') {
         display.textContent = keyContent;
-        calculator.dataset.previousKeyType = "number";
       } else {
         display.textContent = displayNum + keyContent;
       }
+      calculator.dataset.previousKeyType = "number";
+
     }
     if (
       action === "add" ||
@@ -34,32 +41,47 @@ keys.addEventListener("click", (e) => {
       const firstValue = calculator.dataset.firstValue;
       const operator = calculator.dataset.operator;
       const secondValue = displayNum;
-      if (firstValue && operator !== "operator") {
+
+      if (
+        (firstValue && operator && previousKeyType !== "operator") &&
+        previousKeyType !== "calculate"
+      ) {
         const calcValue = calculate(firstValue, operator, secondValue);
+        console.log("firstValue", firstValue);
+        console.log("operator", operator);
+        console.log("secondValue", secondValue);
 
         display.textContent = calcValue;
         calculator.dataset.firstValue = calcValue; //  update firstValue
-        console.log('calc', operator);
-
       } else {
         calculator.dataset.firstValue = displayNum;
-        console.log("displayNum", displayNum);
       }
-      calculator.dataset.previousKeyType = "operator"; //goi phim da nhap truoc do la 1 operator
+
+      calculator.dataset.previousKeyType = "operator";
       calculator.dataset.operator = action;
     }
     if (action === "decimal") {
       if (!displayNum.includes(".")) {
         display.textContent = displayNum + ".";
-      } else if (previousKeyType === "operator") {
+      } else if (
+        previousKeyType === "operator" ||
+        previousKeyType === "calculate"
+      ) {
         display.textContent = "0.";
       }
-      // update previousKeyType for key entered
+
       calculator.dataset.previousKeyType = "decimal";
     }
     if (action === "clear") {
+      if ((key.textContent = "AC")) {
+        calculator.dataset.firstValue = "";
+        calculator.dataset.modValue = "";
+        calculator.dataset.operator = "";
+        calculator.dataset.previousKeyType = "";
+      } else {
+        key.textContent = "AC";
+      }
       display.textContent = 0;
-      key.textContent = "AC";
       calculator.dataset.previousKeyType = "clear";
     }
     if (action !== "clear") {
@@ -70,12 +92,17 @@ keys.addEventListener("click", (e) => {
       const firstValue = calculator.dataset.firstValue;
       const operator = calculator.dataset.operator;
       const secondValue = displayNum;
+
       if (firstValue) {
+        if (previousKeyType === "calculate") {
+          firstValue = displayNum;
+          calculator.dataset.modValue = secondValue;
+          console.log(display, "first");
+          console.log(secondValue, "firstSeco");
+        }
         display.textContent = calculate(firstValue, operator, secondValue);
-      } else{
-        display.textContent=displayNum
       }
-      calculator.dataset.previousKeyType = "calculate";
+      // calculator.dataset.previousKeyType = "calculate";
     }
   }
 });
