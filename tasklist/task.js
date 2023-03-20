@@ -4,15 +4,6 @@ const list = document.querySelector("#todo-list");
 
 let todos = [];
 
-function saveTodos() {
-  localStorage.setItem("todos", JSON.stringify(todos));
-}
-function load() {
-  todos = JSON.parse(localStorage.getItem("todos"));
-  renderTodos();
-}
-load();
-
 function addTodo() {
   const title = input.value.trim();
   if (title !== "" && title !== null) {
@@ -22,6 +13,7 @@ function addTodo() {
     input.value = "";
   }
 }
+
 
 function toggleTodoCompleted(index) {
   todos[index].completed = !todos[index].completed;
@@ -60,7 +52,7 @@ list.addEventListener("change", function (e) {
 });
 
 list.addEventListener("click", (e) => {
-  const index = parseInt(e.target.parentElement.getAttribute("data-index"));
+  const index = parseInt(e.target.parentElement.dataset.index);
   if (e.target.classList.contains("edit")) {
     console.log("index", index);
     editTodo(index);
@@ -70,14 +62,15 @@ list.addEventListener("click", (e) => {
   }
 });
 function renderTodos() {
-  list.innerHTML = " ";
-
+  list.innerHTML = "";
   todos.forEach(function (todo, index) {
     const item = document.createElement("li");
+    console.log("item");
+
     item.setAttribute("data-index", index);
     item.setAttribute("draggable", true);
 
-    if (todo.completed) {
+    if (todo && todo.completed) { 
       item.classList.add("done");
     }
     item.innerHTML = `
@@ -93,8 +86,17 @@ function renderTodos() {
     list.appendChild(item);
   });
 }
-
-// const index = parseInt(e.target.getAttribute("data-index"));
+function saveTodos() {
+  localStorage.setItem("todos", JSON.stringify(todos));
+}
+function load() {
+  const savedTodos = JSON.parse(localStorage.getItem("todos"));
+  if (savedTodos) {
+    todos = savedTodos;
+    renderTodos();
+  }
+}
+load();
 
 let draggingItemIndex = null;
 let draggedOverItemIndex = null;
@@ -103,33 +105,53 @@ function handleDragStart(e) {
   draggingItemIndex = parseInt(e.target.getAttribute("data-index"));
   e.target.classList.add("dragging");
   console.log("drag");
+
 }
 function handleDragEnter(e) {
   e.preventDefault();
-  draggedOverItemIndex = parseInt(e.target.getAttribute("data-index"));
-  e.target.classList.add("drag-over");
-
+  console.log('e.target', e.target);
+  draggedOverItemIndex = parseInt(e.target.parentElement.getAttribute("data-index"))  ;
+  console.log('e.target222', draggedOverItemIndex);
+   
+  if (isNaN(draggedOverItemIndex)) {
+    console.log('error');
+    return;
+  }
   console.log("drag-over", parseInt(e.target.getAttribute("data-index")));
+  e.target.classList.add("drag-over");
 }
 
 function handleDragOver(e) {
+  console.log('handle drag over');
   e.preventDefault();
 }
 
 function handleDragLeave(e) {
+  console.log('remove drag-over');
   e.target.classList.remove("drag-over");
 }
 
 function handleDrop(e) {
   e.preventDefault();
+  console.log('start drop');
   const tempTodos = [...todos];
-  console.log("temp");
   const draggingItem = tempTodos[draggingItemIndex];
-  tempTodos[draggingItemIndex] = tempTodos[draggedOverItemIndex];
-  tempTodos[draggedOverItemIndex] = draggingItem;
+  console.log("draggedOverItemIndex1222", draggedOverItemIndex);
+  let dragRemove=tempTodos.splice(draggingItemIndex, 1);
+  console.log("dragRemove", dragRemove);
+
+  let drag=tempTodos.splice(draggedOverItemIndex, 0, draggingItem);
+  console.log("draggedOverItemIndex", draggedOverItemIndex);
+
+  console.log("drag", drag);
+  console.log("toso", tempTodos);
+
   todos = [...tempTodos];
+
   renderTodos();
+  saveTodos()
 }
+
 
 function handleDragEnd(e) {
   draggingItemIndex = null;
@@ -145,14 +167,6 @@ function handleDragEnd(e) {
     dragOverItem.classList.remove("drag-over");
   }
 }
-
-// list.addEventListener("dragstart", handleDragStart);
-// list.addEventListener("dragenter", handleDragEnter);
-// list.addEventListener("dragover", handleDragOver);
-// list.addEventListener("dragleave", handleDragLeave);
-// list.addEventListener("drop", handleDrop);
-// list.addEventListener("dragend", handleDragEnd);
-
 list.addEventListener("dragstart", handleDragStart);
 list.addEventListener("dragenter", handleDragEnter);
 list.addEventListener("dragover", handleDragOver);

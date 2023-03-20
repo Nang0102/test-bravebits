@@ -2,6 +2,21 @@ const calculator = document.querySelector(".calculator");
 const keys = document.querySelector(".calculator-keys");
 const display = document.querySelector(".calculator-display");
 
+const calculate = (n1, operator, n2) => {
+  const firstNum = parseFloat(n1);
+  const secondNum = parseFloat(n2);
+  if (operator === "add") return firstNum + secondNum;
+  if (operator === "subtract") return firstNum - secondNum;
+  if (operator === "multiply") return firstNum * secondNum;
+  if (operator === "divide") {
+    if (secondNum === 0) {
+      return 0;
+    } else {
+      return firstNum / secondNum;
+    }
+  }
+};
+
 keys.addEventListener("click", (e) => {
   if (e.target.matches("button")) {
     const key = e.target;
@@ -9,20 +24,7 @@ keys.addEventListener("click", (e) => {
     const keyContent = key.textContent;
     const displayNum = display.textContent;
     const previousKeyType = calculator.dataset.previousKeyType;
-    const calculate = (n1, operator, n2) => {
-      const firstNum = parseFloat(n1);
-      const secondNum = parseFloat(n2);
-      if (operator === "add") return firstNum + secondNum;
-      if (operator === "subtract") return firstNum - secondNum;
-      if (operator === "multiply") return firstNum * secondNum;
-      if (operator === "divide") {
-        if (secondNum === 0) {
-          return 0;
-        } else {
-          return firstNum / secondNum;
-        }
-      }
-    };
+    
     if (!action) {
       if (
         displayNum === "0" ||
@@ -105,7 +107,29 @@ keys.addEventListener("click", (e) => {
         }
         display.textContent = calculate(firstValue, operator, secondValue);
       }
-      // calculator.dataset.previousKeyType = "calculate";
     }
   }
 });
+
+// class Calculator {
+//   constructor(selector) {
+//     this.el = document.querySelector(selector)
+//     this.el.addEventListener('click', this.handleEvent)
+//   }
+//   handleEvent(e) {
+
+//   }
+// }
+
+// class ToDoList {
+
+// }
+
+
+// new Calculator('#calculator')
+// new Calculator('#calculator2')
+// new Calculator('#calculator3')
+
+
+// event delegation
+//garbage collector
