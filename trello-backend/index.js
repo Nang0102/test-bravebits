@@ -4,7 +4,10 @@ const { connectToDb, db } = require("./db");
 const boardRouter = require('./router/boardRouter');
 const todoRouter = require('./router/todoRouter');
 const port = process.env.PORT || 5000;
+const bodyParser = require("body-parser");
 
+
+app.use(bodyParser.json());
 
 app.get('/', (req,res)=>{
     res.send('hello!')

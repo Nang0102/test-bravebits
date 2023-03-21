@@ -5,9 +5,9 @@ const {db} = require('../db')
 todoRouter.get('/',async (req,res)=>{
     try {
         let todos
-    const name = req.headers
-    if(name){
-        todos = await db.todos.find({name: name}).toArray()
+    const todoName = req.headers
+    if(todoName){
+        todos = await db.todos.find({todoName: todoName}).toArray()
     }   
     todos = await db.todos.find().toArray()
     res.status(200).json(todos)
