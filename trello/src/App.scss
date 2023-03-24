@@ -1,0 +1,32 @@
+// $gap: 10px;
+@import './setting.scss';
+
+
+body {
+  margin: 0;
+  line-height: 1.3em;
+
+}
+
+/* .main-screen {
+  display: flex;
+  flex-wrap: wrap;
+} */
+
+.main-screen {
+  height: 100vh;
+  display: grid;
+  grid-template-rows: 40px 50px 1fr;
+  background-image: url("https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg?auto=compress&cs=tinysrgb&w=600");
+  background-color: #cccccc;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+  .main-screen {
+    flex-direction: column;
+  }
+}
