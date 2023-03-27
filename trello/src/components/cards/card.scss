@@ -3,7 +3,24 @@
 $card-border-radius: 3px;
 
 
-li.card-item {
+li img {
+      display: block;
+      width: calc(100% + 2 * #{$gap});
+      margin: -$gap 0 $gap (-$gap);
+      border-top-left-radius: $card-border-radius;
+      border-top-right-radius: $card-border-radius;
+    }
+
+  //   .card-item {
+  //     background-color: white;
+  //     padding: $gap;
+  //     border-radius: $card-border-radius;
+  //     box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+  //     &:not(:last-child) {
+  //       margin-bottom: $gap;
+  //     }
+  // }
+  li.card-item {
     background-color: white;
     padding: $gap;
     border-radius: $card-border-radius;
