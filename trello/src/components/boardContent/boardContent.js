@@ -10,8 +10,8 @@ function BoardContent(props) {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
 
-  const [sourceColumnId, setSourceColumnId] = useState(null)
-  const [targetColumnId, setTargetColumnId] = useState(null)
+  const sourceColumnId = useRef(null);
+  const targetColumnId = useRef(null);
 
   useEffect(() => {
     const boardFromDB = InitialData.boards.find(
@@ -32,45 +32,48 @@ function BoardContent(props) {
   }
 
   const handleDragStart = (e, columnId) => {
-    setSourceColumnId(columnId)
+    console.log("targetColumn", e.target);
+    sourceColumnId.current = columnId;
+  };
 
-  }
+  const handleDragOver = (e, columnId) => {
+    console.log("overColumn");
+    e.preventDefault();
+    targetColumnId.current = columnId;
+  };
 
   const handleDragEnd = (e) => {
     // console.log("hello", sourceColumnId, targetColumnId)
-    const  tempColumns = [...columns];
+    const tempColumns = [...columns];
     const sourceColumnIndex = tempColumns.findIndex(
-      (column) => column.id === sourceColumnId
+      (column) => column.id === sourceColumnId.current
     );
-    const targetColumnIndex = tempColumns.findIndex((column)=> column.id === targetColumnId)
+    const targetColumnIndex = tempColumns.findIndex(
+      (column) => column.id === targetColumnId.current
+    );
 
     // tempColumns.splice(sourceColumnIndex,0,targetColumnIndex)
     // console.log("target",tempColumns.splice(sourceColumnIndex, 1)[0]);
-    tempColumns.splice(targetColumnIndex, 0, tempColumns.splice(sourceColumnIndex, 1)[0]);
-    setColumns(tempColumns)
-
-
-  }
-
-  const handleDragOver = (e, columnId) => {
-    e.preventDefault();
-    // console.log("dragOver");
-    // console.log(columnId)
-    setTargetColumnId(columnId)
+    tempColumns.splice(
+      targetColumnIndex,
+      0,
+      tempColumns.splice(sourceColumnIndex, 1)[0]
+    );
+    setColumns(tempColumns);
   };
-
 
   return (
     <div className="board-contents">
       {columns.map((column, id) => {
         return (
-            <Column
+          <Column
             key={id}
             droppable="true"
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
-             column={column} />
+            column={column}
+          />
         );
       })}
     </div>

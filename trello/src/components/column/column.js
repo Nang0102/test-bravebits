@@ -1,27 +1,73 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Card from "components/cards/card";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AddIcon from "@mui/icons-material/Add";
 
 import "./column.scss";
 import { mapOrder } from "utilities/sorts";
 import Popper from "./popper";
+
 function Column(props) {
-  const { column, onDragStart, onDragOver, onDragEnd } = props;
-  const [showPoper, setShowPoper] = useState(false);
+  const { column, columns, onDragStart, onDragOver, onDragEnd } = props;
+  const [showPopper, setShowPopper] = useState(false);
+  const [cards, setCards] = useState(
+    mapOrder(column.cards, column.cardOrder, "id")
+  );
+  const targetCardId = useRef(null);
+  const sourceCardId = useRef(null);
 
   const handleClickIcon = () => {
-    setShowPoper(true);
+    setShowPopper(true);
   };
-  const cards = mapOrder(column.cards, column.cardOrder, "id");
-  console.log("card", cards);
+
+  const handleDragStartCard = (e, cardIdthao) => {
+    sourceCardId.current = cardIdthao;
+  };
+  const handleDragOverCard = (e, cardId) => {
+    e.preventDefault();
+    targetCardId.current = cardId;
+    console.log("targetCard", targetCardId);
+  };
+
+  console.log("ttttt", targetCardId);
+  const handleDragEndCard = (e) => {
+    console.log("sourceCardId", sourceCardId);
+    console.log("targetCardId", targetCardId);
+
+    const tempCards = [...cards];
+    const sourceCardIndex = tempCards.findIndex(
+      (card) => card.id === sourceCardId.current
+    );
+    // console.log("sourceCardIndex", sourceCardIndex);
+    const targetCardIndex = tempCards.findIndex(
+      (card) => card.id === targetCardId.current
+    );
+    // console.log("targetCardIndex", targetCardIndex);
+
+    // const sourceColumnIndex = columns.findIndex(
+    //   (column) => column.id === tempCards[sourceCardIndex].columnId
+    // );
+    // console.log("sourceColumnIndex", sourceColumnIndex);
+
+    // const targetColumnIndex = columns.findIndex(
+    //   (column) => column.id === tempCards[targetCardIndex].columnId
+    // );
+    // console.log("targetColumnIndex", targetColumnIndex);
+
+    tempCards.splice(
+      targetCardIndex,
+      0,
+      tempCards.splice(sourceCardIndex, 1)[0]
+    );
+    setCards(tempCards);
+  };
 
   return (
     <div
       className="columns"
-      draggable
       columnid={column.id}
+      draggable
       onDragStart={(e) => onDragStart(e, column.id)}
       onDragOver={(e) => onDragOver(e, column.id)}
       onDragEnd={(e) => onDragEnd(e, column.id)}
@@ -29,7 +75,7 @@ function Column(props) {
       <header>
         <div className="column-title">{column.title}</div>
         <MoreHorizIcon className="column-actions" onClick={handleClickIcon} />
-        {showPoper && <Popper />}
+        {showPopper && <Popper />}
       </header>
 
       <ul className="card-list">
@@ -38,6 +84,9 @@ function Column(props) {
             key={id}
             card={card}
             columnId={column.id}
+            onDragStart={handleDragStartCard}
+            onDragOver={handleDragOverCard}
+            onDragEnd={handleDragEndCard}
           />
         ))}
       </ul>
