@@ -6,15 +6,15 @@ function Card(props) {
 
   return (
     <li
-      cardId={card.id}
+      cardId={card._id}
       className="card-item"
       draggable
-      onDragStart={(e) => onDragStart(e, card.id)}
-      onDragOver={(e) => onDragOver(e, card.id)}
-      onDragEnd={(e) => onDragEnd(e, card.id)}
+      onDragStart={(e) => onDragStart(e, card._id)}
+      onDragOver={(e) => onDragOver(e, card._id)}
+      onDragEnd={(e) => onDragEnd(e, card._id)}
     >
       {card.cover && <img src={card.cover} className="card-cover" alt="" />}
-      {card.title}
+      {card.cardName}
     </li>
   );
 }

@@ -74,7 +74,7 @@ export const handleDragStart = (e, card) => {
     setColumns((columns) => {
       const newColumns = [...columns];
       console.log("newColumn", newColumns);
-      const columnIdx = newColumns.findIndex((col) => col.id === columnId);
+      const columnIdx = newColumns.findIndex((col) => col._id === columnId);
       console.log("columnIdx", columnIdx);
 
       newColumns[columnIdx].cards = [...newColumns[columnIdx].cards, card];

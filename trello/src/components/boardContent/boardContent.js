@@ -2,9 +2,10 @@
 import Column from "components/column/column";
 import React, { useState, useEffect, useRef } from "react";
 import "./boardContent.scss";
-import "actions/initialData";
-import { InitialData } from "actions/initialData";
 import { mapOrder } from "utilities/sorts";
+import { InitialData } from "actions/initialData";
+import { fetchBoardDetail } from "actions/httpRequest";
+
 
 function BoardContent(props) {
   const [board, setBoard] = useState({});
@@ -15,13 +16,14 @@ function BoardContent(props) {
 
   useEffect(() => {
     const boardFromDB = InitialData.boards.find(
-      (board) => board.id === "board-1"
+      (board) => board._id === "board-1"
     );
-    if (boardFromDB) {
-      setBoard(boardFromDB);
-
-      setColumns(mapOrder(boardFromDB.columns, boardFromDB.columnOrder, "id"));
-    }
+    const boardId = "641829eec348c36c1f5e8000"
+    fetchBoardDetail(boardId).then(board=>{
+      console.log('board', board[0]);
+      setBoard(board);
+      setColumns(mapOrder(board[0].columns, board[0].columnOrder, "_id"));
+    })
   }, []);
   if (Object.keys(board).length === 0) {
     return (
@@ -46,10 +48,10 @@ function BoardContent(props) {
     // console.log("hello", sourceColumnId, targetColumnId)
     const tempColumns = [...columns];
     const sourceColumnIndex = tempColumns.findIndex(
-      (column) => column.id === sourceColumnId.current
+      (column) => column._id === sourceColumnId.current
     );
     const targetColumnIndex = tempColumns.findIndex(
-      (column) => column.id === targetColumnId.current
+      (column) => column._id === targetColumnId.current
     );
 
     // tempColumns.splice(sourceColumnIndex,0,targetColumnIndex)

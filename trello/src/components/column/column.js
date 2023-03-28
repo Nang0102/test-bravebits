@@ -12,7 +12,7 @@ function Column(props) {
   const { column, columns, onDragStart, onDragOver, onDragEnd } = props;
   const [showPopper, setShowPopper] = useState(false);
   const [cards, setCards] = useState(
-    mapOrder(column.cards, column.cardOrder, "id")
+    mapOrder(column.cards, column.cardOrder, "_id")
   );
   const targetCardId = useRef(null);
   const sourceCardId = useRef(null);
@@ -30,30 +30,17 @@ function Column(props) {
     console.log("targetCard", targetCardId);
   };
 
-  console.log("ttttt", targetCardId);
+  // console.log("ttttt", targetCardId);
   const handleDragEndCard = (e) => {
-    console.log("sourceCardId", sourceCardId);
-    console.log("targetCardId", targetCardId);
 
     const tempCards = [...cards];
     const sourceCardIndex = tempCards.findIndex(
-      (card) => card.id === sourceCardId.current
+      (card) => card._id === sourceCardId.current
     );
     // console.log("sourceCardIndex", sourceCardIndex);
     const targetCardIndex = tempCards.findIndex(
-      (card) => card.id === targetCardId.current
+      (card) => card._id === targetCardId.current
     );
-    // console.log("targetCardIndex", targetCardIndex);
-
-    // const sourceColumnIndex = columns.findIndex(
-    //   (column) => column.id === tempCards[sourceCardIndex].columnId
-    // );
-    // console.log("sourceColumnIndex", sourceColumnIndex);
-
-    // const targetColumnIndex = columns.findIndex(
-    //   (column) => column.id === tempCards[targetCardIndex].columnId
-    // );
-    // console.log("targetColumnIndex", targetColumnIndex);
 
     tempCards.splice(
       targetCardIndex,
@@ -66,14 +53,14 @@ function Column(props) {
   return (
     <div
       className="columns"
-      columnid={column.id}
+      columnid={column._id}
       draggable
-      onDragStart={(e) => onDragStart(e, column.id)}
-      onDragOver={(e) => onDragOver(e, column.id)}
-      onDragEnd={(e) => onDragEnd(e, column.id)}
+      onDragStart={(e) => onDragStart(e, column._id)}
+      onDragOver={(e) => onDragOver(e, column._id)}
+      onDragEnd={(e) => onDragEnd(e, column._id)}
     >
       <header>
-        <div className="column-title">{column.title}</div>
+        <div className="column-title">{column.columnName}</div>
         <MoreHorizIcon className="column-actions" onClick={handleClickIcon} />
         {showPopper && <Popper />}
       </header>
@@ -83,7 +70,7 @@ function Column(props) {
           <Card
             key={id}
             card={card}
-            columnId={column.id}
+            columnId={column._id}
             onDragStart={handleDragStartCard}
             onDragOver={handleDragOverCard}
             onDragEnd={handleDragEndCard}
