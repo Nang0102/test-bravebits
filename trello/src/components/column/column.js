@@ -21,18 +21,17 @@ function Column(props) {
     setShowPopper(true);
   };
 
-  const handleDragStartCard = (e, cardIdthao) => {
-    sourceCardId.current = cardIdthao;
+  const handleDragStartCard = (e, cardId) => {
+    sourceCardId.current = cardId;
   };
   const handleDragOverCard = (e, cardId) => {
     e.preventDefault();
     targetCardId.current = cardId;
-    console.log("targetCard", targetCardId);
+    // console.log("targetCard", targetCardId);
   };
 
   // console.log("ttttt", targetCardId);
   const handleDragEndCard = (e) => {
-
     const tempCards = [...cards];
     const sourceCardIndex = tempCards.findIndex(
       (card) => card._id === sourceCardId.current

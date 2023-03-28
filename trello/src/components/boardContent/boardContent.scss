@@ -1,21 +1,76 @@
-@import 'setting.scss';
-
+@import "setting.scss";
 
 .board-contents {
-    height: 100vh;
-    display: flex;
-    margin: 0 $gap $gap;
-    overflow-x: auto;
-    &::-webkit-scrollbar {
-      -webkit-appearance: none;
-    }
-    &::-webkit-scrollbar :horizontal {
-      height: 11px;
-    }
-    &::-webkit-scrollbar-thumb {
-      background-color: $common-element-bg;
-      border-radius: 8px;
-    }
-  
+  height: 100vh;
+  display: flex;
+  margin: 0 $gap $gap;
+  overflow-x: auto;
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
   }
-  
+  &::-webkit-scrollbar :horizontal {
+    height: 11px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $common-element-bg;
+    border-radius: 8px;
+  }
+  .add-new {
+    width: 250px;
+    min-width: 250px;
+    margin-left: $gap;
+    // padding: 4px 0 4px 15px;
+    //
+    // border-radius: $column-border-radius;
+
+    .add-new-column {
+      padding: 4px 0 4px 15px;
+      border-radius: $column-border-radius;
+      height: 32px;
+      line-height: 32px;
+      color: #888;
+      background-color: hsla(0, 0%, 100%, 0.24);
+      font-size: 18px;
+      cursor: pointer;
+      &:hover {
+        background-color: $column-bg-color;
+      }
+    }
+    .enter-new-column {
+      padding: 4px 0 4px 10px;
+      border-radius: $column-border-radius;
+      background-color: $column-bg-color;
+      .input-new-column {
+        min-height: 35px;
+        width: 90%;
+        border: none;
+        outline: none;
+      }
+      button {
+        border: none;
+        outline: none;
+      }
+      .confirm {
+        display: flex;
+        margin-top: 10px;
+      }
+      .button-confirm {
+        background-color: #5aac44;
+        border-radius: 3px;
+        box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+        color: #fff;
+        cursor: pointer;
+        font-weight: 600;
+        width: 80px;
+      }
+
+      .button-clear {
+        background-color: transparent;
+        color: #6b808c;
+        cursor: pointer;
+        width: 80px;
+        margin-top: 5px;
+      }
+    }
+  }
+}

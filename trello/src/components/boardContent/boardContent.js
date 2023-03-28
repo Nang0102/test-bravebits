@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 import Column from "components/column/column";
 import React, { useState, useEffect, useRef } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
 import "./boardContent.scss";
 import { mapOrder } from "utilities/sorts";
-import { InitialData } from "actions/initialData";
 import { fetchBoardDetail } from "actions/httpRequest";
 
-
-function BoardContent(props) {
+function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
 
@@ -15,15 +15,12 @@ function BoardContent(props) {
   const targetColumnId = useRef(null);
 
   useEffect(() => {
-    const boardFromDB = InitialData.boards.find(
-      (board) => board._id === "board-1"
-    );
-    const boardId = "641829eec348c36c1f5e8000"
-    fetchBoardDetail(boardId).then(board=>{
-      console.log('board', board[0]);
+    const boardId = "641829eec348c36c1f5e8000";
+    fetchBoardDetail(boardId).then((board) => {
+      console.log("board", board[0]);
       setBoard(board);
       setColumns(mapOrder(board[0].columns, board[0].columnOrder, "_id"));
-    })
+    });
   }, []);
   if (Object.keys(board).length === 0) {
     return (
@@ -34,8 +31,9 @@ function BoardContent(props) {
   }
 
   const handleDragStart = (e, columnId) => {
-    console.log("targetColumn", e.target);
     sourceColumnId.current = columnId;
+    console.log("targetColumn", e.target);
+    console.log("sourceColumnId", sourceColumnId);
   };
 
   const handleDragOver = (e, columnId) => {
@@ -53,9 +51,7 @@ function BoardContent(props) {
     const targetColumnIndex = tempColumns.findIndex(
       (column) => column._id === targetColumnId.current
     );
-
-    // tempColumns.splice(sourceColumnIndex,0,targetColumnIndex)
-    // console.log("target",tempColumns.splice(sourceColumnIndex, 1)[0]);
+    console.log("targetColumnIndex", targetColumnIndex);
     tempColumns.splice(
       targetColumnIndex,
       0,
@@ -78,6 +74,19 @@ function BoardContent(props) {
           />
         );
       })}
+      <div className="add-new">
+        <div className="add-new-column">
+          <AddIcon className="icon" />
+          Add another column
+        </div>
+        <form className="enter-new-column">
+          <input className="input-new-column" placeholder=" Enter title..." />
+          <div className="confirm">
+            <button className="button-confirm">Add</button>
+            <ClearIcon className="button-clear" />
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
