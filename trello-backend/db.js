@@ -12,7 +12,8 @@ async function connectToDb() {
     const database = client.db(dbName);
 
     db.boards = database.collection("boards");
-    db.todos = database.collection("todos");
+    db.columns = database.collection("columns");
+    db.cards = database.collection("cards");
 
     return "done.";
 }
