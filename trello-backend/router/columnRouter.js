@@ -34,44 +34,10 @@ columnRouter.get("/", async (req, res) => {
   }
 });
 
-// const column = { columnName, cardOrder, boardId: ObjectId(boardId) };
-// columnRouter.post("/", async (req, res) => {
-//   try {
-//     const column = { columnName, cardOrder, boardId } = req.body;
-
-//     const result = await db.columns.insertOne(column);
-//     console.log('result', result);
-
-//     /// update newcolumn
-
-//     const newBoardId = result.boardId
-//     const newColumnId = result._id
-//     console.log("newBoardId",newBoardId);
-//     console.log("newColumnId",newColumnId);
-
-//     const updateBoard = await db.boards.findOneAndUpdate(
-//       {
-//       _id:ObjectId(newBoardId)},
-//       {$push: { columnOrder: newColumnId}},
-//     { returnOriginal: false }
-//     )
-// console.log("updateBoard",updateBoard);
-
-//     res.status(200).json(result);
-
-//   } catch (error) {
-//     res.status(500).json(" Column creation failed!");
-//   }
-// });
-
 columnRouter.post("/", async (req, res) => {
-  console.log();
-
-  console.log("123");
   try {
     const { columnName, boardId } = req.body;
 
-    console.log("req", req.body);
     const column = {
       columnName,
       boardId: new ObjectId(boardId),
@@ -85,22 +51,17 @@ columnRouter.post("/", async (req, res) => {
     const newBoardId = column.boardId;
     const newColumnId = result.insertedId;
 
-    console.log("newBoardId", newBoardId);
-    console.log("newColumnId", newColumnId);
-
     const updateBoard = await db.boards.findOneAndUpdate(
       { _id: newBoardId },
       { $push: { columnOrder: newColumnId } },
       { returnOriginal: false }
     );
 
-    res
-      .status(200)
-      .json({
-        _id: column._id,
-        columnName: column.columnName,
-        boardId: column.boardId,
-      });
+    res.status(200).json({
+      _id: column._id,
+      columnName: column.columnName,
+      boardId: column.boardId,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json("Column creation failed!");

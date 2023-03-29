@@ -1,97 +1,108 @@
-const express = require('express')
+const express = require("express");
 const { ObjectId } = require("mongodb");
-const cardRouter = express.Router()
-const {db} = require('../db')
+const cardRouter = express.Router();
+const { db } = require("../db");
 
-cardRouter.get('/',async (req,res)=>{
-    try {
-        let cards
-    const cardName = req.headers
-    if(cardName){
-        cards = await db.cards.find({cardName: cardName}).toArray()
-    }   
-    cards = await db.cards.find().toArray()
-    res.status(200).json(cards)
-    } catch (error) {
-        res.status(500);
-        res.json("some thing went wrong " + error);
+cardRouter.get("/", async (req, res) => {
+  try {
+    let cards;
+    const cardName = req.headers;
+    if (cardName) {
+      cards = await db.cards.find({ cardName: cardName }).toArray();
     }
-})
+    cards = await db.cards.find().toArray();
+    res.status(200).json(cards);
+  } catch (error) {
+    res.status(500);
+    res.json("some thing went wrong " + error);
+  }
+});
 
-cardRouter.post('/', async (req,res)=>{
-    try {
-        const { cardName, columnId, boardId,cover } = req.body;
-        const card = { cardName, cover,columnId: new ObjectId(columnId), boardId: new ObjectId(boardId) };
-        
-        const result = await db.cards.insertOne(card)
+cardRouter.post("/", async (req, res) => {
+  try {
+    const { cardName, columnId, cover } = req.body;
+    console.log(req.body);
+    const card = {
+      cardName,
+      cover,
+      columnId: new ObjectId(columnId),
+      // boardId: new ObjectId(boardId),
+    };
 
-          if (!ObjectId.isValid(boardId)) {
-            return res.status(400).json('Invalid board ID');
-          }
+    const result = await db.cards.insertOne(card);
 
-          const newColumnId = card.columnId;
-          const newCardId = result.insertedId;
-      
-          console.log('newBoardId', newColumnId);
-          console.log('newColumnId', newCardId);
-      
-          const updateColumn = await db.columns.findOneAndUpdate(
-            { _id:newColumnId},
-            { $push: { cardOrder: newCardId } },
-            { returnOriginal: false }
-          );
-
-        res.status(200).json(result)
-        
-    } catch (error) {
-        res.status(500);
-        res.json("some thing went wrong " + error);
+    if (!ObjectId.isValid(boardId)) {
+      return res.status(400).json("Invalid board ID");
     }
-})
+    console.log("result", result);
+    const ColumnId = card.columnId;
+    const newCardId = result.insertedId;
 
-cardRouter.put('/', async(req,res)=>{
-    try {
-        const id = req.headers.id;
-        const { cardName, columnId, boardId,cover } = req.body;
-        const card = { cardName, cover,columnId: new ObjectId(columnId), boardId: new ObjectId(boardId) };
-    
-        // const card= {columnId: ObjectId(columnId),boardId: ObjectId(boardId),cardName: cardName, cover} = req.body;
-    
-        const filter = {
-          _id: new ObjectId(id),
-        };
-        const updateDoc = {
-          $set: card,
-        };
-    
-        const result = await db.columns.updateOne(filter, updateDoc);
-        res.status(200).json(result);
-      } catch (error) {
-        res.status(500).json("Some thing went wrong!" + error);
+    console.log("newColumnId", ColumnId);
+    console.log("newCardId", newCardId);
+
+    const updateColumn = await db.columns.findOneAndUpdate(
+      { _id: ColumnId },
+      { $push: { cardOrder: newCardId } },
+      { returnOriginal: false }
+    );
+
+    res.status(200).json({
+      _id: card._id,
+      cardName: card.cardName,
+      columnId: card.columnId,
+      cover: card.cover,
+    });
+  } catch (error) {
+    res.status(500);
+    res.json("some thing went wrong " + error);
+  }
+});
+
+cardRouter.put("/", async (req, res) => {
+  try {
+    const id = req.headers.id;
+    const { cardName, columnId, boardId, cover } = req.body;
+    const card = {
+      cardName,
+      cover,
+      columnId: new ObjectId(columnId),
+      boardId: new ObjectId(boardId),
+    };
+
+    const filter = {
+      _id: new ObjectId(id),
+    };
+    const updateDoc = {
+      $set: card,
+    };
+
+    const result = await db.columns.updateOne(filter, updateDoc);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json("Some thing went wrong!" + error);
+  }
+});
+
+cardRouter.delete("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    let respond;
+    if (id) {
+      respond = await db.cards.deleteOne({ _id: ObjectId(id) });
+      console.log("respond", respond);
+      if (respond.acknowledged) {
+        res.json(`Successfully delete ${respond.deletedCount}`);
+        return;
+      } else {
+        res.json(respond);
+        return;
       }
-})
-
-cardRouter.delete('/:id', async(req,res)=>{
-try {
-    const id = req.params.id
-    let respond 
-    if(id){
-        respond = await db.cards.deleteOne({_id:  ObjectId(id)})
-        console.log("respond", respond);
-        if(respond.acknowledged) {
-            res.json(`Successfully delete ${respond.deletedCount}`)
-            return
-        } else {
-            res.json(respond)
-            return
-        }
     } else {
-    return  res.status(400).json(" Id is missing!")
-    
+      return res.status(400).json(" Id is missing!");
     }
-    
-} catch (error) {
-    res.status(500).json("Some thing went wrong " + error)
-}
-})
-module.exports= cardRouter
+  } catch (error) {
+    res.status(500).json("Some thing went wrong " + error);
+  }
+});
+module.exports = cardRouter;
