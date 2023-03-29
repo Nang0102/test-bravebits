@@ -21,6 +21,6 @@ app.use('/column', columnRouter)
 app.use('/card',cardRouter )
 
 app.listen(port, () => {
-    console.log(`server is start at http://localhost:${port}/`);
+    console.log(`server is start at http://localhost:${port}`);
     connectToDb()
 })
