@@ -17,9 +17,8 @@ $card-border-radius: 3px;
     color: #333;
     padding: 0 8px;
   }
-
   header {
-    padding-left: 15px;
+    padding: 5px 8px;
     height: $column-header-height;
     line-height: $column-header-height;
     font-size: 18px;
@@ -27,15 +26,30 @@ $card-border-radius: 3px;
     border-top-left-radius: $column-border-radius;
     border-top-right-radius: $column-border-radius;
     display: flex;
+
     .column-title {
       flex: 90%;
+      border: none;
+      outline: none;
+      background-color: $column-bg-color;
+
+      &:focus {
+        background-color: white;
+        border: 1px solid rgb(219, 214, 214);
+      }
     }
     .column-actions {
       border: none;
+      padding: 3px;
+      box-sizing: content-box;
       background-color: $column-bg-color;
       flex: 10%;
+      &:hover {
+        background-color: $bg-color-hover;
+      }
     }
   }
+
   footer {
     // padding-left: 15px;
     height: $column-footer-height;
@@ -79,11 +93,14 @@ $card-border-radius: 3px;
 .popper {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  min-width: 150px;
   min-height: 100px;
   background: rgb(255, 255, 255);
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
   z-index: 1;
+  ::after {
+    border: none;
+  }
   :hover {
     background-color: $bg-color-hover;
   }
@@ -105,3 +122,62 @@ $card-border-radius: 3px;
     text-align: justify;
   }
 }
+
+.input-new-add-card {
+  background-color: white;
+  margin-top: 10px;
+  width: 100%;
+  min-height: 80px;
+  padding: $gap;
+  border: none;
+  border-radius: $card-border-radius;
+  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+  &:not(:last-child) {
+    margin-bottom: $gap;
+  }
+}
+
+// .enter-new-column {
+//   padding: 4px 0 4px 10px;
+//   border-radius: $column-border-radius;
+//   background-color: $column-bg-color;
+//   .input-new-column {
+//     margin-top: 5px;
+//     min-height: 35px;
+//     width: 90%;
+//     border: none;
+//     outline: none;
+//   }
+//   button {
+//     border: none;
+//     outline: none;
+//   }
+//   .confirm {
+//     display: flex;
+//     margin: 5px 0;
+//   }
+//   .button-confirm {
+//     background-color: #5aac44;
+//     border-radius: 3px;
+//     box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+//     color: #fff;
+//     cursor: pointer;
+//     font-weight: 600;
+//     width: 80px;
+//     &:hover {
+//       background-color: darken($color: #9ec992, $amount: 0);
+//     }
+//   }
+
+//   .button-clear {
+//     background-color: transparent;
+//     font-weight: 600;
+//     color: #6b808c;
+//     cursor: pointer;
+//     width: 80px;
+//     margin-top: 5px;
+//     &:hover {
+//       color: darken($color: #c5cacc, $amount: 0);
+//     }
+//   }
+// }

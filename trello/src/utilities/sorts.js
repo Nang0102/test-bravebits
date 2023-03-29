@@ -1,4 +1,7 @@
 export const mapOrder = (arr, order, key) =>{
+  if(!arr || ! order || !key){
+    return []
+  }
     for (let i = 0; i < arr.length; i++) {
         // Lặp qua từng phần tử còn lại trong mảng, bắt đầu từ i + 1 để tránh so sánh lại các phần tử đã được sắp xếp
         for (let j = i + 1; j < arr.length; j++) {

@@ -5,14 +5,18 @@ import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./boardContent.scss";
 import { mapOrder } from "utilities/sorts";
-import { fetchBoardDetail } from "actions/httpRequest";
+import { fetchBoardDetail, createNewColumn } from "actions/httpRequest";
+const _ = require("lodash");
 
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
+  const [openForm, setOpenForm] = useState(false);
+  const [newTitle, setNewTilte] = useState("");
 
   const sourceColumnId = useRef(null);
   const targetColumnId = useRef(null);
+  const newControlInput = useRef(null);
 
   useEffect(() => {
     const boardId = "641829eec348c36c1f5e8000";
@@ -22,6 +26,13 @@ function BoardContent() {
       setColumns(mapOrder(board[0].columns, board[0].columnOrder, "_id"));
     });
   }, []);
+
+  useEffect(() => {
+    if (newControlInput && newControlInput.current) {
+      newControlInput.current.focus();
+    }
+  }, [openForm]);
+
   if (Object.keys(board).length === 0) {
     return (
       <div className="not-found" style={{ padding: "10px", color: "white" }}>
@@ -44,7 +55,8 @@ function BoardContent() {
 
   const handleDragEnd = (e) => {
     // console.log("hello", sourceColumnId, targetColumnId)
-    const tempColumns = [...columns];
+    // const tempColumns = [...columns];
+    const tempColumns = _.cloneDeep(columns);
     const sourceColumnIndex = tempColumns.findIndex(
       (column) => column._id === sourceColumnId.current
     );
@@ -60,6 +72,64 @@ function BoardContent() {
     setColumns(tempColumns);
   };
 
+  const handleTonggleForm = () => setOpenForm(!openForm);
+
+  const handleTitleChange = (e) => {
+    setNewTilte(e.target.value);
+  };
+
+  const handleClickBtnAdd = () => {
+    if (!newTitle) {
+      newControlInput.current.focus();
+      return;
+    }
+    const newColumn = {
+      // _id: Math.random(),
+      boardId: board[0]._id,
+      columnName: newTitle.trim(),
+    };
+
+    createNewColumn(newColumn).then((column) => {
+      console.log("column", column);
+      const newColumns = [...columns];
+      newColumns.push(column);
+      console.log("newColumns", newColumns);
+
+      let newBoard = { ...board[0] };
+      newBoard.columnOrder = newColumns.map((column) => column._id);
+      newBoard.colums = newColumns;
+      setColumns(newColumns);
+      setBoard(newBoard);
+      setNewTilte("");
+      handleTonggleForm();
+    });
+  };
+
+  const handleUpdateColumn = (newColumnToUpdate) => {
+    const columnIdToUpdate = newColumnToUpdate._id;
+    console.log("columnIdToUpdate", columnIdToUpdate);
+
+    const newColumns = [...columns];
+    console.log("newColumns", newColumns);
+
+    const columnIndexToUpdate = newColumns.findIndex(
+      (column) => column._id === columnIdToUpdate
+    );
+    console.log("columnIndexToUpdate", columnIndexToUpdate);
+    if (newColumnToUpdate._destroy) {
+      //remove column
+      newColumns.splice(columnIndexToUpdate, 1);
+    } else {
+      //update column
+      newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
+    }
+    let newBoard = { ...board[0] };
+    newBoard.columnOrder = newColumns.map((column) => column._id);
+    newBoard.colums = newColumns;
+    setColumns(newColumns);
+    setBoard(newBoard);
+  };
+
   return (
     <div className="board-contents">
       {columns.map((column, id) => {
@@ -70,22 +140,39 @@ function BoardContent() {
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
+            onUpdateColumn={handleUpdateColumn}
             column={column}
           />
         );
       })}
-      <div className="add-new">
-        <div className="add-new-column">
-          <AddIcon className="icon" />
-          Add another column
-        </div>
-        <form className="enter-new-column">
-          <input className="input-new-column" placeholder=" Enter title..." />
-          <div className="confirm">
-            <button className="button-confirm">Add</button>
-            <ClearIcon className="button-clear" />
+      <div className="add-new" onClick={handleTonggleForm}>
+        {!openForm && (
+          <div className="add-new-column">
+            <AddIcon className="icon" />
+            Add another column
           </div>
-        </form>
+        )}
+
+        {openForm && (
+          <form className="enter-new-column">
+            <input
+              className="input-new-column"
+              // placeholder=" Enter title..."
+              ref={newControlInput}
+              value={newTitle}
+              onChange={handleTitleChange}
+              onKeyDown={(event) =>
+                event.key === "Enter" && handleClickBtnAdd()
+              }
+            />
+            <div className="confirm">
+              <button className="button-confirm" onClick={handleClickBtnAdd}>
+                Add
+              </button>
+              <ClearIcon className="button-clear" onClick={handleTonggleForm} />
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

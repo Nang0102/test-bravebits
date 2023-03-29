@@ -1,17 +1,14 @@
-// $gap: 10px;
 @import './setting.scss';
 
 
 body {
   margin: 0;
   line-height: 1.3em;
+  height: 100vh;
+
 
 }
 
-/* .main-screen {
-  display: flex;
-  flex-wrap: wrap;
-} */
 
 .main-screen {
   height: 100vh;
