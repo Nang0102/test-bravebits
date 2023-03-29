@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./boardContent.scss";
+import "../../App.scss";
 import { mapOrder } from "utilities/sorts";
 import { fetchBoardDetail, createNewColumn } from "actions/httpRequest";
 const _ = require("lodash");
@@ -11,25 +12,26 @@ const _ = require("lodash");
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
-  const [openForm, setOpenForm] = useState(false);
-  const [newTitle, setNewTilte] = useState("");
+  const [newTitle, setNewTitle] = useState("");
 
   const sourceColumnId = useRef(null);
   const targetColumnId = useRef(null);
-  const newControlInput = useRef(null);
+  const newColumnInput = useRef(null);
+
+  const [openForm, setOpenForm] = useState(false);
+  const handleToggleForm = () => setOpenForm(!openForm);
 
   useEffect(() => {
     const boardId = "641829eec348c36c1f5e8000";
     fetchBoardDetail(boardId).then((board) => {
-      console.log("board", board[0]);
       setBoard(board);
       setColumns(mapOrder(board[0].columns, board[0].columnOrder, "_id"));
     });
   }, []);
 
   useEffect(() => {
-    if (newControlInput && newControlInput.current) {
-      newControlInput.current.focus();
+    if (newColumnInput && newColumnInput.current) {
+      newColumnInput.current.focus();
     }
   }, [openForm]);
 
@@ -72,42 +74,37 @@ function BoardContent() {
     setColumns(tempColumns);
   };
 
-  const handleTonggleForm = () => setOpenForm(!openForm);
-
   const handleTitleChange = (e) => {
-    setNewTilte(e.target.value);
+    setNewTitle(e.target.value);
   };
 
   const handleClickBtnAdd = () => {
     if (!newTitle) {
-      newControlInput.current.focus();
+      newColumnInput.current.focus();
       return;
     }
     const newColumn = {
-      // _id: Math.random(),
       boardId: board[0]._id,
       columnName: newTitle.trim(),
     };
 
     createNewColumn(newColumn).then((column) => {
-      console.log("column", column);
       const newColumns = [...columns];
       newColumns.push(column);
-      console.log("newColumns", newColumns);
 
       let newBoard = { ...board[0] };
       newBoard.columnOrder = newColumns.map((column) => column._id);
       newBoard.colums = newColumns;
       setColumns(newColumns);
       setBoard(newBoard);
-      setNewTilte("");
-      handleTonggleForm();
+      setNewTitle("");
+      handleToggleForm();
     });
   };
 
   const handleUpdateColumn = (newColumnToUpdate) => {
+    console.log("newColumnToUpdate", newColumnToUpdate);
     const columnIdToUpdate = newColumnToUpdate._id;
-    console.log("columnIdToUpdate", columnIdToUpdate);
 
     const newColumns = [...columns];
     console.log("newColumns", newColumns);
@@ -121,6 +118,7 @@ function BoardContent() {
       newColumns.splice(columnIndexToUpdate, 1);
     } else {
       //update column
+      console.log(newColumnToUpdate);
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
     }
     let newBoard = { ...board[0] };
@@ -129,6 +127,9 @@ function BoardContent() {
     setColumns(newColumns);
     setBoard(newBoard);
   };
+  // const onAddNewCardToColumn = (newColumn) => {
+  //   console.log(newColumn);
+  // };
 
   return (
     <div className="board-contents">
@@ -141,11 +142,12 @@ function BoardContent() {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
             onUpdateColumn={handleUpdateColumn}
+            // onAddNewCardToColumn={onAddNewCardToColumn}
             column={column}
           />
         );
       })}
-      <div className="add-new" onClick={handleTonggleForm}>
+      <div className="add-new" onClick={handleToggleForm}>
         {!openForm && (
           <div className="add-new-column">
             <AddIcon className="icon" />
@@ -157,8 +159,8 @@ function BoardContent() {
           <form className="enter-new-column">
             <input
               className="input-new-column"
-              // placeholder=" Enter title..."
-              ref={newControlInput}
+              placeholder=" Enter title column..."
+              ref={newColumnInput}
               value={newTitle}
               onChange={handleTitleChange}
               onKeyDown={(event) =>
@@ -169,7 +171,7 @@ function BoardContent() {
               <button className="button-confirm" onClick={handleClickBtnAdd}>
                 Add
               </button>
-              <ClearIcon className="button-clear" onClick={handleTonggleForm} />
+              <ClearIcon className="button-clear" onClick={handleToggleForm} />
             </div>
           </form>
         )}

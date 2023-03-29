@@ -14,3 +14,14 @@ export const createNewColumn = async (data) => {
   });
   return request.data;
 };
+
+export const createNewCard = async (data) => {
+  console.log("request", data);
+  const request = await axios.post(`${baseURL}/card`, data, {
+    headers: {
+      "Access-Control-Allow-Credentials": true,
+    },
+  });
+  console.log("result");
+  return request.data;
+};

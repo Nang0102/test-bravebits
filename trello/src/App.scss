@@ -1,14 +1,10 @@
-@import './setting.scss';
-
+@import "./setting.scss";
 
 body {
   margin: 0;
   line-height: 1.3em;
   height: 100vh;
-
-
 }
-
 
 .main-screen {
   height: 100vh;
@@ -18,13 +14,37 @@ body {
   background-color: #cccccc;
   background-repeat: no-repeat;
   background-size: cover;
-  .icon{
+  .icon {
     font-size: 16px;
     margin-right: 3px;
   }
+
+  .button-confirm {
+    background-color: #5aac44;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    width: 100px;
+    &:hover {
+      background-color: darken($color: #9ec992, $amount: 0);
+    }
+  }
+
+  .button-clear {
+    background-color: transparent;
+    font-weight: 600;
+    color: #6b808c;
+    cursor: pointer;
+    width: 80px;
+    margin-top: 5px;
+    &:hover {
+      color: darken($color: #c5cacc, $amount: 0);
+    }
+  }
 }
-
-
 
 @media only screen and (max-width: 768px) {
   .main-screen {

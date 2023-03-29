@@ -24,7 +24,8 @@
     // border-radius: $column-border-radius;
 
     .add-new-column {
-      padding: 4px 0 4px 15px;
+      // padding: 4px 10px 8px 15px;
+      padding-left: $gap;
       border-radius: $column-border-radius;
       height: 32px;
       line-height: 32px;
@@ -54,30 +55,6 @@
       .confirm {
         display: flex;
         margin: 5px 0;
-      }
-      .button-confirm {
-        background-color: #5aac44;
-        border-radius: 3px;
-        box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
-        color: #fff;
-        cursor: pointer;
-        font-weight: 600;
-        width: 80px;
-        &:hover {
-          background-color: darken($color: #9ec992, $amount: 0);
-        }
-      }
-
-      .button-clear {
-        background-color: transparent;
-        font-weight: 600;
-        color: #6b808c;
-        cursor: pointer;
-        width: 80px;
-        margin-top: 5px;
-        &:hover {
-          color: darken($color: #c5cacc, $amount: 0);
-        }
       }
     }
   }

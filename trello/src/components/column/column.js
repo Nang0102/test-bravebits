@@ -4,33 +4,37 @@ import React, { useState, useRef, useEffect } from "react";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
+import { cloneDeep } from "lodash";
 
 import "./column.scss";
 import { mapOrder } from "utilities/sorts";
 import ConfirmModal from "components/common/confirmModal";
-import { modalActionClose, modalActionConfirm } from "actions/constant";
+import { modalActionConfirm } from "actions/constant";
+import { createNewCard } from "./../../actions/httpRequest";
 
 function Column(props) {
-  const {
-    column,
-    columns,
-    onDragStart,
-    onDragOver,
-    onDragEnd,
-    onUpdateColumn,
-  } = props;
+  const { column, onDragStart, onDragOver, onDragEnd, onUpdateColumn } = props;
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [openForm, setOpenForm] = useState(false);
   const [cards, setCards] = useState(
     mapOrder(column.cards, column.cardOrder, "_id")
   );
   const [columnTitle, setColumnTitle] = useState("");
+
+  const [newCardTitle, setNewCardTitle] = useState("");
+  const handleCardTitleChange = (e) => {
+    e.preventDefault();
+    setNewCardTitle(e.target.value);
+  };
+
+  const newCardInput = useRef(null);
   const targetCardId = useRef(null);
   const sourceCardId = useRef(null);
 
-  const handleToggleIcon = () => {
-    setShowPopper(!showPopper);
-  };
+  const handleToggleIcon = () => setShowPopper(!showPopper);
+  const handleToggleDelete = () => setShowModal(!showModal);
+  const handleToggleForm = () => setOpenForm(!openForm);
 
   const handleDragStartCard = (e, cardId) => {
     sourceCardId.current = cardId;
@@ -41,7 +45,6 @@ function Column(props) {
     // console.log("targetCard", targetCardId);
   };
 
-  // console.log("ttttt", targetCardId);
   const handleDragEndCard = (e) => {
     const tempCards = [...cards];
     const sourceCardIndex = tempCards.findIndex(
@@ -60,8 +63,6 @@ function Column(props) {
     setCards(tempCards);
   };
 
-  const handleToggleDelete = () => setShowModal(!showModal);
-
   const handleActionModalConfirm = (type) => {
     if (type === modalActionConfirm) {
       //remove column
@@ -78,11 +79,13 @@ function Column(props) {
   useEffect(() => {
     setColumnTitle(column.columnName);
   }, [column.columnName]);
+
   const handleColumnTitleInput = (e) => {
     e.preventDefault();
     console.log("title", e.target.value);
     setColumnTitle(e.target.value);
   };
+
   const handleColumnTitleBlur = () => {
     console.log(column.columnName);
     const newColumn = {
@@ -91,6 +94,35 @@ function Column(props) {
     };
     onUpdateColumn(newColumn);
   };
+
+  useEffect(() => {
+    if (newCardInput && newCardInput.current) {
+      newCardInput.current.focus();
+    }
+  }, [openForm]);
+
+  const handleClickBtnAdd = () => {
+    if (!newCardTitle) {
+      newCardInput.current.focus();
+      return;
+    }
+
+    const newCardToAdd = {
+      columnId: column._id,
+      cardName: newCardTitle.trim(),
+    };
+
+    createNewCard(newCardToAdd).then((card) => {
+      let newColumn = cloneDeep(column);
+      newColumn.cards.push(card);
+      newColumn.cardOrder.push(card._id);
+      console.log("newColumn");
+      onUpdateColumn(newColumn);
+      setNewCardTitle("");
+      handleToggleForm();
+    });
+  };
+
   return (
     <div
       className="columns"
@@ -149,33 +181,37 @@ function Column(props) {
           />
         ))}
       </ul>
-      <form className="enter-new-add">
-        <input
-          className="input-new-add-card"
-          // placeholder=" Enter title..."
-          // ref={newControlInput}
-
-          // value={newTitle}
-          // onChange={handleTitleChange}
-          // onKeyDown={(event) =>
-          //   event.key === "Enter" && handleClickBtnAdd()
-          // }
-        />
-        <div className="confirm">
-          <button className="button-confirm">
-            {/* onClick={handleClickBtnAdd} */}
-            Add
-          </button>
-          <ClearIcon className="button-clear" />
-          {/* onClick={handleTonggleForm}  */}
-        </div>
-      </form>
-
+      {openForm && (
+        <form className="enter-new-add">
+          <input
+            className="input-new-card"
+            placeholder=" Enter title card..."
+            ref={newCardInput}
+            value={newCardTitle}
+            onChange={handleCardTitleChange}
+            onKeyDown={(event) => event.key === "Enter" && handleClickBtnAdd()}
+          />
+        </form>
+      )}
+      {/*  */}
       <footer>
-        <div className="footer-actions">
-          <AddIcon className="icon" />
-          Add another card
-        </div>
+        {openForm && (
+          <div className="confirm">
+            <button
+              className="button-confirm new-card"
+              onClick={handleClickBtnAdd}
+            >
+              Add
+            </button>
+            <ClearIcon className="button-clear" onClick={handleToggleForm} />
+          </div>
+        )}
+        {!openForm && (
+          <div className="footer-actions" onClick={handleToggleForm}>
+            <AddIcon className="icon" />
+            Add another card
+          </div>
+        )}
       </footer>
     </div>
   );

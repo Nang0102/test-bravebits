@@ -1,7 +1,7 @@
 @import "setting.scss";
 
 $column-header-height: 36px;
-$column-footer-height: 36px;
+$column-footer-height: 32px;
 
 $column-bg-color: #ebecf0;
 
@@ -52,13 +52,17 @@ $card-border-radius: 3px;
 
   footer {
     // padding-left: 15px;
-    height: $column-footer-height;
+    // height: $column-footer-height;
+    height: 55px;
+    min-height: 20px;
     line-height: $column-footer-height;
     border-bottom-left-radius: $column-border-radius;
     border-bottom-right-radius: $column-border-radius;
     color: #888;
+    padding-left: 5px;
+
     .footer-actions {
-      // margin-left: $gap;
+      height: 40px;
       cursor: pointer;
       &:hover {
         background-color: $bg-color-hover;
@@ -123,61 +127,24 @@ $card-border-radius: 3px;
   }
 }
 
-.input-new-add-card {
+.input-new-card {
   background-color: white;
   margin-top: 10px;
   width: 100%;
-  min-height: 80px;
+  min-height: 54px;
+  max-height: 200px;
   padding: $gap;
   border: none;
+  outline: none;
   border-radius: $card-border-radius;
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+  font-size: 18px;
   &:not(:last-child) {
     margin-bottom: $gap;
   }
 }
 
-// .enter-new-column {
-//   padding: 4px 0 4px 10px;
-//   border-radius: $column-border-radius;
-//   background-color: $column-bg-color;
-//   .input-new-column {
-//     margin-top: 5px;
-//     min-height: 35px;
-//     width: 90%;
-//     border: none;
-//     outline: none;
-//   }
-//   button {
-//     border: none;
-//     outline: none;
-//   }
-//   .confirm {
-//     display: flex;
-//     margin: 5px 0;
-//   }
-//   .button-confirm {
-//     background-color: #5aac44;
-//     border-radius: 3px;
-//     box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
-//     color: #fff;
-//     cursor: pointer;
-//     font-weight: 600;
-//     width: 80px;
-//     &:hover {
-//       background-color: darken($color: #9ec992, $amount: 0);
-//     }
-//   }
-
-//   .button-clear {
-//     background-color: transparent;
-//     font-weight: 600;
-//     color: #6b808c;
-//     cursor: pointer;
-//     width: 80px;
-//     margin-top: 5px;
-//     &:hover {
-//       color: darken($color: #c5cacc, $amount: 0);
-//     }
-//   }
-// }
+.confirm {
+  display: flex;
+  padding: 10px;
+}
