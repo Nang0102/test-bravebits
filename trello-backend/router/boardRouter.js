@@ -16,7 +16,7 @@ boardRouter.get("/", async (req, res) => {
       query["order"] = order;
     }
     if (id) {
-      query["_id"] =  ObjectId(id);
+      query["_id"] = ObjectId(id);
     }
     boards = await db.boards.find({}).toArray();
     res.status(200).json(boards);
@@ -38,8 +38,8 @@ boardRouter.get("/fullBoard", async (req, res) => {
             foreignField: "boardId",
             as: "columns",
           },
-        },      
-          {
+        },
+        {
           $lookup: {
             from: "cards",
             localField: "_id",
@@ -50,14 +50,22 @@ boardRouter.get("/fullBoard", async (req, res) => {
       ])
       .toArray();
 
-      // Add card to each column
-      boards[0].columns.forEach((column)=>{
-        column.cards = boards[0].cards.filter(card=>card.columnId.toString() === column._id.toString())
-      })
+    // console.log("board : ", boards);
 
-      // delete cards from boards
-      delete boards[0].cards
-      
+    // Add card to each column
+    boards[0].columns.forEach((column) => {
+      column.cards = boards[0].cards.filter((card) => {
+        // console.log("test", card);
+        // console.log("card-columnId", card.columnId);
+        // console.log("columnId", column._id);
+        card.columnId.toString() === column._id.toString();
+      });
+    });
+
+    // delete cards from boards
+    delete boards[0].cards;
+
+    console.log("board: ", boards);
     res.status(200).json(boards);
   } catch (error) {
     res.status(500);
@@ -91,7 +99,6 @@ boardRouter.put("/", async (req, res) => {
       $set: { boardName, columnOrder: columnOrder },
     };
 
-
     // const newBoardId = result.boardId
     // const newColumnId = result._id
     // const updateBoard = await db.boards.findOneAndUpdate(
@@ -100,7 +107,6 @@ boardRouter.put("/", async (req, res) => {
     //   {$push: { columnOrder: newColumnId}},
     // { returnOriginal: false }
     // )
-
 
     // if(boardName === '')req.body.boardName = 'Untitled'
     const board = await db.boards.updateOne(filter, updateDoc);
@@ -115,7 +121,7 @@ boardRouter.delete("/:id", async (req, res) => {
     const id = req.params.id;
     let respond;
     if (id) {
-      respond = await db.boards.deleteOne({ _id:  ObjectId(id) });
+      respond = await db.boards.deleteOne({ _id: ObjectId(id) });
       console.log("respond", respond);
       if (respond.acknowledged) {
         res.json(`Successfully delete ${respond.deletedCount}`);

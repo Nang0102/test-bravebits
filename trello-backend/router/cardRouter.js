@@ -20,38 +20,37 @@ cardRouter.get("/", async (req, res) => {
 
 cardRouter.post("/", async (req, res) => {
   try {
-    const { cardName, columnId, cover } = req.body;
-    console.log(req.body);
+    const { cardName, columnId, cover, boardId } = req.body;
+    console.log("reqBody: ", req.body);
     const card = {
       cardName,
       cover,
       columnId: new ObjectId(columnId),
-      // boardId: new ObjectId(boardId),
+      boardId: new ObjectId(boardId),
     };
 
     const result = await db.cards.insertOne(card);
-
-    if (!ObjectId.isValid(boardId)) {
-      return res.status(400).json("Invalid board ID");
-    }
     console.log("result", result);
+
     const ColumnId = card.columnId;
+    // const BoardId = card.boardId;
     const newCardId = result.insertedId;
 
-    console.log("newColumnId", ColumnId);
-    console.log("newCardId", newCardId);
-
+    // const  newColumn= await db.columns.find({}).toArray()
     const updateColumn = await db.columns.findOneAndUpdate(
       { _id: ColumnId },
+      // { boardId: BoardId },
       { $push: { cardOrder: newCardId } },
+      // newColumns,
       { returnOriginal: false }
     );
-
+    console.log("updateColumn", updateColumn);
     res.status(200).json({
       _id: card._id,
       cardName: card.cardName,
       columnId: card.columnId,
       cover: card.cover,
+      boardId: card.boardId,
     });
   } catch (error) {
     res.status(500);

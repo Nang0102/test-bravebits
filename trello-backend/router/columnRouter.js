@@ -68,9 +68,9 @@ columnRouter.post("/", async (req, res) => {
   }
 });
 
-columnRouter.put("/", async (req, res) => {
+columnRouter.put("/:id", async (req, res) => {
   try {
-    const id = req.headers.id;
+    const id = req.params.id;
     const { columnName, cardOrder, boardId } = req.body;
     const column = { columnName, cardOrder, boardId: ObjectId(boardId) };
 
