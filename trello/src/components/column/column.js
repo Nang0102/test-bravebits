@@ -18,11 +18,12 @@ function Column(props) {
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
 
-  const [cards, setCards] = useState(
-    mapOrder(column.cards, column.cardOrder, "_id")
-  );
+  const [cards, setCards] = useState([]);
 
-  // console.log("card", cards);
+  useEffect(() => {
+    setCards(mapOrder(column.cards, column.cardOrder, "_id"));
+  }, [column]);
+
   const [columnTitle, setColumnTitle] = useState("");
 
   const [newCardTitle, setNewCardTitle] = useState("");
@@ -41,24 +42,27 @@ function Column(props) {
   const handleDragOverCard = (e, cardId) => {
     e.preventDefault();
     targetCardId.current = cardId;
-    // console.log("targetCard", targetCardId);
   };
 
   const handleDragEndCard = (e) => {
-    const tempCards = [...cards];
+    const tempCards = cloneDeep(cards);
+
     const sourceCardIndex = tempCards.findIndex(
       (card) => card._id === sourceCardId.current
     );
-    // console.log("sourceCardIndex", sourceCardIndex);
+    console.log("sourceCardIndex", sourceCardIndex);
+
     const targetCardIndex = tempCards.findIndex(
       (card) => card._id === targetCardId.current
     );
+    console.log("targetCardIndex", targetCardIndex);
 
     tempCards.splice(
       targetCardIndex,
       0,
       tempCards.splice(sourceCardIndex, 1)[0]
     );
+    console.log("tempCards", tempCards);
     setCards(tempCards);
   };
 
@@ -71,7 +75,6 @@ function Column(props) {
       };
       onUpdateColumn(newColumn);
     }
-    console.log(type);
     handleToggleDelete();
   };
 
@@ -81,17 +84,14 @@ function Column(props) {
 
   const handleColumnTitleInput = (e) => {
     e.preventDefault();
-    console.log("title", e.target.value);
     setColumnTitle(e.target.value);
   };
 
   const handleColumnTitleBlur = () => {
-    console.log(column.columnName);
     const newColumn = {
       ...column,
       columnName: columnTitle,
     };
-    console.log("newTitleEdit", newColumn.columnName);
     onUpdateColumn(newColumn);
   };
 
@@ -118,15 +118,11 @@ function Column(props) {
       cardName: newCardTitle.trim(),
     };
 
-    // console.log("newColumn", newColumn);
-
     createNewCard(newCardToAdd).then((card) => {
-      console.log(card);
       let newColumn = cloneDeep(column);
       newColumn.cards.push(card);
       newColumn.cardOrder.push(card._id);
 
-      console.log("newColumn", newColumn);
       onUpdateColumn(newColumn);
       setNewCardTitle("");
       handleToggleForm();
@@ -199,7 +195,7 @@ function Column(props) {
             ref={newCardInput}
             value={newCardTitle}
             onChange={handleCardTitleChange}
-            onKeyDown={(event) => event.key === "Enter" && handleClickBtnAdd()}
+            // onKeyDown={(event) => event.key === "Enter" && handleClickBtnAdd}
           />
         </form>
       )}

@@ -31,6 +31,6 @@ export const createNewCard = async (data) => {
       "Access-Control-Allow-Credentials": true,
     },
   });
-  console.log("result");
+  console.log("response is ", request);
   return request.data;
 };

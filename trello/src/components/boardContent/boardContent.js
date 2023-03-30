@@ -24,7 +24,6 @@ function BoardContent() {
   useEffect(() => {
     const boardId = "641829eec348c36c1f5e8000";
     fetchBoardDetail(boardId).then((board) => {
-      console.log("board", board);
       setBoard(board);
       setColumns(mapOrder(board[0].columns, board[0].columnOrder, "_id"));
     });
@@ -46,8 +45,6 @@ function BoardContent() {
 
   const handleDragStart = (e, columnId) => {
     sourceColumnId.current = columnId;
-    // console.log("targetColumn", e.target);
-    // console.log("sourceColumnId", sourceColumnId);
   };
 
   const handleDragOver = (e, columnId) => {
@@ -56,7 +53,6 @@ function BoardContent() {
   };
 
   const handleDragEnd = (e) => {
-    // console.log("hello", sourceColumnId, targetColumnId)
     // const tempColumns = [...columns];
     const tempColumns = _.cloneDeep(columns);
     const sourceColumnIndex = tempColumns.findIndex(
@@ -65,7 +61,6 @@ function BoardContent() {
     const targetColumnIndex = tempColumns.findIndex(
       (column) => column._id === targetColumnId.current
     );
-    // console.log("targetColumnIndex", targetColumnIndex);
     tempColumns.splice(
       targetColumnIndex,
       0,
@@ -86,6 +81,7 @@ function BoardContent() {
     const newColumn = {
       boardId: board[0]._id,
       columnName: newTitle.trim(),
+      cardOrder: [],
       cards: [],
     };
 
@@ -97,7 +93,6 @@ function BoardContent() {
       newBoard.columnOrder = newColumns.map((column) => column._id);
       newBoard.columns = newColumns;
 
-      console.log("newColumnAdd", newBoard);
       setColumns(newColumns);
       setBoard(newBoard);
       setNewTitle("");
@@ -106,28 +101,23 @@ function BoardContent() {
   };
 
   const handleUpdateColumn = (newColumnToUpdate) => {
-    console.log("newColumnToUpdate", newColumnToUpdate);
     const columnIdToUpdate = newColumnToUpdate._id;
 
     let newColumns = [...columns];
-    console.log("newColumns", newColumns);
 
     const columnIndexToUpdate = newColumns.findIndex(
       (column) => column._id === columnIdToUpdate
     );
-    console.log("columnIndexToUpdate", columnIndexToUpdate);
     if (newColumnToUpdate._destroy) {
       //remove column
       newColumns.splice(columnIndexToUpdate, 1);
     } else {
       //update column
-      console.log("newColumnToUpdate", newColumnToUpdate);
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
     }
     let newBoard = { ...board[0] };
     newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
-    console.log("newRoard", newBoard);
     setColumns(newColumns);
     setBoard(newBoard);
   };
