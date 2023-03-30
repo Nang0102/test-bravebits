@@ -33,17 +33,17 @@ cardRouter.post("/", async (req, res) => {
     console.log("result", result);
 
     const ColumnId = card.columnId;
-    // const BoardId = card.boardId;
+    // const BoardId = card.boardId.toString();
     const newCardId = result.insertedId;
 
-    // const  newColumn= await db.columns.find({}).toArray()
+    // const newCardOrder = [...c, newCardId];
     const updateColumn = await db.columns.findOneAndUpdate(
       { _id: ColumnId },
       // { boardId: BoardId },
       { $push: { cardOrder: newCardId } },
-      // newColumns,
       { returnOriginal: false }
     );
+
     console.log("updateColumn", updateColumn);
     res.status(200).json({
       _id: card._id,

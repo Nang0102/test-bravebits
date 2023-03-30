@@ -54,12 +54,9 @@ boardRouter.get("/fullBoard", async (req, res) => {
 
     // Add card to each column
     boards[0].columns.forEach((column) => {
-      column.cards = boards[0].cards.filter((card) => {
-        // console.log("test", card);
-        // console.log("card-columnId", card.columnId);
-        // console.log("columnId", column._id);
-        card.columnId.toString() === column._id.toString();
-      });
+      column.cards = boards[0].cards.filter(
+        (card) => card.columnId.toString() === column._id.toString()
+      );
     });
 
     // delete cards from boards
