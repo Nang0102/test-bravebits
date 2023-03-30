@@ -132,7 +132,7 @@ function BoardContent() {
             onDragStart={handleDragStart}
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
-            onUpdateColumn={handleUpdateColumn}
+            onUpdateColumnState={handleUpdateColumn}
             // onAddNewCardToColumn={onAddNewCardToColumn}
             column={column}
           />

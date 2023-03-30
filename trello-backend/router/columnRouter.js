@@ -72,10 +72,10 @@ columnRouter.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const { columnName, cardOrder, boardId } = req.body;
-    const column = { columnName, cardOrder, boardId: ObjectId(boardId) };
+    const column = { columnName, cardOrder, boardId: new ObjectId(boardId) };
 
     const filter = {
-      _id: ObjectId(id),
+      _id: new ObjectId(id),
     };
     const updateDoc = {
       $set: column,

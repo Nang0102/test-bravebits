@@ -50,8 +50,6 @@ boardRouter.get("/fullBoard", async (req, res) => {
       ])
       .toArray();
 
-    // console.log("board : ", boards);
-
     // Add card to each column
     boards[0].columns.forEach((column) => {
       column.cards = boards[0].cards.filter(
@@ -96,16 +94,6 @@ boardRouter.put("/", async (req, res) => {
       $set: { boardName, columnOrder: columnOrder },
     };
 
-    // const newBoardId = result.boardId
-    // const newColumnId = result._id
-    // const updateBoard = await db.boards.findOneAndUpdate(
-    //   {
-    //   _id:ObjectId(newBoardId)},
-    //   {$push: { columnOrder: newColumnId}},
-    // { returnOriginal: false }
-    // )
-
-    // if(boardName === '')req.body.boardName = 'Untitled'
     const board = await db.boards.updateOne(filter, updateDoc);
     res.status(200).json(board);
   } catch (error) {

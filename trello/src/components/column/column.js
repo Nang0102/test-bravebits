@@ -10,13 +10,20 @@ import "./column.scss";
 import { mapOrder } from "utilities/sorts";
 import ConfirmModal from "components/common/confirmModal";
 import { modalActionConfirm } from "actions/constant";
-import { createNewCard } from "./../../actions/httpRequest";
+import { createNewCard } from "actions/httpRequest";
+import { updateColumn } from "actions/httpRequest";
+import {
+  handleContentAfterEnter,
+  handleSelectAllText,
+} from "actions/contentEdit";
 
 function Column(props) {
-  const { column, onDragStart, onDragOver, onDragEnd, onUpdateColumn } = props;
+  const { column, onDragStart, onDragOver, onDragEnd, onUpdateColumnState } =
+    props;
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+  // const [showPopper, setShowPopper] = useState(false);
 
   const [cards, setCards] = useState([]);
 
@@ -24,7 +31,7 @@ function Column(props) {
     setCards(mapOrder(column.cards, column.cardOrder, "_id"));
   }, [column]);
 
-  const [columnTitle, setColumnTitle] = useState("");
+  const [titleColumn, setTitleColumn] = useState("");
 
   const [newCardTitle, setNewCardTitle] = useState("");
 
@@ -33,7 +40,10 @@ function Column(props) {
   const sourceCardId = useRef(null);
 
   const handleToggleIcon = () => setShowPopper(!showPopper);
-  const handleToggleDelete = () => setShowModal(!showModal);
+  const handleToggleDelete = () => {
+    setShowPopper(false);
+    setShowModal(!showModal);
+  };
   const handleToggleForm = () => setOpenForm(!openForm);
 
   const handleDragStartCard = (e, cardId) => {
@@ -66,6 +76,15 @@ function Column(props) {
     setCards(tempCards);
   };
 
+  useEffect(() => {
+    setTitleColumn(column.columnName);
+  }, [column.columnName]);
+
+  const handleColumnTitleInput = (e) => {
+    e.preventDefault();
+    setTitleColumn(e.target.value);
+  };
+
   const handleActionModalConfirm = (type) => {
     if (type === modalActionConfirm) {
       //remove column
@@ -73,26 +92,25 @@ function Column(props) {
         ...column,
         _destroy: "true",
       };
-      onUpdateColumn(newColumn);
+      updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        onUpdateColumnState(updatedColumn);
+      });
+      // onUpdateColumnState(newColumn);
     }
     handleToggleDelete();
-  };
-
-  useEffect(() => {
-    setColumnTitle(column.columnName);
-  }, [column.columnName]);
-
-  const handleColumnTitleInput = (e) => {
-    e.preventDefault();
-    setColumnTitle(e.target.value);
   };
 
   const handleColumnTitleBlur = () => {
     const newColumn = {
       ...column,
-      columnName: columnTitle,
+      columnName: titleColumn,
     };
-    onUpdateColumn(newColumn);
+
+    if (column.columnName !== titleColumn) {
+      updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        onUpdateColumnState(updatedColumn);
+      });
+    }
   };
 
   useEffect(() => {
@@ -123,7 +141,7 @@ function Column(props) {
       newColumn.cards.push(card);
       newColumn.cardOrder.push(card._id);
 
-      onUpdateColumn(newColumn);
+      onUpdateColumnState(newColumn);
       setNewCardTitle("");
       handleToggleForm();
     });
@@ -142,12 +160,11 @@ function Column(props) {
         <input
           className="column-title"
           placeholder=" Enter title..."
-          value={column.columnName}
+          value={titleColumn}
           onChange={handleColumnTitleInput}
           onBlur={handleColumnTitleBlur}
-          onKeyDown={(event) =>
-            event.key === "Enter" && handleColumnTitleBlur()
-          }
+          onKeyDown={handleContentAfterEnter}
+          onClick={handleSelectAllText}
         />
 
         {!showPopper && (
@@ -195,7 +212,7 @@ function Column(props) {
             ref={newCardInput}
             value={newCardTitle}
             onChange={handleCardTitleChange}
-            // onKeyDown={(event) => event.key === "Enter" && handleClickBtnAdd}
+            onKeyDown={(event) => event.key === "Enter" && handleClickBtnAdd}
           />
         </form>
       )}
