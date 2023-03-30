@@ -17,16 +17,15 @@ function Column(props) {
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+
   const [cards, setCards] = useState(
     mapOrder(column.cards, column.cardOrder, "_id")
   );
+
+  // console.log("card", cards);
   const [columnTitle, setColumnTitle] = useState("");
 
   const [newCardTitle, setNewCardTitle] = useState("");
-  const handleCardTitleChange = (e) => {
-    e.preventDefault();
-    setNewCardTitle(e.target.value);
-  };
 
   const newCardInput = useRef(null);
   const targetCardId = useRef(null);
@@ -92,6 +91,7 @@ function Column(props) {
       ...column,
       columnName: columnTitle,
     };
+    console.log("newTitleEdit", newColumn.columnName);
     onUpdateColumn(newColumn);
   };
 
@@ -101,6 +101,11 @@ function Column(props) {
     }
   }, [openForm]);
 
+  const handleCardTitleChange = (e) => {
+    e.preventDefault();
+    setNewCardTitle(e.target.value);
+  };
+
   const handleClickBtnAdd = () => {
     if (!newCardTitle) {
       newCardInput.current.focus();
@@ -108,15 +113,20 @@ function Column(props) {
     }
 
     const newCardToAdd = {
+      boardId: column.boardId,
       columnId: column._id,
       cardName: newCardTitle.trim(),
     };
 
+    // console.log("newColumn", newColumn);
+
     createNewCard(newCardToAdd).then((card) => {
+      console.log(card);
       let newColumn = cloneDeep(column);
       newColumn.cards.push(card);
       newColumn.cardOrder.push(card._id);
-      console.log("newColumn");
+
+      console.log("newColumn", newColumn);
       onUpdateColumn(newColumn);
       setNewCardTitle("");
       handleToggleForm();
@@ -193,7 +203,7 @@ function Column(props) {
           />
         </form>
       )}
-      {/*  */}
+
       <footer>
         {openForm && (
           <div className="confirm">

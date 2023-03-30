@@ -24,6 +24,7 @@ function BoardContent() {
   useEffect(() => {
     const boardId = "641829eec348c36c1f5e8000";
     fetchBoardDetail(boardId).then((board) => {
+      console.log("board", board);
       setBoard(board);
       setColumns(mapOrder(board[0].columns, board[0].columnOrder, "_id"));
     });
@@ -45,12 +46,11 @@ function BoardContent() {
 
   const handleDragStart = (e, columnId) => {
     sourceColumnId.current = columnId;
-    console.log("targetColumn", e.target);
-    console.log("sourceColumnId", sourceColumnId);
+    // console.log("targetColumn", e.target);
+    // console.log("sourceColumnId", sourceColumnId);
   };
 
   const handleDragOver = (e, columnId) => {
-    console.log("overColumn");
     e.preventDefault();
     targetColumnId.current = columnId;
   };
@@ -65,7 +65,7 @@ function BoardContent() {
     const targetColumnIndex = tempColumns.findIndex(
       (column) => column._id === targetColumnId.current
     );
-    console.log("targetColumnIndex", targetColumnIndex);
+    // console.log("targetColumnIndex", targetColumnIndex);
     tempColumns.splice(
       targetColumnIndex,
       0,
@@ -86,6 +86,7 @@ function BoardContent() {
     const newColumn = {
       boardId: board[0]._id,
       columnName: newTitle.trim(),
+      cards: [],
     };
 
     createNewColumn(newColumn).then((column) => {
@@ -94,7 +95,9 @@ function BoardContent() {
 
       let newBoard = { ...board[0] };
       newBoard.columnOrder = newColumns.map((column) => column._id);
-      newBoard.colums = newColumns;
+      newBoard.columns = newColumns;
+
+      console.log("newColumnAdd", newBoard);
       setColumns(newColumns);
       setBoard(newBoard);
       setNewTitle("");
@@ -106,7 +109,7 @@ function BoardContent() {
     console.log("newColumnToUpdate", newColumnToUpdate);
     const columnIdToUpdate = newColumnToUpdate._id;
 
-    const newColumns = [...columns];
+    let newColumns = [...columns];
     console.log("newColumns", newColumns);
 
     const columnIndexToUpdate = newColumns.findIndex(
@@ -118,18 +121,16 @@ function BoardContent() {
       newColumns.splice(columnIndexToUpdate, 1);
     } else {
       //update column
-      console.log(newColumnToUpdate);
+      console.log("newColumnToUpdate", newColumnToUpdate);
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
     }
     let newBoard = { ...board[0] };
     newBoard.columnOrder = newColumns.map((column) => column._id);
-    newBoard.colums = newColumns;
+    newBoard.columns = newColumns;
+    console.log("newRoard", newBoard);
     setColumns(newColumns);
     setBoard(newBoard);
   };
-  // const onAddNewCardToColumn = (newColumn) => {
-  //   console.log(newColumn);
-  // };
 
   return (
     <div className="board-contents">

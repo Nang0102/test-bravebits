@@ -15,6 +15,15 @@ export const createNewColumn = async (data) => {
   return request.data;
 };
 
+export const updateColumn = async (id, data) => {
+  const request = await axios.put(`${baseURL}/column/${id}`, data, {
+    headers: {
+      "Access-Control-Allow-Credentials": true,
+    },
+  });
+  return request.data;
+};
+
 export const createNewCard = async (data) => {
   console.log("request", data);
   const request = await axios.post(`${baseURL}/card`, data, {
