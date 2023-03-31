@@ -1,8 +1,8 @@
 import axios from "axios";
 import { baseURL } from "./constant";
 
-export const fetchBoardDetail = async () => {
-  const request = await axios.get(`${baseURL}/board/fullboard`);
+export const fetchBoardDetail = async (id) => {
+  const request = await axios.get(`${baseURL}/board/fullboard/${id}`);
   return request.data;
 };
 
@@ -16,6 +16,15 @@ export const createNewColumn = async (data) => {
 };
 
 export const updateColumn = async (id, data) => {
+  const request = await axios.put(`${baseURL}/column/${id}`, data, {
+    headers: {
+      "Access-Control-Allow-Credentials": true,
+    },
+  });
+  return request.data;
+};
+
+export const deleteColumn = async (id, data) => {
   const request = await axios.put(`${baseURL}/column/${id}`, data, {
     headers: {
       "Access-Control-Allow-Credentials": true,

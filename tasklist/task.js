@@ -104,14 +104,11 @@ let draggedOverItemIndex = null;
 function handleDragStart(e) {
   draggingItemIndex = parseInt(e.target.getAttribute("data-index"));
   e.target.classList.add("dragging");
-  console.log("drag");
 
 }
 function handleDragEnter(e) {
   e.preventDefault();
-  console.log('e.target', e.target);
   draggedOverItemIndex = parseInt(e.target.parentElement.getAttribute("data-index"))  ;
-  console.log('e.target222', draggedOverItemIndex);
    
   if (isNaN(draggedOverItemIndex)) {
     console.log('error');

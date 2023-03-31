@@ -21,7 +21,6 @@ cardRouter.get("/", async (req, res) => {
 cardRouter.post("/", async (req, res) => {
   try {
     const { cardName, columnId, cover, boardId } = req.body;
-    console.log("reqBody: ", req.body);
     const card = {
       cardName,
       cover,
@@ -30,21 +29,17 @@ cardRouter.post("/", async (req, res) => {
     };
 
     const result = await db.cards.insertOne(card);
-    console.log("result", result);
 
     const ColumnId = card.columnId;
-    // const BoardId = card.boardId.toString();
     const newCardId = result.insertedId;
 
-    // const newCardOrder = [...c, newCardId];
     const updateColumn = await db.columns.findOneAndUpdate(
       { _id: ColumnId },
-      // { boardId: BoardId },
       { $push: { cardOrder: newCardId } },
       { returnOriginal: false }
     );
 
-    console.log("updateColumn", updateColumn);
+    console.log("updateColumnCard", updateColumn.value);
     res.status(200).json({
       _id: card._id,
       cardName: card.cardName,
@@ -82,6 +77,22 @@ cardRouter.put("/", async (req, res) => {
     res.status(500).json("Some thing went wrong!" + error);
   }
 });
+
+// const deleteMany = async (req, res) => {
+//   try {
+//     const ids = ids.req.body;
+//     const transformIds = ids.map((id) => ObjectId(id));
+//     const result = await db.cards.updateMany(
+//       { _id: { $in: transformIds } },
+//       { $set: { _destroy: "true" } }
+//     );
+//     res.status(200);
+//     res.json("Successfully deletted " + result);
+//   } catch (error) {
+//     res.status(500);
+//     res.json("some thing went wrong " + error);
+//   }
+// };
 
 cardRouter.delete("/:id", async (req, res) => {
   try {

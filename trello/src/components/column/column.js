@@ -72,8 +72,8 @@ function Column(props) {
       0,
       tempCards.splice(sourceCardIndex, 1)[0]
     );
-    console.log("tempCards", tempCards);
     setCards(tempCards);
+    console.log("tempCards", tempCards);
   };
 
   useEffect(() => {
@@ -92,7 +92,10 @@ function Column(props) {
         ...column,
         _destroy: "true",
       };
+      console.log("newColunmConfirm", newColumn);
+      //delete colum
       updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        console.log("updatedColumn", updatedColumn);
         onUpdateColumnState(updatedColumn);
       });
       // onUpdateColumnState(newColumn);
@@ -108,6 +111,7 @@ function Column(props) {
 
     if (column.columnName !== titleColumn) {
       updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        console.log("updatedColumn", updatedColumn);
         onUpdateColumnState(updatedColumn);
       });
     }
@@ -124,27 +128,33 @@ function Column(props) {
     setNewCardTitle(e.target.value);
   };
 
-  const handleClickBtnAdd = () => {
+  const handleCardClickBtnAdd = () => {
     if (!newCardTitle) {
       newCardInput.current.focus();
       return;
     }
-
-    const newCardToAdd = {
-      boardId: column.boardId,
-      columnId: column._id,
-      cardName: newCardTitle.trim(),
-    };
-
-    createNewCard(newCardToAdd).then((card) => {
-      let newColumn = cloneDeep(column);
-      newColumn.cards.push(card);
-      newColumn.cardOrder.push(card._id);
-
-      onUpdateColumnState(newColumn);
-      setNewCardTitle("");
-      handleToggleForm();
-    });
+    if (column) {
+      const newCardToAdd = {
+        boardId: column.boardId,
+        columnId: column._id,
+        cardName: newCardTitle.trim(),
+      };
+      createNewCard(newCardToAdd).then((card) => {
+        // let newCards = cloneDeep(cards);
+        let newCards = [...cards];
+        let newColumn = cloneDeep(column);
+        console.log(card);
+        // if (card._id) {
+        newColumn.cards.push(card);
+        newColumn.cardOrder.push(card._id);
+        // }
+        console.log("cardsCreate", newCards);
+        setCards(newCards);
+        onUpdateColumnState(newColumn);
+        setNewCardTitle("");
+        handleToggleForm();
+      });
+    }
   };
 
   return (
@@ -193,6 +203,7 @@ function Column(props) {
       )}
 
       <ul className="card-list">
+        {/* {mapOrder(column.cards, column.cardOrder, "_id").map((card, id) => ( */}
         {cards.map((card, id) => (
           <Card
             key={id}
@@ -212,7 +223,9 @@ function Column(props) {
             ref={newCardInput}
             value={newCardTitle}
             onChange={handleCardTitleChange}
-            onKeyDown={(event) => event.key === "Enter" && handleClickBtnAdd}
+            onKeyDown={(event) =>
+              event.key === "Enter" && handleCardClickBtnAdd
+            }
           />
         </form>
       )}
@@ -222,7 +235,7 @@ function Column(props) {
           <div className="confirm">
             <button
               className="button-confirm new-card"
-              onClick={handleClickBtnAdd}
+              onClick={handleCardClickBtnAdd}
             >
               Add
             </button>

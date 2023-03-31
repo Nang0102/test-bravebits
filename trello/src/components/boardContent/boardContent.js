@@ -21,11 +21,13 @@ function BoardContent() {
   const [openForm, setOpenForm] = useState(false);
   const handleToggleForm = () => setOpenForm(!openForm);
 
+  console.log("board", board);
+
   useEffect(() => {
     const boardId = "641829eec348c36c1f5e8000";
     fetchBoardDetail(boardId).then((board) => {
       setBoard(board);
-      setColumns(mapOrder(board[0].columns, board[0].columnOrder, "_id"));
+      setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
     });
   }, []);
 
@@ -78,26 +80,33 @@ function BoardContent() {
       newColumnInput.current.focus();
       return;
     }
-    const newColumn = {
-      boardId: board[0]._id,
-      columnName: newTitle.trim(),
-      cardOrder: [],
-      cards: [],
-    };
+    if (board._id) {
+      const newColumn = {
+        boardId: board._id,
+        columnName: newTitle.trim(),
+        cardOrder: [],
+        cards: [],
+      };
 
-    createNewColumn(newColumn).then((column) => {
-      const newColumns = [...columns];
-      newColumns.push(column);
+      createNewColumn(newColumn).then((column) => {
+        let newColumns = [];
+        if (columns) {
+          newColumns = [...columns];
+        }
+        if (column._id) {
+          newColumns.push(column);
+        }
 
-      let newBoard = { ...board[0] };
-      newBoard.columnOrder = newColumns.map((column) => column._id);
-      newBoard.columns = newColumns;
+        let newBoard = { ...board[0] };
+        newBoard.columnOrder = newColumns.map((column) => column && column._id);
+        newBoard.columns = newColumns;
 
-      setColumns(newColumns);
-      setBoard(newBoard);
-      setNewTitle("");
-      handleToggleForm();
-    });
+        setColumns(newColumns);
+        setBoard(newBoard);
+        setNewTitle("");
+        handleToggleForm();
+      });
+    }
   };
 
   const handleUpdateColumn = (newColumnToUpdate) => {
@@ -133,7 +142,6 @@ function BoardContent() {
             onDragOver={handleDragOver}
             onDragEnd={handleDragEnd}
             onUpdateColumnState={handleUpdateColumn}
-            // onAddNewCardToColumn={onAddNewCardToColumn}
             column={column}
           />
         );

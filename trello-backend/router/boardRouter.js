@@ -1,36 +1,51 @@
 const express = require("express");
 const { ObjectId } = require("mongodb");
 const boardRouter = express.Router();
+const { cloneDeep } = require("lodash");
 const { db } = require("../db");
 
-boardRouter.get("/", async (req, res) => {
-  try {
-    let boards;
-    const { name: boardName, order, id } = req.headers;
-    const query = {};
+// boardRouter.get("/", async (req, res) => {
+//   try {
+//     let boards;
+//     const { name: boardName, order, id } = req.headers;
+//     const query = {};
 
-    if (boardName) {
-      query["boardName"] = boardName;
-    }
-    if (order) {
-      query["order"] = order;
-    }
-    if (id) {
-      query["_id"] = ObjectId(id);
-    }
-    boards = await db.boards.find({}).toArray();
-    res.status(200).json(boards);
-  } catch (error) {
-    res.status(500);
-    res.json("some thing went wrong " + error);
+//     if (boardName) {
+//       query["boardName"] = boardName;
+//     }
+//     if (order) {
+//       query["order"] = order;
+//     }
+//     if (id) {
+//       query["_id"] = ObjectId(id);
+//     }
+//     boards = await db.boards.find({}).toArray();
+//     res.status(200).json(boards);
+//   } catch (error) {
+//     res.status(500);
+//     res.json("some thing went wrong " + error);
+//   }
+// });
+
+boardRouter.get("/fullBoard/:id", async (req, res) => {
+  const boardId = req.params.id;
+  console.log("boardId", boardId);
+  const board = await db.boards.find({ _id: new ObjectId(boardId) }).toArray();
+  console.log("board", board);
+  if (!board || !board.columns) {
+    return "Board not found!!";
   }
-});
 
-boardRouter.get("/fullBoard", async (req, res) => {
   try {
-    let boards;
-    boards = await db.boards
+    let boards = await db.boards
       .aggregate([
+        {
+          $match: {
+            _id: new ObjectId(boardId),
+            _destroy: false,
+          },
+        },
+
         {
           $lookup: {
             from: "columns",
@@ -50,18 +65,22 @@ boardRouter.get("/fullBoard", async (req, res) => {
       ])
       .toArray();
 
+    const transformBoard = cloneDeep(board);
+    //filter
+    transformBoard.columns = transformBoard.columns.filter(
+      (column) => !column._destroy
+    );
     // Add card to each column
-    boards[0].columns.forEach((column) => {
-      column.cards = boards[0].cards.filter(
+    transformBoard.columns.forEach((column) => {
+      column.cards = transformBoard.cards.filter(
         (card) => card.columnId.toString() === column._id.toString()
       );
     });
 
     // delete cards from boards
-    delete boards[0].cards;
+    delete boards.cards;
 
-    console.log("board: ", boards);
-    res.status(200).json(boards);
+    res.status(200).json(boards[0]);
   } catch (error) {
     res.status(500);
     res.json("some thing went wrong " + error);

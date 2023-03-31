@@ -2,6 +2,7 @@ const express = require("express");
 const { ObjectId } = require("mongodb");
 const columnRouter = express.Router();
 const { db } = require("../db");
+const { deleteMany } = require("./cardRouter");
 
 columnRouter.get("/", async (req, res) => {
   try {
@@ -70,21 +71,43 @@ columnRouter.post("/", async (req, res) => {
 
 columnRouter.put("/:id", async (req, res) => {
   try {
-    const id = req.params.id;
-    const { columnName, cardOrder, boardId } = req.body;
-    const column = { columnName, cardOrder, boardId: new ObjectId(boardId) };
-
+    const { columnName, cardOrder, boardId, _destroy } = req.body;
+    const column = {
+      columnName,
+      cardOrder,
+      boardId: new ObjectId(boardId),
+      _destroy,
+    };
     const filter = {
-      _id: new ObjectId(id),
+      _id: new ObjectId(req.params.id),
     };
     const updateDoc = {
       $set: column,
     };
 
-    const result = await db.columns.updateOne(filter, updateDoc);
-    res.status(200).json(result);
+    const updatedColumn = await db.columns.findOneAndUpdate(filter, updateDoc);
+    console.log("updatedColumn", updatedColumn.value);
+    const deleteMany = async (ids) => {
+      try {
+        const transformIds = ids.map((id) => ObjectId(id));
+        const result = await db.cards.updateMany(
+          { _id: { $in: transformIds } },
+          { $set: { _destroy: "true" } }
+        );
+        console.log("resultMany", result.value);
+        res.status(200);
+        res.json("Successfully deleted " + result);
+      } catch (error) {
+        res.status(500);
+        res.json("Something went wrong " + error);
+      }
+    };
+    if (updatedColumn._destroy) {
+      deleteMany(updatedColumn.cardOrder);
+    }
+    return res.status(200).json(updatedColumn.value);
   } catch (error) {
-    res.status(500).json("Some thing went wrong!" + error);
+    throw new Error(error);
   }
 });
 
