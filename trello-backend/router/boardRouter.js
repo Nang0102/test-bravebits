@@ -28,20 +28,14 @@ const { db } = require("../db");
 // });
 
 boardRouter.get("/fullBoard/:id", async (req, res) => {
-  const boardId = req.params.id;
-  console.log("boardId", boardId);
-  const board = await db.boards.find({ _id: new ObjectId(boardId) }).toArray();
-  console.log("board", board);
-  if (!board || !board.columns) {
-    return "Board not found!!";
-  }
+  const id = req.params.id;
 
   try {
     let boards = await db.boards
       .aggregate([
         {
           $match: {
-            _id: new ObjectId(boardId),
+            _id: new ObjectId(id),
             _destroy: false,
           },
         },
@@ -65,6 +59,11 @@ boardRouter.get("/fullBoard/:id", async (req, res) => {
       ])
       .toArray();
 
+    const board = boards[0];
+    if (!board || !board.columns) {
+      return "Board not found!!";
+    }
+
     const transformBoard = cloneDeep(board);
     //filter
     transformBoard.columns = transformBoard.columns.filter(
@@ -78,9 +77,9 @@ boardRouter.get("/fullBoard/:id", async (req, res) => {
     });
 
     // delete cards from boards
-    delete boards.cards;
+    delete transformBoard.cards;
 
-    res.status(200).json(boards[0]);
+    res.status(200).json(transformBoard);
   } catch (error) {
     res.status(500);
     res.json("some thing went wrong " + error);

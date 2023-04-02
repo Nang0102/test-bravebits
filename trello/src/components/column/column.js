@@ -10,7 +10,7 @@ import "./column.scss";
 import { mapOrder } from "utilities/sorts";
 import ConfirmModal from "components/common/confirmModal";
 import { modalActionConfirm } from "actions/constant";
-import { createNewCard } from "actions/httpRequest";
+import { createNewCard, deleteColumn } from "actions/httpRequest";
 import { updateColumn } from "actions/httpRequest";
 import {
   handleContentAfterEnter,
@@ -23,13 +23,16 @@ function Column(props) {
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+
+  // const [cardOrder, setCardOrder] = useState(column.cardOrder);
   // const [showPopper, setShowPopper] = useState(false);
 
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
     setCards(mapOrder(column.cards, column.cardOrder, "_id"));
-  }, [column]);
+    // setCardOrder(column.cardOrder);
+  }, [column, cards]);
 
   const [titleColumn, setTitleColumn] = useState("");
 
@@ -72,6 +75,11 @@ function Column(props) {
       0,
       tempCards.splice(sourceCardIndex, 1)[0]
     );
+    // onUpdateColumnState({
+    //   ...column,
+    //   cardOrder: cardOrder,
+    // });
+
     setCards(tempCards);
     console.log("tempCards", tempCards);
   };
@@ -81,7 +89,6 @@ function Column(props) {
   }, [column.columnName]);
 
   const handleColumnTitleInput = (e) => {
-    e.preventDefault();
     setTitleColumn(e.target.value);
   };
 
@@ -90,12 +97,10 @@ function Column(props) {
       //remove column
       const newColumn = {
         ...column,
-        _destroy: "true",
+        _destroy: true,
       };
-      console.log("newColunmConfirm", newColumn);
       //delete colum
-      updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
-        console.log("updatedColumn", updatedColumn);
+      deleteColumn(newColumn._id, newColumn).then((updatedColumn) => {
         onUpdateColumnState(updatedColumn);
       });
       // onUpdateColumnState(newColumn);
@@ -124,7 +129,6 @@ function Column(props) {
   }, [openForm]);
 
   const handleCardTitleChange = (e) => {
-    e.preventDefault();
     setNewCardTitle(e.target.value);
   };
 
@@ -138,18 +142,20 @@ function Column(props) {
         boardId: column.boardId,
         columnId: column._id,
         cardName: newCardTitle.trim(),
+        cover: null,
       };
       createNewCard(newCardToAdd).then((card) => {
         // let newCards = cloneDeep(cards);
-        let newCards = [...cards];
         let newColumn = cloneDeep(column);
+        // let newColumn = JSON.parse(JSON.stringify(column));
         console.log(card);
+        console.log("newColumn", newColumn);
         // if (card._id) {
         newColumn.cards.push(card);
         newColumn.cardOrder.push(card._id);
         // }
-        console.log("cardsCreate", newCards);
-        setCards(newCards);
+        // console.log("cardsCreate", newCards);
+        // setCards(newCards);
         onUpdateColumnState(newColumn);
         setNewCardTitle("");
         handleToggleForm();
@@ -224,7 +230,7 @@ function Column(props) {
             value={newCardTitle}
             onChange={handleCardTitleChange}
             onKeyDown={(event) =>
-              event.key === "Enter" && handleCardClickBtnAdd
+              event.key === "Enter" && handleCardClickBtnAdd()
             }
           />
         </form>

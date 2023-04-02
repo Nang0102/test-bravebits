@@ -7,7 +7,7 @@ import "./boardContent.scss";
 import "../../App.scss";
 import { mapOrder } from "utilities/sorts";
 import { fetchBoardDetail, createNewColumn } from "actions/httpRequest";
-const _ = require("lodash");
+import { cloneDeep } from "lodash";
 
 function BoardContent() {
   const [board, setBoard] = useState({});
@@ -21,8 +21,6 @@ function BoardContent() {
   const [openForm, setOpenForm] = useState(false);
   const handleToggleForm = () => setOpenForm(!openForm);
 
-  console.log("board", board);
-
   useEffect(() => {
     const boardId = "641829eec348c36c1f5e8000";
     fetchBoardDetail(boardId).then((board) => {
@@ -30,6 +28,7 @@ function BoardContent() {
       setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
     });
   }, []);
+  console.log("board", board);
 
   useEffect(() => {
     if (newColumnInput && newColumnInput.current) {
@@ -56,7 +55,7 @@ function BoardContent() {
 
   const handleDragEnd = (e) => {
     // const tempColumns = [...columns];
-    const tempColumns = _.cloneDeep(columns);
+    const tempColumns = cloneDeep(columns);
     const sourceColumnIndex = tempColumns.findIndex(
       (column) => column._id === sourceColumnId.current
     );
@@ -97,7 +96,7 @@ function BoardContent() {
           newColumns.push(column);
         }
 
-        let newBoard = { ...board[0] };
+        let newBoard = { ...board };
         newBoard.columnOrder = newColumns.map((column) => column && column._id);
         newBoard.columns = newColumns;
 
@@ -110,13 +109,16 @@ function BoardContent() {
   };
 
   const handleUpdateColumn = (newColumnToUpdate) => {
+    console.log("newColumnToUpdate", newColumnToUpdate);
     const columnIdToUpdate = newColumnToUpdate._id;
 
-    let newColumns = [...columns];
+    // let newColumns = [...columns];
+    let newColumns = cloneDeep(columns);
 
     const columnIndexToUpdate = newColumns.findIndex(
       (column) => column._id === columnIdToUpdate
     );
+    console.log("newColumnToUpdate._destroy", newColumnToUpdate._destroy);
     if (newColumnToUpdate._destroy) {
       //remove column
       newColumns.splice(columnIndexToUpdate, 1);
@@ -124,7 +126,7 @@ function BoardContent() {
       //update column
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
     }
-    let newBoard = { ...board[0] };
+    let newBoard = { ...board };
     newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
     setColumns(newColumns);

@@ -37,20 +37,29 @@ columnRouter.get("/", async (req, res) => {
 
 columnRouter.post("/", async (req, res) => {
   try {
-    const { columnName, boardId } = req.body;
+    const { columnName, boardId, cards, cardOrder } = req.body;
 
     const column = {
       columnName,
       boardId: new ObjectId(boardId),
+      cards,
+      cardOrder,
     };
     if (!ObjectId.isValid(boardId)) {
       return res.status(400).json("Invalid board ID");
     }
 
     const result = await db.columns.insertOne(column);
+    console.log("result", {
+      _id: column._id,
+      columnName: column.columnName,
+      boardId: column.boardId,
+      cards: column.cards,
+      cardOrder: column.cardOrder,
+    });
 
     const newBoardId = column.boardId;
-    const newColumnId = result.insertedId;
+    const newColumnId = result.insertedId.toString();
 
     const updateBoard = await db.boards.findOneAndUpdate(
       { _id: newBoardId },
@@ -78,36 +87,41 @@ columnRouter.put("/:id", async (req, res) => {
       boardId: new ObjectId(boardId),
       _destroy,
     };
-    const filter = {
-      _id: new ObjectId(req.params.id),
-    };
-    const updateDoc = {
-      $set: column,
-    };
-
-    const updatedColumn = await db.columns.findOneAndUpdate(filter, updateDoc);
-    console.log("updatedColumn", updatedColumn.value);
-    const deleteMany = async (ids) => {
-      try {
-        const transformIds = ids.map((id) => ObjectId(id));
-        const result = await db.cards.updateMany(
-          { _id: { $in: transformIds } },
-          { $set: { _destroy: "true" } }
-        );
-        console.log("resultMany", result.value);
-        res.status(200);
-        res.json("Successfully deleted " + result);
-      } catch (error) {
-        res.status(500);
-        res.json("Something went wrong " + error);
-      }
-    };
-    if (updatedColumn._destroy) {
-      deleteMany(updatedColumn.cardOrder);
+    if (_destroy !== undefined) {
+      column._destroy = _destroy;
     }
-    return res.status(200).json(updatedColumn.value);
+
+    if (column._id) delete column._id;
+    if (column.cards) delete column.cards;
+
+    const updatedColumn = await db.columns.findOneAndUpdate(
+      { _id: new ObjectId(req.params.id) },
+      { $set: { ...column } }, // remove _id field from update object
+      { returnOriginal: false }
+    );
+
+    const findColumn = await db.columns
+      .find({
+        _id: new ObjectId(req.params.id),
+      })
+      .toArray();
+    const deleteMany = async (ids) => {
+      console.log("ids", ids);
+      const transformIds = ids.map((id) => new ObjectId(id));
+      const result = await db.cards.updateMany(
+        { _id: { $in: transformIds } },
+        { $set: { _destroy: true } }
+      );
+      return result;
+    };
+    if (findColumn[0]._destroy) {
+      deleteMany(findColumn[0].cardOrder);
+    }
+
+    return res.status(200).json(findColumn[0]);
   } catch (error) {
-    throw new Error(error);
+    res.status(500);
+    res.json("Something went wrong " + error);
   }
 });
 
