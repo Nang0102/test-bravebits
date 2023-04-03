@@ -12,11 +12,16 @@ import { cloneDeep } from "lodash";
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
+  const [cards, setCards] = useState([]);
   const [newTitle, setNewTitle] = useState("");
 
   const sourceColumnId = useRef(null);
   const targetColumnId = useRef(null);
   const newColumnInput = useRef(null);
+
+  const sourceCardId = useRef(null);
+  const targetCardId = useRef(null);
+  // const columnIdDropCard = useRef(null)
 
   const [openForm, setOpenForm] = useState(false);
   const handleToggleForm = () => setOpenForm(!openForm);
@@ -26,9 +31,9 @@ function BoardContent() {
     fetchBoardDetail(boardId).then((board) => {
       setBoard(board);
       setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
+      setCards(cards);
     });
   }, []);
-  console.log("board", board);
 
   useEffect(() => {
     if (newColumnInput && newColumnInput.current) {
@@ -54,7 +59,6 @@ function BoardContent() {
   };
 
   const handleDragEnd = (e) => {
-    // const tempColumns = [...columns];
     const tempColumns = cloneDeep(columns);
     const sourceColumnIndex = tempColumns.findIndex(
       (column) => column._id === sourceColumnId.current
@@ -68,6 +72,104 @@ function BoardContent() {
       tempColumns.splice(sourceColumnIndex, 1)[0]
     );
     setColumns(tempColumns);
+  };
+
+  const handleCardDragStart = (e, cardId, columnId) => {
+    e.dataTransfer.setData("cardId", cardId);
+    sourceCardId.current = cardId;
+    sourceColumnId.current = columnId;
+
+    console.log("cardId", cardId);
+    console.log("sourceColumnId", sourceColumnId.current);
+  };
+  const handleCardDragOver = (e, cardId, columnId) => {
+    console.log("cardOver");
+    e.preventDefault();
+    targetCardId.current = cardId;
+    targetColumnId.current = columnId;
+  };
+
+  const handleCardDragEnd = (e, columnId) => {
+    const tempColumns = cloneDeep(columns);
+    const cardId = e.dataTransfer.getData("cardId");
+    console.log("cardId", cardId);
+    console.log("tempColumns", tempColumns);
+    const sourceColumnIndex = tempColumns.findIndex(
+      (col) => col._id === sourceColumnId.current
+    );
+
+    console.log("sourceColumnIndex", sourceColumnIndex);
+    console.log("targetColumnId", targetColumnId.current);
+
+    const targetColumnIndex = tempColumns.findIndex(
+      (col) => col._id === targetColumnId.current
+    );
+    console.log("targetColumnIndex", targetColumnIndex);
+
+    let sourceCardIndex;
+    let targetCardIndex;
+
+    if (sourceColumnIndex !== -1 && sourceColumnIndex !== targetColumnIndex) {
+      console.log("Khac cot");
+      sourceCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
+        (card) => card._id === sourceCardId.current
+      );
+      console.log("sourceCardIndex-column", sourceCardIndex);
+
+      targetCardIndex = tempColumns[targetColumnIndex].cards.findIndex(
+        (card) => card._id === targetCardId.current
+      );
+      console.log("targetCardIndex-column", targetCardIndex);
+
+      tempColumns[targetColumnIndex].cardOrder.splice(
+        targetCardIndex,
+        0,
+        tempColumns[sourceColumnIndex].cardOrder.splice(sourceCardIndex, 1)[0]
+      );
+
+      console.log(
+        "tempColumns[sourceColumnIndex].cardOrder",
+        tempColumns[sourceColumnIndex].cardOrder
+      );
+
+      tempColumns[targetColumnIndex].cards.splice(
+        targetCardIndex,
+        0,
+        tempColumns[sourceColumnIndex].cards.splice(sourceCardIndex, 1)[0]
+      );
+    } else {
+      console.log("Cung cot");
+      sourceCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
+        (card) => card._id === sourceCardId.current
+      );
+      console.log("sourceCardIndex", sourceCardIndex);
+
+      targetCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
+        (card) => card._id === targetCardId.current
+      );
+      console.log("targetCardIndex", targetCardIndex);
+
+      tempColumns[sourceColumnIndex].cardOrder.splice(
+        targetCardIndex,
+        0,
+        tempColumns[sourceColumnIndex].cardOrder.splice(sourceCardIndex, 1)[0]
+      );
+
+      tempColumns[sourceColumnIndex].cards.splice(
+        targetCardIndex,
+        0,
+        tempColumns[sourceColumnIndex].cards.splice(sourceCardIndex, 1)[0]
+      );
+    }
+    console.log(
+      " tempColumns[sourceColumnIndex].cards",
+      tempColumns[sourceColumnIndex].cards
+    );
+
+    console.log("tempColumns", tempColumns);
+    // setCards(tempCards);
+    setColumns(tempColumns);
+    // console.log("tempCards", tempCards);
   };
 
   const handleTitleChange = (e) => {
@@ -118,13 +220,17 @@ function BoardContent() {
     const columnIndexToUpdate = newColumns.findIndex(
       (column) => column._id === columnIdToUpdate
     );
+    console.log("columnIndexToUpdate", columnIndexToUpdate);
     console.log("newColumnToUpdate._destroy", newColumnToUpdate._destroy);
     if (newColumnToUpdate._destroy) {
       //remove column
+      console.log("new column delete", newColumns);
       newColumns.splice(columnIndexToUpdate, 1);
     } else {
       //update column
       newColumns.splice(columnIndexToUpdate, 1, newColumnToUpdate);
+
+      console.log("new column Board", newColumns);
     }
     let newBoard = { ...board };
     newBoard.columnOrder = newColumns.map((column) => column._id);
@@ -145,6 +251,11 @@ function BoardContent() {
             onDragEnd={handleDragEnd}
             onUpdateColumnState={handleUpdateColumn}
             column={column}
+            allcards={cards}
+            onCardDragStart={handleCardDragStart}
+            onCardDragOver={handleCardDragOver}
+            // onCardDragEnd={handleCardDragEnd}
+            onDrop={handleCardDragEnd}
           />
         );
       })}

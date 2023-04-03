@@ -80,31 +80,36 @@ columnRouter.post("/", async (req, res) => {
 
 columnRouter.put("/:id", async (req, res) => {
   try {
-    const { columnName, cardOrder, boardId, _destroy } = req.body;
+    const { columnName, cardOrder, boardId, _destroy, cards } = req.body;
     const column = {
       columnName,
       cardOrder,
       boardId: new ObjectId(boardId),
       _destroy,
+      cards,
     };
-    if (_destroy !== undefined) {
-      column._destroy = _destroy;
-    }
+    // if (_destroy !== undefined) {
+    //   column._destroy = _destroy;
+    // }
 
     if (column._id) delete column._id;
-    if (column.cards) delete column.cards;
+    // if (column.cards) delete column.cards;
+    console.log("req.body", req.body);
 
+    console.log("column", column);
     const updatedColumn = await db.columns.findOneAndUpdate(
       { _id: new ObjectId(req.params.id) },
-      { $set: { ...column } }, // remove _id field from update object
+      { $set: { ...column } },
       { returnOriginal: false }
     );
+    console.log("updatedColumn", updatedColumn.value);
 
     const findColumn = await db.columns
       .find({
         _id: new ObjectId(req.params.id),
       })
       .toArray();
+    console.log("findColumn", findColumn[0]);
     const deleteMany = async (ids) => {
       console.log("ids", ids);
       const transformIds = ids.map((id) => new ObjectId(id));

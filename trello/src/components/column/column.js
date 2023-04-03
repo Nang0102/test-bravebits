@@ -18,11 +18,21 @@ import {
 } from "actions/contentEdit";
 
 function Column(props) {
-  const { column, onDragStart, onDragOver, onDragEnd, onUpdateColumnState } =
-    props;
+  const {
+    column,
+    onDragStart,
+    onDragOver,
+    onDragEnd,
+    onUpdateColumnState,
+    onCardDragStart,
+    onCardDragOver,
+    onCardDragEnd,
+    onDrop,
+  } = props;
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+  const [isDropColumn, setIsDropColumn] = useState(false);
 
   // const [cardOrder, setCardOrder] = useState(column.cardOrder);
   // const [showPopper, setShowPopper] = useState(false);
@@ -32,15 +42,16 @@ function Column(props) {
   useEffect(() => {
     setCards(mapOrder(column.cards, column.cardOrder, "_id"));
     // setCardOrder(column.cardOrder);
-  }, [column, cards]);
+  }, [column]);
+  // console.log("cards", cards);
 
   const [titleColumn, setTitleColumn] = useState("");
 
   const [newCardTitle, setNewCardTitle] = useState("");
 
   const newCardInput = useRef(null);
-  const targetCardId = useRef(null);
-  const sourceCardId = useRef(null);
+  // const targetCardId = useRef(null);
+  // const sourceCardId = useRef(null);
 
   const handleToggleIcon = () => setShowPopper(!showPopper);
   const handleToggleDelete = () => {
@@ -48,41 +59,6 @@ function Column(props) {
     setShowModal(!showModal);
   };
   const handleToggleForm = () => setOpenForm(!openForm);
-
-  const handleDragStartCard = (e, cardId) => {
-    sourceCardId.current = cardId;
-  };
-  const handleDragOverCard = (e, cardId) => {
-    e.preventDefault();
-    targetCardId.current = cardId;
-  };
-
-  const handleDragEndCard = (e) => {
-    const tempCards = cloneDeep(cards);
-
-    const sourceCardIndex = tempCards.findIndex(
-      (card) => card._id === sourceCardId.current
-    );
-    console.log("sourceCardIndex", sourceCardIndex);
-
-    const targetCardIndex = tempCards.findIndex(
-      (card) => card._id === targetCardId.current
-    );
-    console.log("targetCardIndex", targetCardIndex);
-
-    tempCards.splice(
-      targetCardIndex,
-      0,
-      tempCards.splice(sourceCardIndex, 1)[0]
-    );
-    // onUpdateColumnState({
-    //   ...column,
-    //   cardOrder: cardOrder,
-    // });
-
-    setCards(tempCards);
-    console.log("tempCards", tempCards);
-  };
 
   useEffect(() => {
     setTitleColumn(column.columnName);
@@ -101,6 +77,7 @@ function Column(props) {
       };
       //delete colum
       deleteColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        console.log("updatedColumn", updatedColumn);
         onUpdateColumnState(updatedColumn);
       });
       // onUpdateColumnState(newColumn);
@@ -111,11 +88,13 @@ function Column(props) {
   const handleColumnTitleBlur = () => {
     const newColumn = {
       ...column,
+      // _destroy: false,
       columnName: titleColumn,
     };
 
     if (column.columnName !== titleColumn) {
       updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
+        console.log("newColumn change", newColumn);
         console.log("updatedColumn", updatedColumn);
         onUpdateColumnState(updatedColumn);
       });
@@ -145,17 +124,11 @@ function Column(props) {
         cover: null,
       };
       createNewCard(newCardToAdd).then((card) => {
-        // let newCards = cloneDeep(cards);
         let newColumn = cloneDeep(column);
-        // let newColumn = JSON.parse(JSON.stringify(column));
         console.log(card);
         console.log("newColumn", newColumn);
-        // if (card._id) {
         newColumn.cards.push(card);
         newColumn.cardOrder.push(card._id);
-        // }
-        // console.log("cardsCreate", newCards);
-        // setCards(newCards);
         onUpdateColumnState(newColumn);
         setNewCardTitle("");
         handleToggleForm();
@@ -164,15 +137,19 @@ function Column(props) {
   };
 
   return (
-    <div
-      className="columns"
-      columnid={column._id}
-      draggable
-      onDragStart={(e) => onDragStart(e, column._id)}
-      onDragOver={(e) => onDragOver(e, column._id)}
-      onDragEnd={(e) => onDragEnd(e, column._id)}
-    >
-      <header>
+    <div className="columns" columnid={column._id}>
+      <header
+        draggable
+        onDragStart={(e) => {
+          setIsDropColumn(true);
+          onDragStart(e, column._id);
+        }}
+        onDragOver={(e) => onDragOver(e, column._id)}
+        onDragEnd={(e) => {
+          if (isDropColumn) return onDragEnd(e, column._id);
+          setIsDropColumn(false);
+        }}
+      >
         <input
           className="column-title"
           placeholder=" Enter title..."
@@ -215,9 +192,10 @@ function Column(props) {
             key={id}
             card={card}
             columnId={column._id}
-            onDragStart={handleDragStartCard}
-            onDragOver={handleDragOverCard}
-            onDragEnd={handleDragEndCard}
+            onDragStart={onCardDragStart}
+            onDragOver={onCardDragOver}
+            // onDragEnd={onCardDragEnd}
+            onDrop={onDrop}
           />
         ))}
       </ul>
