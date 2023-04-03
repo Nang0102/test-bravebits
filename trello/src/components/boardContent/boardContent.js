@@ -6,7 +6,13 @@ import ClearIcon from "@mui/icons-material/Clear";
 import "./boardContent.scss";
 import "../../App.scss";
 import { mapOrder } from "utilities/sorts";
-import { fetchBoardDetail, createNewColumn } from "actions/httpRequest";
+import {
+  updateBoard,
+  fetchBoardDetail,
+  createNewColumn,
+  updateColumn,
+  updateCard,
+} from "actions/httpRequest";
 import { cloneDeep } from "lodash";
 
 function BoardContent() {
@@ -27,7 +33,8 @@ function BoardContent() {
   const handleToggleForm = () => setOpenForm(!openForm);
 
   useEffect(() => {
-    const boardId = "641829eec348c36c1f5e8000";
+    // const boardId = "641829eec348c36c1f5e8000";
+    const boardId = "642adf8c0ff950e624011157";
     fetchBoardDetail(boardId).then((board) => {
       setBoard(board);
       setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
@@ -71,7 +78,20 @@ function BoardContent() {
       0,
       tempColumns.splice(sourceColumnIndex, 1)[0]
     );
+    let newBoard = cloneDeep(board);
+    newBoard.columnOrder = tempColumns.map((col) => col._id);
+    newBoard.columns = tempColumns;
     setColumns(tempColumns);
+    setBoard(newBoard);
+    updateBoard(newBoard._id, { columnOrder: newBoard.columnOrder }).catch(
+      (error) => {
+        console.log(error);
+        setColumns(columns);
+        setBoard(board);
+      }
+    );
+    // setColumns(tempColumns);
+    // setBoard(newBoard);
   };
 
   const handleCardDragStart = (e, cardId, columnId) => {
@@ -137,6 +157,14 @@ function BoardContent() {
         0,
         tempColumns[sourceColumnIndex].cards.splice(sourceCardIndex, 1)[0]
       );
+      updateColumn(
+        tempColumns[sourceColumnIndex]._id,
+        tempColumns[sourceColumnIndex]
+      ).catch((error) => {
+        console.log("error", error);
+        setColumns(columns);
+      });
+      updateCard(sourceCardId.current, tempColumns[sourceColumnIndex].cards);
     } else {
       console.log("Cung cot");
       sourceCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
@@ -149,22 +177,30 @@ function BoardContent() {
       );
       console.log("targetCardIndex", targetCardIndex);
 
-      tempColumns[sourceColumnIndex].cardOrder.splice(
+      tempColumns[targetColumnIndex].cardOrder.splice(
         targetCardIndex,
         0,
-        tempColumns[sourceColumnIndex].cardOrder.splice(sourceCardIndex, 1)[0]
+        tempColumns[targetColumnIndex].cardOrder.splice(sourceCardIndex, 1)[0]
       );
 
-      tempColumns[sourceColumnIndex].cards.splice(
+      tempColumns[targetColumnIndex].cards.splice(
         targetCardIndex,
         0,
-        tempColumns[sourceColumnIndex].cards.splice(sourceCardIndex, 1)[0]
+        tempColumns[targetColumnIndex].cards.splice(sourceCardIndex, 1)[0]
       );
+
+      console.log(
+        " tempColumns[sourceColumnIndex].cards",
+        tempColumns[targetColumnIndex]._id
+      );
+      updateColumn(
+        tempColumns[targetColumnIndex]._id,
+        tempColumns[targetColumnIndex]
+      ).catch((error) => {
+        console.log("error", error);
+        setColumns(columns);
+      });
     }
-    console.log(
-      " tempColumns[sourceColumnIndex].cards",
-      tempColumns[sourceColumnIndex].cards
-    );
 
     console.log("tempColumns", tempColumns);
     // setCards(tempCards);
@@ -198,7 +234,7 @@ function BoardContent() {
           newColumns.push(column);
         }
 
-        let newBoard = { ...board };
+        let newBoard = cloneDeep(board);
         newBoard.columnOrder = newColumns.map((column) => column && column._id);
         newBoard.columns = newColumns;
 
@@ -214,7 +250,6 @@ function BoardContent() {
     console.log("newColumnToUpdate", newColumnToUpdate);
     const columnIdToUpdate = newColumnToUpdate._id;
 
-    // let newColumns = [...columns];
     let newColumns = cloneDeep(columns);
 
     const columnIndexToUpdate = newColumns.findIndex(
@@ -232,7 +267,7 @@ function BoardContent() {
 
       console.log("new column Board", newColumns);
     }
-    let newBoard = { ...board };
+    let newBoard = cloneDeep(board);
     newBoard.columnOrder = newColumns.map((column) => column._id);
     newBoard.columns = newColumns;
     setColumns(newColumns);
@@ -251,7 +286,6 @@ function BoardContent() {
             onDragEnd={handleDragEnd}
             onUpdateColumnState={handleUpdateColumn}
             column={column}
-            allcards={cards}
             onCardDragStart={handleCardDragStart}
             onCardDragOver={handleCardDragOver}
             // onCardDragEnd={handleCardDragEnd}

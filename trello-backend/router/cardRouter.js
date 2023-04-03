@@ -58,9 +58,9 @@ cardRouter.post("/", async (req, res) => {
   }
 });
 
-cardRouter.put("/", async (req, res) => {
+cardRouter.put("/:id", async (req, res) => {
   try {
-    const id = req.headers.id;
+    const id = req.params.id;
     const { cardName, columnId, boardId, cover } = req.body;
     const card = {
       cardName,
@@ -68,7 +68,8 @@ cardRouter.put("/", async (req, res) => {
       columnId: new ObjectId(columnId),
       boardId: new ObjectId(boardId),
     };
-
+    console.log("req.body-card", req.body);
+    console.log("card", card);
     const filter = {
       _id: new ObjectId(id),
     };
@@ -76,8 +77,17 @@ cardRouter.put("/", async (req, res) => {
       $set: card,
     };
 
-    const result = await db.columns.updateOne(filter, updateDoc);
-    res.status(200).json(result);
+    const result = await db.columns.findOneAndUpdate(filter, updateDoc);
+    // const board = await db.boards.findOneAndUpdate(
+    //   { _id: new ObjectId(id) },
+    //   {
+    //     $set: updateData,
+    //   },
+    //   { returnOriginal: false }
+    // );
+
+    console.log("resultValue", result.value);
+    res.status(200).json(result.value);
   } catch (error) {
     res.status(500).json("Some thing went wrong!" + error);
   }

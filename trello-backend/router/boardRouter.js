@@ -4,28 +4,28 @@ const boardRouter = express.Router();
 const { cloneDeep } = require("lodash");
 const { db } = require("../db");
 
-// boardRouter.get("/", async (req, res) => {
-//   try {
-//     let boards;
-//     const { name: boardName, order, id } = req.headers;
-//     const query = {};
+boardRouter.get("/", async (req, res) => {
+  try {
+    let boards;
+    // const { name: boardName, order, id } = req.headers;
+    // const query = {};
 
-//     if (boardName) {
-//       query["boardName"] = boardName;
-//     }
-//     if (order) {
-//       query["order"] = order;
-//     }
-//     if (id) {
-//       query["_id"] = ObjectId(id);
-//     }
-//     boards = await db.boards.find({}).toArray();
-//     res.status(200).json(boards);
-//   } catch (error) {
-//     res.status(500);
-//     res.json("some thing went wrong " + error);
-//   }
-// });
+    // if (boardName) {
+    //   query["boardName"] = boardName;
+    // }
+    // if (order) {
+    //   query["order"] = order;
+    // }
+    // if (id) {
+    //   query["_id"] = ObjectId(id);
+    // }
+    boards = await db.boards.find().toArray();
+    res.status(200).json(boards);
+  } catch (error) {
+    res.status(500);
+    res.json("some thing went wrong " + error);
+  }
+});
 
 boardRouter.get("/fullBoard/:id", async (req, res) => {
   const id = req.params.id;
@@ -99,21 +99,24 @@ boardRouter.post("/", async (req, res) => {
   }
 });
 
-boardRouter.put("/", async (req, res) => {
+boardRouter.put("/:id", async (req, res) => {
   try {
-    const id = req.headers.id;
+    const id = req.params.id;
 
-    const { boardName, columnOrder: columnOrder } = req.body;
+    const updateData = ({ boardName, columnOrder: columnOrder } = req.body);
 
-    const filter = {
-      _id: new ObjectId(id),
-    };
-    const updateDoc = {
-      $set: { boardName, columnOrder: columnOrder },
-    };
+    if (updateData._id) delete updateData._id;
+    // if (updateData.columns) delete updateData.columns;
 
-    const board = await db.boards.updateOne(filter, updateDoc);
-    res.status(200).json(board);
+    const board = await db.boards.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      {
+        $set: updateData,
+      },
+      { returnOriginal: false }
+    );
+    console.log("board", board.value);
+    res.status(200).json(board.value);
   } catch (error) {
     res.status(500).json("Some thing went wrong!" + error);
   }

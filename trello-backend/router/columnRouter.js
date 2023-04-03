@@ -92,11 +92,11 @@ columnRouter.put("/:id", async (req, res) => {
     //   column._destroy = _destroy;
     // }
 
-    if (column._id) delete column._id;
+    // if (column._id) delete column._id;
     // if (column.cards) delete column.cards;
-    console.log("req.body", req.body);
+    console.log("req.body-column", req.body);
 
-    console.log("column", column);
+    console.log("column-update", column);
     const updatedColumn = await db.columns.findOneAndUpdate(
       { _id: new ObjectId(req.params.id) },
       { $set: { ...column } },
