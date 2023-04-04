@@ -104,6 +104,7 @@ function Column(props) {
   };
 
   const handleCardClickBtnAdd = () => {
+    console.log("Add a new card");
     if (!newCardTitle) {
       newCardInput.current.focus();
       return;
@@ -197,9 +198,13 @@ function Column(props) {
             ref={newCardInput}
             value={newCardTitle}
             onChange={handleCardTitleChange}
-            onKeyDown={(event) =>
-              event.key === "Enter" && handleCardClickBtnAdd()
-            }
+            onKeyDown={(event) => {
+              event.preventDefault();
+              if (event.key === "Enter") {
+                console.log("enter");
+                handleCardClickBtnAdd();
+              }
+            }}
           />
         </form>
       )}
@@ -211,7 +216,7 @@ function Column(props) {
               className="button-confirm new-card"
               onClick={handleCardClickBtnAdd}
             >
-              Add
+              Add Card
             </button>
             <ClearIcon className="button-clear" onClick={handleToggleForm} />
           </div>

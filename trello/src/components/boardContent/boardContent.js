@@ -113,15 +113,15 @@ function BoardContent() {
     console.log("drop");
     // const tempColumns = cloneDeep(columns);
     const tempColumns = [...columns];
-    console.log("cardId", cardId);
-    console.log("carcolumnIddId", columnId);
-    console.log("tempColumns", tempColumns);
+    // console.log("cardId", cardId);
+    // console.log("carcolumnIddId", columnId);
+    // console.log("tempColumns", tempColumns);
     const sourceColumnIndex = tempColumns.findIndex(
       (col) => col._id === sourceColumnId.current
     );
 
-    console.log("sourceColumnIndex", sourceColumnIndex);
-    console.log("targetColumnId", targetColumnId.current);
+    // console.log("sourceColumnIndex", sourceColumnIndex);
+    // console.log("targetColumnId", targetColumnId.current);
 
     const targetColumnIndex = tempColumns.findIndex(
       (col) => col._id === targetColumnId.current
@@ -133,6 +133,7 @@ function BoardContent() {
 
     if (sourceColumnIndex !== -1 && sourceColumnIndex !== targetColumnIndex) {
       console.log("Khac cot");
+
       sourceCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
         (card) => card._id === sourceCardId.current
       );
@@ -164,10 +165,13 @@ function BoardContent() {
       );
       console.log("targetCardId", targetCardId.current);
       const cardCurrent = tempColumns[targetColumnIndex].cards.find(
-        (card) => card._id === targetCardId.current
+        (card) => card._id === sourceCardId.current
       );
+      const newCard = { ...cardCurrent, columnId: targetColumnId.current };
+      console.log("newCard", newCard);
+
       console.log("cardCurrent", cardCurrent);
-      updateCard(targetCardId.current, cardCurrent);
+      updateCard(sourceCardId.current, newCard);
 
       updateColumn(
         tempColumns[sourceColumnIndex]._id,
@@ -235,6 +239,7 @@ function BoardContent() {
   };
 
   const handleClickBtnAdd = () => {
+    console.log("Inside handleClickBtnAdd");
     if (!newTitle) {
       newColumnInput.current.focus();
       return;
@@ -331,13 +336,16 @@ function BoardContent() {
               ref={newColumnInput}
               value={newTitle}
               onChange={handleTitleChange}
-              onKeyDown={(event) =>
-                event.key === "Enter" && handleClickBtnAdd()
-              }
+              // onKeyDown={(event) => {
+              //   if (event.key === "Enter") {
+              //     // console.log("enter");
+              //     // handleClickBtnAdd();
+              //   }
+              // }}
             />
             <div className="confirm">
               <button className="button-confirm" onClick={handleClickBtnAdd}>
-                Add
+                Add Column
               </button>
               <ClearIcon className="button-clear" onClick={handleToggleForm} />
             </div>
