@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Card from "components/cards/card";
 import React, { useState, useRef, useEffect } from "react";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import AddIcon from "@mui/icons-material/Add";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ClearIcon from "@mui/icons-material/Clear";
 import { cloneDeep } from "lodash";
 
@@ -15,7 +15,7 @@ import { updateColumn } from "actions/httpRequest";
 import {
   handleContentAfterEnter,
   handleSelectAllText,
-} from "actions/contentEdit";
+} from "actions/contentEdit"; ////////////
 
 function Column(props) {
   const {
@@ -32,26 +32,17 @@ function Column(props) {
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
-  const [isDropColumn, setIsDropColumn] = useState(false);
-
-  // const [cardOrder, setCardOrder] = useState(column.cardOrder);
-  // const [showPopper, setShowPopper] = useState(false);
-
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
     setCards(mapOrder(column.cards, column.cardOrder, "_id"));
-    // setCardOrder(column.cardOrder);
   }, [column]);
-  // console.log("cards", cards);
 
-  const [titleColumn, setTitleColumn] = useState("");
+  const [titleColumn, setTitleColumn] = useState(""); //////
 
   const [newCardTitle, setNewCardTitle] = useState("");
 
   const newCardInput = useRef(null);
-  // const targetCardId = useRef(null);
-  // const sourceCardId = useRef(null);
 
   const handleToggleIcon = () => setShowPopper(!showPopper);
   const handleToggleDelete = () => {
@@ -64,6 +55,7 @@ function Column(props) {
     setTitleColumn(column.columnName);
   }, [column.columnName]);
 
+  ////////////
   const handleColumnTitleInput = (e) => {
     setTitleColumn(e.target.value);
   };
@@ -141,13 +133,11 @@ function Column(props) {
       <header
         draggable
         onDragStart={(e) => {
-          setIsDropColumn(true);
           onDragStart(e, column._id);
         }}
         onDragOver={(e) => onDragOver(e, column._id)}
         onDragEnd={(e) => {
-          if (isDropColumn) return onDragEnd(e, column._id);
-          setIsDropColumn(false);
+          return onDragEnd(e, column._id);
         }}
       >
         <input

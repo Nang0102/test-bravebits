@@ -8,7 +8,7 @@ function Card(props) {
     onDragOver: onCardDragOver,
     onDrop,
   } = props;
-  const [isDropCard, setIsDropCard] = useState(false);
+  // const [isDropCard, setIsDropCard] = useState(false);
   return (
     <li
       cardId={card._id}
@@ -16,14 +16,12 @@ function Card(props) {
       draggable
       onDragStart={(e) => {
         e.stopPropagation();
-        setIsDropCard(true);
         onCardDragStart(e, card._id, card.columnId);
       }}
       onDragOver={(e) => onCardDragOver(e, card._id, card.columnId)}
       // onDragEnd={(e) => onCardDragEnd(e, card._id)}
-      onDrop={(e) => {
-        if (isDropCard) onDrop(e, card._id, card.columnId);
-        setIsDropCard(false);
+      onDragEnd={(e) => {
+        onDrop(e, card._id, card.columnId);
       }}
     >
       {card.cover && <img src={card.cover} className="card-cover" alt="" />}

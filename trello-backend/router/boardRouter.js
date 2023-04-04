@@ -115,7 +115,6 @@ boardRouter.put("/:id", async (req, res) => {
       },
       { returnOriginal: false }
     );
-    console.log("board", board.value);
     res.status(200).json(board.value);
   } catch (error) {
     res.status(500).json("Some thing went wrong!" + error);

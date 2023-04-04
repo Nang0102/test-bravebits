@@ -96,7 +96,7 @@ columnRouter.put("/:id", async (req, res) => {
     // if (column.cards) delete column.cards;
     console.log("req.body-column", req.body);
 
-    console.log("column-update", column);
+    // console.log("column-update", column);
     const updatedColumn = await db.columns.findOneAndUpdate(
       { _id: new ObjectId(req.params.id) },
       { $set: { ...column } },
@@ -109,7 +109,6 @@ columnRouter.put("/:id", async (req, res) => {
         _id: new ObjectId(req.params.id),
       })
       .toArray();
-    console.log("findColumn", findColumn[0]);
     const deleteMany = async (ids) => {
       console.log("ids", ids);
       const transformIds = ids.map((id) => new ObjectId(id));
@@ -122,6 +121,7 @@ columnRouter.put("/:id", async (req, res) => {
     if (findColumn[0]._destroy) {
       deleteMany(findColumn[0].cardOrder);
     }
+    console.log("findColumn", findColumn[0]);
 
     return res.status(200).json(findColumn[0]);
   } catch (error) {

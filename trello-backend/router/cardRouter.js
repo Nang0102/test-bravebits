@@ -35,10 +35,6 @@ cardRouter.post("/", async (req, res) => {
     const newCardId = result.insertedId.toString();
     console.log("typeof", typeof newCardId);
 
-    // const updateColumn = await db.columns.find({ _id: ColumnId }).toArray();
-
-    // console.log("updateColumnCard", updateColumn);
-
     const updateColumn = await db.columns.findOneAndUpdate(
       { _id: ColumnId },
       { $push: { cardOrder: newCardId } },
@@ -61,6 +57,7 @@ cardRouter.post("/", async (req, res) => {
 cardRouter.put("/:id", async (req, res) => {
   try {
     const id = req.params.id;
+    console.log("id", id);
     const { cardName, columnId, boardId, cover } = req.body;
     const card = {
       cardName,
@@ -77,16 +74,8 @@ cardRouter.put("/:id", async (req, res) => {
       $set: card,
     };
 
-    const result = await db.columns.findOneAndUpdate(filter, updateDoc);
-    // const board = await db.boards.findOneAndUpdate(
-    //   { _id: new ObjectId(id) },
-    //   {
-    //     $set: updateData,
-    //   },
-    //   { returnOriginal: false }
-    // );
-
-    console.log("resultValue", result.value);
+    const result = await db.cards.findOneAndUpdate(filter, updateDoc);
+    console.log("resultCardValue", result.value);
     res.status(200).json(result.value);
   } catch (error) {
     res.status(500).json("Some thing went wrong!" + error);

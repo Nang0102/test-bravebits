@@ -18,7 +18,6 @@ import { cloneDeep } from "lodash";
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
-  const [cards, setCards] = useState([]);
   const [newTitle, setNewTitle] = useState("");
 
   const sourceColumnId = useRef(null);
@@ -36,12 +35,13 @@ function BoardContent() {
     // const boardId = "641829eec348c36c1f5e8000";
     const boardId = "642adf8c0ff950e624011157";
     fetchBoardDetail(boardId).then((board) => {
+      console.log("board", board);
+
       setBoard(board);
       setColumns(mapOrder(board.columns, board.columnOrder, "_id"));
-      setCards(cards);
+      // setCards(cards);
     });
   }, []);
-
   useEffect(() => {
     if (newColumnInput && newColumnInput.current) {
       newColumnInput.current.focus();
@@ -95,24 +95,26 @@ function BoardContent() {
   };
 
   const handleCardDragStart = (e, cardId, columnId) => {
-    e.dataTransfer.setData("cardId", cardId);
     sourceCardId.current = cardId;
     sourceColumnId.current = columnId;
 
-    console.log("cardId", cardId);
-    console.log("sourceColumnId", sourceColumnId.current);
+    console.log("dragstart", cardId);
+    // console.log("cardId", cardId);
+    // console.log("sourceColumnId", sourceColumnId.current);
   };
   const handleCardDragOver = (e, cardId, columnId) => {
-    console.log("cardOver");
     e.preventDefault();
     targetCardId.current = cardId;
     targetColumnId.current = columnId;
+    // console.log("over", targetCardId.current, targetColumnId.current);
   };
 
-  const handleCardDragEnd = (e, columnId) => {
-    const tempColumns = cloneDeep(columns);
-    const cardId = e.dataTransfer.getData("cardId");
+  const handleCardDragEnd = (e, cardId, columnId) => {
+    console.log("drop");
+    // const tempColumns = cloneDeep(columns);
+    const tempColumns = [...columns];
     console.log("cardId", cardId);
+    console.log("carcolumnIddId", columnId);
     console.log("tempColumns", tempColumns);
     const sourceColumnIndex = tempColumns.findIndex(
       (col) => col._id === sourceColumnId.current
@@ -151,12 +153,22 @@ function BoardContent() {
         "tempColumns[sourceColumnIndex].cardOrder",
         tempColumns[sourceColumnIndex].cardOrder
       );
-
       tempColumns[targetColumnIndex].cards.splice(
         targetCardIndex,
         0,
         tempColumns[sourceColumnIndex].cards.splice(sourceCardIndex, 1)[0]
       );
+      console.log(
+        "tempColumns[targetColumnIndex].cardOrder",
+        tempColumns[targetColumnIndex].cardOrder
+      );
+      console.log("targetCardId", targetCardId.current);
+      const cardCurrent = tempColumns[targetColumnIndex].cards.find(
+        (card) => card._id === targetCardId.current
+      );
+      console.log("cardCurrent", cardCurrent);
+      updateCard(targetCardId.current, cardCurrent);
+
       updateColumn(
         tempColumns[sourceColumnIndex]._id,
         tempColumns[sourceColumnIndex]
@@ -164,15 +176,24 @@ function BoardContent() {
         console.log("error", error);
         setColumns(columns);
       });
-      updateCard(sourceCardId.current, tempColumns[sourceColumnIndex].cards);
+
+      updateColumn(
+        tempColumns[targetColumnIndex]._id,
+        tempColumns[targetColumnIndex]
+      );
+
+      console.log(
+        "tempColumns[targetColumnIndex].cardOrder",
+        tempColumns[targetColumnIndex].cardOrder
+      );
     } else {
       console.log("Cung cot");
-      sourceCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
+      sourceCardIndex = tempColumns[targetColumnIndex].cards.findIndex(
         (card) => card._id === sourceCardId.current
       );
       console.log("sourceCardIndex", sourceCardIndex);
 
-      targetCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
+      targetCardIndex = tempColumns[targetColumnIndex].cards.findIndex(
         (card) => card._id === targetCardId.current
       );
       console.log("targetCardIndex", targetCardIndex);
@@ -190,8 +211,8 @@ function BoardContent() {
       );
 
       console.log(
-        " tempColumns[sourceColumnIndex].cards",
-        tempColumns[targetColumnIndex]._id
+        " tempColumns[targetColumnIndex].order",
+        tempColumns[targetColumnIndex].cardOrder
       );
       updateColumn(
         tempColumns[targetColumnIndex]._id,
@@ -205,7 +226,8 @@ function BoardContent() {
     console.log("tempColumns", tempColumns);
     // setCards(tempCards);
     setColumns(tempColumns);
-    // console.log("tempCards", tempCards);
+    console.log("end", tempColumns);
+    console.log("board222", board);
   };
 
   const handleTitleChange = (e) => {
@@ -226,22 +248,22 @@ function BoardContent() {
       };
 
       createNewColumn(newColumn).then((column) => {
-        let newColumns = [];
-        if (columns) {
-          newColumns = [...columns];
-        }
-        if (column._id) {
-          newColumns.push(column);
-        }
+        let newColumns = [...columns];
+        newColumns.push(column);
 
-        let newBoard = cloneDeep(board);
+        console.log("newColumns", newColumns);
+        console.log("column", column);
+        console.log("board first", board);
+        let newBoard = { ...board };
         newBoard.columnOrder = newColumns.map((column) => column && column._id);
         newBoard.columns = newColumns;
+        console.log("newBoard", newBoard);
 
         setColumns(newColumns);
         setBoard(newBoard);
         setNewTitle("");
         handleToggleForm();
+        console.log("newBoard after", newBoard);
       });
     }
   };
