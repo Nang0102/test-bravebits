@@ -8,7 +8,6 @@ function Card(props) {
     onDragOver: onCardDragOver,
     onDrop,
   } = props;
-  // const [isDropCard, setIsDropCard] = useState(false);
   return (
     <li
       cardId={card._id}
@@ -19,9 +18,8 @@ function Card(props) {
         onCardDragStart(e, card._id, card.columnId);
       }}
       onDragOver={(e) => onCardDragOver(e, card._id, card.columnId)}
-      // onDragEnd={(e) => onCardDragEnd(e, card._id)}
       onDragEnd={(e) => {
-        onDrop(e, card._id, card.columnId);
+        onDrop(e);
       }}
     >
       {card.cover && <img src={card.cover} className="card-cover" alt="" />}

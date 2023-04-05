@@ -111,7 +111,15 @@ columnRouter.put("/:id", async (req, res) => {
       .toArray();
     const deleteMany = async (ids) => {
       console.log("ids", ids);
-      const transformIds = ids.map((id) => new ObjectId(id));
+      const transformIds = ids.map((id) => {
+        // if (id === null) {
+        //   const idNull = findColumn.cardOrder.filter((id) => id === null);
+        //   console.log("idNull", idNull);
+        //   delete idNull;
+        // }
+        console.log("new  Id", new ObjectId(id));
+        return new ObjectId(id);
+      });
       const result = await db.cards.updateMany(
         { _id: { $in: transformIds } },
         { $set: { _destroy: true } }

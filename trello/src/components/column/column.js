@@ -15,7 +15,7 @@ import { updateColumn } from "actions/httpRequest";
 import {
   handleContentAfterEnter,
   handleSelectAllText,
-} from "actions/contentEdit"; ////////////
+} from "actions/contentEdit";
 
 function Column(props) {
   const {
@@ -26,7 +26,6 @@ function Column(props) {
     onUpdateColumnState,
     onCardDragStart,
     onCardDragOver,
-    onCardDragEnd,
     onDrop,
   } = props;
   const [showPopper, setShowPopper] = useState(false);
@@ -69,10 +68,8 @@ function Column(props) {
       };
       //delete colum
       deleteColumn(newColumn._id, newColumn).then((updatedColumn) => {
-        console.log("updatedColumn", updatedColumn);
         onUpdateColumnState(updatedColumn);
       });
-      // onUpdateColumnState(newColumn);
     }
     handleToggleDelete();
   };
@@ -86,13 +83,10 @@ function Column(props) {
 
     if (column.columnName !== titleColumn) {
       updateColumn(newColumn._id, newColumn).then((updatedColumn) => {
-        console.log("newColumn change", newColumn);
-        console.log("updatedColumn", updatedColumn);
         onUpdateColumnState(updatedColumn);
       });
     }
   };
-
   useEffect(() => {
     if (newCardInput && newCardInput.current) {
       newCardInput.current.focus();
@@ -104,7 +98,6 @@ function Column(props) {
   };
 
   const handleCardClickBtnAdd = () => {
-    console.log("Add a new card");
     if (!newCardTitle) {
       newCardInput.current.focus();
       return;
@@ -116,9 +109,11 @@ function Column(props) {
         cardName: newCardTitle.trim(),
         cover: null,
       };
+      console.log("Column-----", column);
+      console.log("newCardToAdd", newCardToAdd);
       createNewCard(newCardToAdd).then((card) => {
+        console.log("card", card);
         let newColumn = cloneDeep(column);
-        console.log(card);
         console.log("newColumn", newColumn);
         newColumn.cards.push(card);
         newColumn.cardOrder.push(card._id);
@@ -141,6 +136,7 @@ function Column(props) {
           return onDragEnd(e, column._id);
         }}
       >
+        {column._id.substr(-6)}
         <input
           className="column-title"
           placeholder=" Enter title..."
@@ -170,6 +166,7 @@ function Column(props) {
       {showModal && (
         <ConfirmModal
           show={showModal}
+          onBlur={handleColumnTitleBlur}
           onAction={handleActionModalConfirm}
           title=" Remove column"
           content={`Are you sure to remove ${column.columnName}?`}
@@ -177,7 +174,6 @@ function Column(props) {
       )}
 
       <ul className="card-list">
-        {/* {mapOrder(column.cards, column.cardOrder, "_id").map((card, id) => ( */}
         {cards.map((card, id) => (
           <Card
             key={id}
@@ -185,28 +181,25 @@ function Column(props) {
             columnId={column._id}
             onDragStart={onCardDragStart}
             onDragOver={onCardDragOver}
-            // onDragEnd={onCardDragEnd}
             onDrop={onDrop}
           />
         ))}
       </ul>
       {openForm && (
-        <form className="enter-new-add">
+        <div className="enter-new-add">
           <input
             className="input-new-card"
             placeholder=" Enter title card..."
             ref={newCardInput}
             value={newCardTitle}
             onChange={handleCardTitleChange}
-            onKeyDown={(event) => {
-              event.preventDefault();
-              if (event.key === "Enter") {
-                console.log("enter");
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
                 handleCardClickBtnAdd();
               }
             }}
           />
-        </form>
+        </div>
       )}
 
       <footer>

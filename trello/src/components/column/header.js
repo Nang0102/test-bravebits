@@ -9,10 +9,16 @@ import {
 import "./column.scss";
 
 function Header(props) {
+  const { column, handleColumnTitleBlur } = props;
+
   const [titleColumn, setTitleColumn] = useState("");
 
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    setTitleColumn(titleColumn);
+  }, [titleColumn]);
 
   const handleToggleIcon = () => setShowPopper(!showPopper);
   const handleToggleDelete = () => {
@@ -36,7 +42,7 @@ function Header(props) {
         placeholder=" Enter title..."
         value={titleColumn}
         onChange={handleColumnTitleInput}
-        //   onBlur={handleColumnTitleBlur}
+        onBlur={handleColumnTitleBlur}
         onKeyDown={handleContentAfterEnter}
         onClick={handleSelectAllText}
       />
@@ -91,3 +97,17 @@ function Header(props) {
 }
 
 export default Header;
+
+{
+  /* <ColumnHeader
+draggable
+onDragStart={(e) => {
+  onDragStart(e, column._id);
+}}
+onDragOver={(e) => onDragOver(e, column._id)}
+onDragEnd={(e) => {
+  return onDragEnd(e, column._id);
+}}
+onBlur={handleColumnTitleBlur}
+/> */
+}

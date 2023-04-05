@@ -14,7 +14,6 @@ function addTodo() {
   }
 }
 
-
 function toggleTodoCompleted(index) {
   todos[index].completed = !todos[index].completed;
   renderTodos();
@@ -70,7 +69,7 @@ function renderTodos() {
     item.setAttribute("data-index", index);
     item.setAttribute("draggable", true);
 
-    if (todo && todo.completed) { 
+    if (todo && todo.completed) {
       item.classList.add("done");
     }
     item.innerHTML = `
@@ -104,14 +103,15 @@ let draggedOverItemIndex = null;
 function handleDragStart(e) {
   draggingItemIndex = parseInt(e.target.getAttribute("data-index"));
   e.target.classList.add("dragging");
-
 }
 function handleDragEnter(e) {
   e.preventDefault();
-  draggedOverItemIndex = parseInt(e.target.parentElement.getAttribute("data-index"))  ;
-   
+  draggedOverItemIndex = parseInt(
+    e.target.parentElement.getAttribute("data-index")
+  );
+
   if (isNaN(draggedOverItemIndex)) {
-    console.log('error');
+    console.log("error");
     return;
   }
   console.log("drag-over", parseInt(e.target.getAttribute("data-index")));
@@ -119,25 +119,25 @@ function handleDragEnter(e) {
 }
 
 function handleDragOver(e) {
-  console.log('handle drag over');
+  console.log("handle drag over");
   e.preventDefault();
 }
 
 function handleDragLeave(e) {
-  console.log('remove drag-over');
+  console.log("remove drag-over");
   e.target.classList.remove("drag-over");
 }
 
 function handleDrop(e) {
   e.preventDefault();
-  console.log('start drop');
+  console.log("start drop");
   const tempTodos = [...todos];
   const draggingItem = tempTodos[draggingItemIndex];
   console.log("draggedOverItemIndex1222", draggedOverItemIndex);
-  let dragRemove=tempTodos.splice(draggingItemIndex, 1);
+  let dragRemove = tempTodos.splice(draggingItemIndex, 1);
   console.log("dragRemove", dragRemove);
 
-  let drag=tempTodos.splice(draggedOverItemIndex, 0, draggingItem);
+  let drag = tempTodos.splice(draggedOverItemIndex, 0, draggingItem);
   console.log("draggedOverItemIndex", draggedOverItemIndex);
 
   console.log("drag", drag);
@@ -146,9 +146,8 @@ function handleDrop(e) {
   todos = [...tempTodos];
 
   renderTodos();
-  saveTodos()
+  saveTodos();
 }
-
 
 function handleDragEnd(e) {
   draggingItemIndex = null;

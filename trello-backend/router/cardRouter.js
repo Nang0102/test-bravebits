@@ -29,11 +29,10 @@ cardRouter.post("/", async (req, res) => {
     };
 
     const result = await db.cards.insertOne(card);
-    console.log("result", result);
+    console.log("result newCard", result);
 
     const ColumnId = card.columnId;
     const newCardId = result.insertedId.toString();
-    console.log("typeof", typeof newCardId);
 
     const updateColumn = await db.columns.findOneAndUpdate(
       { _id: ColumnId },

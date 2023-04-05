@@ -1,12 +1,15 @@
 import axios from "axios";
 import { baseURL } from "./constant";
 
+const api = axios.create({
+  baseURL,
+  headers: {
+    "Access-Control-Allow-Credentials": true,
+  },
+});
+
 export const updateBoard = async (id, data) => {
-  const request = await axios.put(`${baseURL}/board/${id}`, data, {
-    headers: {
-      "Access-Control-Allow-Credentials": true,
-    },
-  });
+  const request = await api.put(`/board/${id}`, data, {});
   return request.data;
 };
 
@@ -52,12 +55,10 @@ export const createNewCard = async (data) => {
 };
 
 export const updateCard = async (id, data) => {
-  console.log("request", data);
   const request = await axios.put(`${baseURL}/card/${id}`, data, {
     headers: {
       "Access-Control-Allow-Credentials": true,
     },
   });
-  console.log("response is ", request);
   return request.data;
 };
