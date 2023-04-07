@@ -1,4 +1,4 @@
-import BoardContent from "components/boardContent/boardContent";
+import BoardContent from "components/board-content/boardContent";
 // import BoardContent from "components/boardContent/index";
 import React from "react";
 import "./App.scss";

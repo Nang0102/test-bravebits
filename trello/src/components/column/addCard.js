@@ -1,56 +1,53 @@
-{
-  /* <header
-        draggable
-        onDragStart={(e) => {
-          onDragStart(e, column._id);
-        }}
-        onDragOver={(e) => onDragOver(e, column._id)}
-        onDragEnd={(e) => {
-          return onDragEnd(e, column._id);
-        }}
-      >
-        <input
-          className="column-title"
-          placeholder=" Enter title..."
-          value={titleColumn}
-          onChange={handleColumnTitleInput}
-          onBlur={handleColumnTitleBlur}
-          onKeyDown={handleContentAfterEnter}
-          onClick={handleSelectAllText}
-        />
+import React, { useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
+import ClearIcon from "@mui/icons-material/Clear";
+import BtnAddCard from "./BtnAddCard";
 
-        {!showPopper && (
-          <MoreHorizIcon
-            className="column-actions"
-            onClick={handleToggleIcon}
+function AddCard(props) {
+  const { handleCardClickBtnAdd, newCardInputRef } = props;
+  const [openFormCard, setOpenFormCard] = useState(false);
+  const [newCardTitle, setNewCardTitle] = useState("");
+
+  const handleToggleFormCard = () => setOpenFormCard(!openFormCard);
+  const handleCardTitleChange = (e) => {
+    setNewCardTitle(e.target.value);
+  };
+  const handleCardAdd = () => {
+    const newTitle = newCardInputRef.current.value;
+    handleCardClickBtnAdd(newTitle);
+    setNewCardTitle("");
+  };
+  return (
+    <div>
+      {openFormCard && (
+        <div className="enter-new-add">
+          <input
+            className="input-new-card"
+            placeholder=" Enter title card..."
+            ref={newCardInputRef}
+            value={newCardTitle}
+            onChange={handleCardTitleChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleCardClickBtnAdd();
+              }
+            }}
           />
-        )}
-        {showPopper && (
-          <div className="popper">
-            <span className="popper-actions">Actions</span>
-            <ClearIcon className="popper-clear" onClick={handleToggleIcon} />
-            <button>Edit Column</button>
-            <button onClick={handleToggleDelete}>Delete Column</button>
+          <div className="confirm">
+            <button className="button-confirm new-card" onClick={handleCardAdd}>
+              Add Card
+            </button>
+            <ClearIcon
+              className="button-clear"
+              onClick={handleToggleFormCard}
+            />
           </div>
-        )}
-        */
+        </div>
+      )}
+
+      {!openFormCard && <BtnAddCard onClick={handleToggleFormCard} />}
+    </div>
+  );
 }
 
-{
-  /* <ColumnHeader
-draggable
-onDragStart={(e) => {
-  onDragStart(e, column._id);
-}}
-onDragOver={(e) => onDragOver(e, column._id)}
-onDragEnd={(e) => {
-  return onDragEnd(e, column._id);
-}}
-value={titleColumn}
-onChange={handleColumnTitleInput}
-onBlur={handleColumnTitleBlur}
-onKeyDown={handleContentAfterEnter}
-onClick={handleSelectAllText}
-onClickIcon={handleToggleIcon}
-/> */
-}
+export default AddCard;

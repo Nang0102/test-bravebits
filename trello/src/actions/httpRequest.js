@@ -35,6 +35,14 @@ export const updateColumn = async (id, data) => {
   });
   return request.data;
 };
+export const updateTitle = async (id, data) => {
+  const request = await axios.put(`${baseURL}/column/${id}`, data, {
+    headers: {
+      "Access-Control-Allow-Credentials": true,
+    },
+  });
+  return request.data;
+};
 
 export const deleteColumn = async (id, data) => {
   const request = await axios.put(`${baseURL}/column/${id}`, data, {
