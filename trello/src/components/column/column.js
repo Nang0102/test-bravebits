@@ -109,12 +109,8 @@ function Column(props) {
         cardName: newCardTitle.trim(),
         cover: null,
       };
-      console.log("Column-----", column);
-      console.log("newCardToAdd", newCardToAdd);
       createNewCard(newCardToAdd).then((card) => {
-        console.log("card", card);
         let newColumn = cloneDeep(column);
-        console.log("newColumn", newColumn);
         newColumn.cards.push(card);
         newColumn.cardOrder.push(card._id);
         onUpdateColumnState(newColumn);
@@ -125,7 +121,14 @@ function Column(props) {
   };
 
   return (
-    <div className="columns" columnid={column._id}>
+    <div
+      className="columns"
+      data-columnid={column._id}
+      // onDragOver={(e) => onCardDragOver(e,)}
+      onDrop={(e) => {
+        onDrop(e);
+      }}
+    >
       <header
         draggable
         onDragStart={(e) => {
@@ -181,7 +184,7 @@ function Column(props) {
             columnId={column._id}
             onDragStart={onCardDragStart}
             onDragOver={onCardDragOver}
-            onDrop={onDrop}
+            // onDragEnd={onCardDragEnd}
           />
         ))}
       </ul>
@@ -202,7 +205,7 @@ function Column(props) {
         </div>
       )}
 
-      <footer>
+      <footer columnId={column._id} data-columnid={column._id}>
         {openForm && (
           <div className="confirm">
             <button
@@ -215,7 +218,11 @@ function Column(props) {
           </div>
         )}
         {!openForm && (
-          <div className="footer-actions" onClick={handleToggleForm}>
+          <div
+            className="footer-actions"
+            onClick={handleToggleForm}
+            data-columnid={column._id}
+          >
             <AddIcon className="icon" />
             Add another card
           </div>

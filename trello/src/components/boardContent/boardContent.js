@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 import Column from "components/column/column";
+// import Column from "components/column/columDragnDrop";
 import React, { useState, useEffect, useRef } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -26,7 +27,8 @@ function BoardContent() {
 
   const sourceCardId = useRef(null);
   const targetCardId = useRef(null);
-  // const columnIdDropCard = useRef(null)
+  const sourceColumnIdDragCard = useRef(null);
+  const targetColumnIdDropCard = useRef(null);
 
   const [openForm, setOpenForm] = useState(false);
   const handleToggleForm = () => setOpenForm(!openForm);
@@ -86,40 +88,35 @@ function BoardContent() {
     );
   };
 
-  const handleCardDragStart = (e, cardId, columnId) => {
-    sourceCardId.current = cardId;
-    sourceColumnId.current = columnId;
-    console.log("columnId-Drag", columnId);
-    console.log("sourceCardId-drag", cardId);
+  const handleCardDragStart = (e) => {
+    sourceCardId.current = e.target.id;
+    const dropZone = e.target.closest(".columns");
+    sourceColumnIdDragCard.current = dropZone.dataset.columnid;
   };
-  const handleCardDragOver = (e, cardId, columnId) => {
+  const handleCardDragOver = (e) => {
     e.preventDefault();
-    targetCardId.current = cardId;
-    targetColumnId.current = columnId;
-    console.log(" targetColumnId-drag---over", columnId);
-    console.log("targetCardId-Drag------over", cardId);
   };
 
-  const handleCardDragEnd = (e, cardId, columnId) => {
-    console.log("drag drop", e);
-    const tempColumns = cloneDeep(columns);
-    // const tempColumns = [...columns];
-    const sourceColumnIndex = tempColumns.findIndex(
-      (col) => col._id === sourceColumnId.current
-    );
+  const handleCardDragEnd = (e) => {
+    const dropZone = e.target.closest(".columns");
+    targetColumnIdDropCard.current = dropZone.dataset.columnid;
+    targetCardId.current = e.target.id;
 
+    const tempColumns = cloneDeep(columns);
+
+    const sourceColumnIndex = tempColumns.findIndex(
+      (col) => col._id === sourceColumnIdDragCard.current
+    );
     const targetColumnIndex = tempColumns.findIndex(
-      (col) => col._id === targetColumnId.current
+      (col) => col._id === targetColumnIdDropCard.current
     );
 
     let sourceCardIndex;
     let targetCardIndex;
-    console.log("targetColumnId------Reff", targetColumnId.current);
     if (sourceColumnIndex !== -1 && sourceColumnIndex !== targetColumnIndex) {
       sourceCardIndex = tempColumns[sourceColumnIndex].cards.findIndex(
         (card) => card._id === sourceCardId.current
       );
-
       targetCardIndex = tempColumns[targetColumnIndex].cards.findIndex(
         (card) => card._id === targetCardId.current
       );
@@ -130,55 +127,58 @@ function BoardContent() {
         tempColumns[sourceColumnIndex].cardOrder.splice(sourceCardIndex, 1)[0]
       );
 
-      console.log(
-        " --------------targetColumnId-dragEnd",
-        targetColumnId.current
-      );
-      console.log("targetCardId-DragEnd", cardId);
-
       tempColumns[targetColumnIndex].cards.splice(
         targetCardIndex,
         0,
         tempColumns[sourceColumnIndex].cards.splice(sourceCardIndex, 1)[0]
       );
+
       let cardCurrent;
       if (sourceCardId) {
         cardCurrent = tempColumns[targetColumnIndex].cards.find(
           (card) => card._id === sourceCardId.current
         );
       }
+      const newCard = {
+        ...cardCurrent,
+        columnId: targetColumnIdDropCard.current,
+      };
 
-      console.log("cardCurrent", cardCurrent);
-      const newCard = { ...cardCurrent, columnId: targetColumnId.current };
-      console.log("newCard", newCard);
-      updateCard(sourceCardId.current, newCard);
-
-      updateColumn(
-        tempColumns[sourceColumnIndex]._id,
-        tempColumns[sourceColumnIndex]
-      ).catch((error) => {
-        setColumns(columns);
-      });
-
-      updateColumn(
-        tempColumns[targetColumnIndex]._id,
-        tempColumns[targetColumnIndex]
-      );
+      Promise.allSettled([
+        updateCard(sourceCardId.current, newCard),
+        updateColumn(
+          tempColumns[sourceColumnIndex]._id,
+          tempColumns[sourceColumnIndex]
+        ),
+        updateColumn(
+          tempColumns[targetColumnIndex]._id,
+          tempColumns[targetColumnIndex]
+        ),
+      ])
+        .then((results) => {
+          const hasError = results.some(
+            (result) => result.status === "rejected"
+          );
+          if (hasError) {
+            setColumns(columns);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          setColumns(columns);
+        });
     } else {
       sourceCardIndex = tempColumns[targetColumnIndex].cards.findIndex(
         (card) => card._id === sourceCardId.current
       );
-
       targetCardIndex = tempColumns[targetColumnIndex].cards.findIndex(
         (card) => card._id === targetCardId.current
       );
-
       tempColumns[targetColumnIndex].cardOrder.splice(
         targetCardIndex,
         0,
         tempColumns[targetColumnIndex].cardOrder.splice(sourceCardIndex, 1)[0]
       );
-
       tempColumns[targetColumnIndex].cards.splice(
         targetCardIndex,
         0,
@@ -192,6 +192,10 @@ function BoardContent() {
         setColumns(columns);
       });
     }
+    sourceCardId.current = null;
+    targetCardId.current = null;
+    sourceColumnIdDragCard.current = null;
+    targetColumnIdDropCard.current = null;
 
     setColumns(tempColumns);
   };
@@ -214,7 +218,14 @@ function BoardContent() {
       };
 
       createNewColumn(newColumn).then((column) => {
+        console.log("Add a new column: ", column);
         let newColumns = [...columns];
+        if (!column.cards) {
+          column.cards = [];
+        }
+        if (!column.cardOrder) {
+          column.cardOrder = [];
+        }
         newColumns.push(column);
 
         let newBoard = { ...board };
@@ -286,11 +297,6 @@ function BoardContent() {
               ref={newColumnInput}
               value={newTitle}
               onChange={handleTitleChange}
-              // onKeyDown={(event) => {
-              //   if (event.key === "Enter") {
-              //     // handleClickBtnAdd();
-              //   }
-              // }}
             />
             <div className="confirm">
               <button className="button-confirm" onClick={handleClickBtnAdd}>
