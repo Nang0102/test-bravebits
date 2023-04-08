@@ -1,16 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./column.scss";
-import //   handleContentAfterEnter,
-//   handleSelectAllText,
-"actions/contentEdit";
-function EditTileColumn(props) {
-  const {
-    title,
-    handleColumnTitleBlur,
-    // handleContentAfterEnter,
-    // handleSelectAllText,
-    titleRef,
-  } = props;
+
+function EditTitleColumn(props) {
+  const { title, handleColumnTitleBlur, titleRef } = props;
   const [titleColumn, setTitleColumn] = useState("");
 
   useEffect(() => {
@@ -48,4 +40,4 @@ function EditTileColumn(props) {
   );
 }
 
-export default EditTileColumn;
+export default EditTitleColumn;

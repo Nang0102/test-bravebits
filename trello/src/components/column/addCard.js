@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
-import BtnAddCard from "./BtnAddCard";
+import BtnAdd from "../board-content/BtnAdd";
 
 function AddCard(props) {
   const { handleCardClickBtnAdd, newCardInputRef } = props;
@@ -19,7 +19,7 @@ function AddCard(props) {
   };
   return (
     <div>
-      {openFormCard && (
+      {openFormCard ? (
         <div className="enter-new-add">
           <input
             className="input-new-card"
@@ -27,11 +27,11 @@ function AddCard(props) {
             ref={newCardInputRef}
             value={newCardTitle}
             onChange={handleCardTitleChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleCardClickBtnAdd();
-              }
-            }}
+            // onKeyDown={(e) => {
+            //   if (e.key === "Enter") {
+            //     handleCardClickBtnAdd();
+            //   }
+            // }}
           />
           <div className="confirm">
             <button className="button-confirm new-card" onClick={handleCardAdd}>
@@ -43,9 +43,9 @@ function AddCard(props) {
             />
           </div>
         </div>
+      ) : (
+        <BtnAdd handleToggleFormCard={handleToggleFormCard} />
       )}
-
-      {!openFormCard && <BtnAddCard onClick={handleToggleFormCard} />}
     </div>
   );
 }

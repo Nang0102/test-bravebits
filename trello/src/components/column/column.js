@@ -12,8 +12,8 @@ import ConfirmModal from "components/common/confirmModal";
 import { modalActionConfirm } from "actions/constant";
 import { createNewCard, deleteColumn, updateTitle } from "actions/httpRequest";
 
-import EditTilteColumn from "./EditTileColumn";
-import AddCard from "./AddCard";
+import EditTitleColumn from "./EditTitleColumn";
+import AddCard from "./AddCard.js";
 
 function Column(props) {
   const {
@@ -26,7 +26,7 @@ function Column(props) {
     onCardDragOver,
     onDrop,
   } = props;
-  const titleRef = useRef();
+  const titleRef = useRef(null);
   const newCardInput = useRef(null);
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -38,7 +38,6 @@ function Column(props) {
   }, [column]);
 
   const [title, setTitle] = useState("");
-  // const [newCardTitle, setNewCardTitle] = useState("");
 
   const handleToggleIcon = () => setShowPopper(!showPopper);
   const handleToggleDelete = () => {
@@ -128,7 +127,7 @@ function Column(props) {
           return onDragEnd(e, column._id);
         }}
       >
-        <EditTilteColumn
+        <EditTitleColumn
           title={title}
           handleColumnTitleBlur={handleColumnTitleBlur}
           titleRef={titleRef}
@@ -174,18 +173,18 @@ function Column(props) {
       {/* {openForm && (
 
       )} */}
-      <AddCard
+      {/* <AddCard
         newCardInput={newCardInput}
-        handleaddCard={handleCardClickBtnAdd}
-      />
-      {/* {openForm && (
+        handleCardAdd={handleCardClickBtnAdd}
+      /> */}
+      {openForm && (
         <div className="enter-new-add">
           <input
             className="input-new-card"
             placeholder=" Enter title card..."
             ref={newCardInput}
-            value={newCardTitle}
-            onChange={handleCardTitleChange}
+            // value={newCardTitle}
+            // onChange={handleCardTitleChange}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 handleCardClickBtnAdd();
@@ -202,21 +201,24 @@ function Column(props) {
             <ClearIcon className="button-clear" onClick={handleToggleForm} />
           </div>
         </div>
-      )} */}
+      )}
 
       <footer data-columnid={column._id}>
-        {/* {openForm && 
-        {/* <div className="confirm">
-            <button
-              className="button-confirm new-card"
-              onClick={handleCardClickBtnAdd}
-            >
-              Add Card
-            </button>
-            <ClearIcon className="button-clear" onClick={handleToggleForm} />
-          </div>
-        </div> 
-        )} */}
+        {
+          openForm && (
+            <div className="confirm">
+              <button
+                className="button-confirm new-card"
+                onClick={handleCardClickBtnAdd}
+              >
+                Add Card
+              </button>
+              <ClearIcon className="button-clear" onClick={handleToggleForm} />
+            </div>
+          )
+          // </div>
+        }
+
         {!openForm && (
           <div
             className="footer-actions"

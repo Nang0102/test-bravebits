@@ -15,11 +15,14 @@ import {
   updateCard,
 } from "actions/httpRequest";
 import { cloneDeep } from "lodash";
+import AddColumn from "./AddColumn";
 
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
-  const [newTitle, setNewTitle] = useState("");
+  // const [newTitle, setNewTitle] = useState("");
+  const [newColumnTitle, setNewColumnTitle] = useState("");
+  // const addTitleRef = useRef(null);
 
   const sourceColumnId = useRef(null);
   const targetColumnId = useRef(null);
@@ -192,19 +195,18 @@ function BoardContent() {
         setColumns(columns);
       });
     }
+    setColumns(tempColumns);
     sourceCardId.current = null;
     targetCardId.current = null;
     sourceColumnIdDragCard.current = null;
     targetColumnIdDropCard.current = null;
-
-    setColumns(tempColumns);
   };
 
-  const handleTitleChange = (e) => {
-    setNewTitle(e.target.value);
+  const handleInputNewColumnTitle = (e) => {
+    setNewColumnTitle(e.target.value);
   };
 
-  const handleClickBtnAdd = () => {
+  const handleClickBtnAdd = (newTitle) => {
     if (!newTitle) {
       newColumnInput.current.focus();
       return;
@@ -234,8 +236,9 @@ function BoardContent() {
 
         setColumns(newColumns);
         setBoard(newBoard);
-        setNewTitle("");
+        // setNewTitle("");
         handleToggleForm();
+        newColumnInput.current.focus();
       });
     }
   };
@@ -282,14 +285,18 @@ function BoardContent() {
         );
       })}
       <div className="add-new" onClick={handleToggleForm}>
-        {!openForm && (
+        {/* {!openForm && (
           <div className="add-new-column">
             <AddIcon className="icon" />
             Add another column
           </div>
-        )}
-
-        {openForm && (
+        )} */}
+        <AddColumn
+          newColumnTitle={newColumnTitle}
+          onChange={handleInputNewColumnTitle}
+          handleClickBtnAdd={handleClickBtnAdd}
+        />
+        {/* {openForm && (
           <form className="enter-new-column">
             <input
               className="input-new-column"
@@ -305,7 +312,7 @@ function BoardContent() {
               <ClearIcon className="button-clear" onClick={handleToggleForm} />
             </div>
           </form>
-        )}
+        )} */}
       </div>
     </div>
   );
