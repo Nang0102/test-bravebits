@@ -10,8 +10,6 @@ function AddColumn(props) {
 
   const handleToggleForm = () => setOpenForm(!openForm);
   const handleTitleChange = (e) => {
-    console.log("input title", e.target.value);
-
     setNewTitle(e.target.value);
   };
   const handleAdd = (e) => {
@@ -19,6 +17,7 @@ function AddColumn(props) {
     const newColumnTitle = newColumnInput.current.value;
     console.log("newColumnTitle", newColumnTitle);
     handleClickBtnAdd(newColumnTitle);
+    setOpenForm(false);
     setNewTitle("");
   };
   return (

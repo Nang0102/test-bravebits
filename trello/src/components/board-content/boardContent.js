@@ -1,9 +1,6 @@
 /* eslint-disable no-undef */
 import Column from "components/column/column";
-// import Column from "components/column/columDragnDrop";
 import React, { useState, useEffect, useRef } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import ClearIcon from "@mui/icons-material/Clear";
 import "./boardContent.scss";
 import "../../App.scss";
 import { mapOrder } from "utilities/sorts";
@@ -21,8 +18,6 @@ function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
   const [newColumnTitle, setNewColumnTitle] = useState("");
-  // const [newTitle, setNewTitle] = useState("");
-  // const addTitleRef = useRef(null);
 
   const sourceColumnId = useRef(null);
   const targetColumnId = useRef(null);

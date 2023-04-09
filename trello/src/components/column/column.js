@@ -1,14 +1,13 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Card from "components/cards/card";
 import React, { useState, useRef, useEffect } from "react";
-import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { cloneDeep } from "lodash";
 
 import "./column.scss";
 import { mapOrder } from "utilities/sorts";
-import ConfirmModal from "components/common/confirmModal";
+import ConfirmModal from "components/common/ConfirmModal";
 import { modalActionConfirm } from "actions/constant";
 import { createNewCard, deleteColumn, updateTitle } from "actions/httpRequest";
 
@@ -31,6 +30,7 @@ function Column(props) {
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+  const [newCardTitleAdd, setNewCardTitleAdd] = useState("");
   const [cards, setCards] = useState([]);
 
   useEffect(() => {
@@ -86,6 +86,10 @@ function Column(props) {
     }
   }, [openForm]);
 
+  const handleInputNewCard = (e) => {
+    setNewCardTitleAdd(e.target.value);
+  };
+
   const handleCardClickBtnAdd = (newCardTitle) => {
     if (!newCardTitle) {
       newCardInput.current.focus();
@@ -103,9 +107,9 @@ function Column(props) {
         newColumn.cards.push(card);
         newColumn.cardOrder.push(card._id);
         onUpdateColumnState(newColumn);
-        // setNewCardTitle("");
         handleToggleForm();
       });
+      newCardInput.current.focus();
     }
   };
 
@@ -157,7 +161,6 @@ function Column(props) {
           content={`Are you sure to remove ${column.columnName}?`}
         />
       )}
-
       <ul className="card-list">
         {cards.map((card, id) => (
           <Card
@@ -169,67 +172,12 @@ function Column(props) {
           />
         ))}
       </ul>
-
-      {/* {openForm && (
-
-      )} */}
-      {/* <AddCard
+      <AddCard
         newCardInput={newCardInput}
-        handleCardAdd={handleCardClickBtnAdd}
-      /> */}
-      {openForm && (
-        <div className="enter-new-add">
-          <input
-            className="input-new-card"
-            placeholder=" Enter title card..."
-            ref={newCardInput}
-            // value={newCardTitle}
-            // onChange={handleCardTitleChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleCardClickBtnAdd();
-              }
-            }}
-          />
-          <div className="confirm">
-            <button
-              className="button-confirm new-card"
-              onClick={handleCardClickBtnAdd}
-            >
-              Add Card
-            </button>
-            <ClearIcon className="button-clear" onClick={handleToggleForm} />
-          </div>
-        </div>
-      )}
-
-      <footer data-columnid={column._id}>
-        {
-          openForm && (
-            <div className="confirm">
-              <button
-                className="button-confirm new-card"
-                onClick={handleCardClickBtnAdd}
-              >
-                Add Card
-              </button>
-              <ClearIcon className="button-clear" onClick={handleToggleForm} />
-            </div>
-          )
-          // </div>
-        }
-
-        {!openForm && (
-          <div
-            className="footer-actions"
-            onClick={handleToggleForm}
-            data-columnid={column._id}
-          >
-            <AddIcon className="icon" />
-            Add another card
-          </div>
-        )}
-      </footer>
+        newTitleCard={newCardTitleAdd}
+        handleCardClickBtnAdd={handleCardClickBtnAdd}
+        onChange={handleInputNewCard}
+      />
     </div>
   );
 }

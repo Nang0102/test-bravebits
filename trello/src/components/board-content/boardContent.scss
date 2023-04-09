@@ -3,8 +3,7 @@
 .board-contents {
   height: 100vh;
   display: flex;
-  // margin: 0 $gap $gap;
-  margin-top: $gap;
+  padding-top: $gap;
   overflow-x: auto;
   &::-webkit-scrollbar {
     -webkit-appearance: none;
@@ -20,12 +19,7 @@
     width: 250px;
     min-width: 250px;
     margin-left: $gap;
-    // padding: 4px 0 4px 15px;
-    //
-    // border-radius: $column-border-radius;
-
     .add-new-column {
-      // padding: 4px 10px 8px 15px;
       padding-left: $gap;
       border-radius: $column-border-radius;
       height: 32px;

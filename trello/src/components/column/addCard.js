@@ -1,37 +1,36 @@
 import React, { useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
-import BtnAdd from "../board-content/BtnAdd";
+import BtnAddCard from "./BtnAddCard";
 
 function AddCard(props) {
-  const { handleCardClickBtnAdd, newCardInputRef } = props;
+  const { handleCardClickBtnAdd, newCardInput } = props;
   const [openFormCard, setOpenFormCard] = useState(false);
   const [newCardTitle, setNewCardTitle] = useState("");
 
   const handleToggleFormCard = () => setOpenFormCard(!openFormCard);
   const handleCardTitleChange = (e) => {
+    console.log("input title", e.target.value);
+
     setNewCardTitle(e.target.value);
   };
-  const handleCardAdd = () => {
-    const newTitle = newCardInputRef.current.value;
+  const handleCardAdd = (e) => {
+    e.preventDefault();
+
+    const newTitle = newCardInput.current.value;
     handleCardClickBtnAdd(newTitle);
+    setOpenFormCard(false);
     setNewCardTitle("");
   };
   return (
-    <div>
+    <form className="new-card">
       {openFormCard ? (
         <div className="enter-new-add">
           <input
             className="input-new-card"
             placeholder=" Enter title card..."
-            ref={newCardInputRef}
+            ref={newCardInput}
             value={newCardTitle}
             onChange={handleCardTitleChange}
-            // onKeyDown={(e) => {
-            //   if (e.key === "Enter") {
-            //     handleCardClickBtnAdd();
-            //   }
-            // }}
           />
           <div className="confirm">
             <button className="button-confirm new-card" onClick={handleCardAdd}>
@@ -44,9 +43,9 @@ function AddCard(props) {
           </div>
         </div>
       ) : (
-        <BtnAdd handleToggleFormCard={handleToggleFormCard} />
+        <BtnAddCard handleToggleFormCard={handleToggleFormCard} />
       )}
-    </div>
+    </form>
   );
 }
 
