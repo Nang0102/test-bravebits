@@ -4,16 +4,20 @@ import ClearIcon from "@mui/icons-material/Clear";
 import BtnAdd from "./BtnAdd";
 
 function AddColumn(props) {
-  const { handleClickBtnAdd, newColumnInput, newColumnTitle } = props;
+  const { handleClickBtnAdd, newColumnInput } = props;
   const [openForm, setOpenForm] = useState(false);
   const [newTitle, setNewTitle] = useState("");
 
   const handleToggleForm = () => setOpenForm(!openForm);
   const handleTitleChange = (e) => {
+    console.log("input title", e.target.value);
+
     setNewTitle(e.target.value);
   };
-  const handleAdd = () => {
+  const handleAdd = (e) => {
+    e.preventDefault();
     const newColumnTitle = newColumnInput.current.value;
+    console.log("newColumnTitle", newColumnTitle);
     handleClickBtnAdd(newColumnTitle);
     setNewTitle("");
   };
@@ -24,6 +28,7 @@ function AddColumn(props) {
           <input
             className="input-new-column"
             placeholder=" Enter title column..."
+            autoFocus
             ref={newColumnInput}
             value={newTitle}
             onChange={handleTitleChange}

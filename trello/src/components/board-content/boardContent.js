@@ -20,8 +20,8 @@ import AddColumn from "./AddColumn";
 function BoardContent() {
   const [board, setBoard] = useState({});
   const [columns, setColumns] = useState([]);
-  // const [newTitle, setNewTitle] = useState("");
   const [newColumnTitle, setNewColumnTitle] = useState("");
+  // const [newTitle, setNewTitle] = useState("");
   // const addTitleRef = useRef(null);
 
   const sourceColumnId = useRef(null);
@@ -203,6 +203,7 @@ function BoardContent() {
   };
 
   const handleInputNewColumnTitle = (e) => {
+    console.log("input", e.target.value);
     setNewColumnTitle(e.target.value);
   };
 
@@ -211,6 +212,7 @@ function BoardContent() {
       newColumnInput.current.focus();
       return;
     }
+    console.log("newColumnInput", newColumnInput);
     if (board._id) {
       const newColumn = {
         boardId: board._id,
@@ -236,7 +238,6 @@ function BoardContent() {
 
         setColumns(newColumns);
         setBoard(newBoard);
-        // setNewTitle("");
         handleToggleForm();
         newColumnInput.current.focus();
       });
@@ -245,7 +246,6 @@ function BoardContent() {
 
   const handleUpdateColumn = (newColumnToUpdate) => {
     const columnIdToUpdate = newColumnToUpdate._id;
-    console.log("newColumnToUpdate", newColumnToUpdate);
 
     let newColumns = cloneDeep(columns);
 
@@ -285,34 +285,12 @@ function BoardContent() {
         );
       })}
       <div className="add-new" onClick={handleToggleForm}>
-        {/* {!openForm && (
-          <div className="add-new-column">
-            <AddIcon className="icon" />
-            Add another column
-          </div>
-        )} */}
         <AddColumn
+          newColumnInput={newColumnInput}
           newColumnTitle={newColumnTitle}
           onChange={handleInputNewColumnTitle}
           handleClickBtnAdd={handleClickBtnAdd}
         />
-        {/* {openForm && (
-          <form className="enter-new-column">
-            <input
-              className="input-new-column"
-              placeholder=" Enter title column..."
-              ref={newColumnInput}
-              value={newTitle}
-              onChange={handleTitleChange}
-            />
-            <div className="confirm">
-              <button className="button-confirm" onClick={handleClickBtnAdd}>
-                Add
-              </button>
-              <ClearIcon className="button-clear" onClick={handleToggleForm} />
-            </div>
-          </form>
-        )} */}
       </div>
     </div>
   );
