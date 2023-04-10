@@ -112,11 +112,6 @@ columnRouter.put("/:id", async (req, res) => {
     const deleteMany = async (ids) => {
       console.log("ids", ids);
       const transformIds = ids.map((id) => {
-        // if (id === null) {
-        //   const idNull = findColumn.cardOrder.filter((id) => id === null);
-        //   console.log("idNull", idNull);
-        //   delete idNull;
-        // }
         console.log("new  Id", new ObjectId(id));
         return new ObjectId(id);
       });

@@ -70,3 +70,21 @@ export const updateCard = async (id, data) => {
   });
   return request.data;
 };
+
+export const updateCardTitle = async (id, data) => {
+  const request = await axios.put(`${baseURL}/card/${id}`, data, {
+    headers: {
+      "Access-Control-Allow-Credentials": true,
+    },
+  });
+  return request.data;
+};
+
+export const deleteCard = async (id, data) => {
+  const request = await axios.put(`${baseURL}/card/${id}`, data, {
+    headers: {
+      "Access-Control-Allow-Credentials": true,
+    },
+  });
+  return request.data;
+};

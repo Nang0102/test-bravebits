@@ -95,7 +95,7 @@ function BoardContent() {
     e.preventDefault();
   };
 
-  const handleCardDragEnd = (e) => {
+  const handleCardDrop = (e) => {
     const dropZone = e.target.closest(".columns");
     targetColumnIdDropCard.current = dropZone.dataset.columnid;
     targetCardId.current = e.target.id;
@@ -198,16 +198,18 @@ function BoardContent() {
   };
 
   const handleInputNewColumnTitle = (e) => {
-    console.log("input", e.target.value);
     setNewColumnTitle(e.target.value);
   };
 
   const handleClickBtnAdd = (newTitle) => {
+    console.log("newTitle", newTitle);
+    if (newTitle === "") {
+      return;
+    }
     if (!newTitle) {
       newColumnInput.current.focus();
       return;
     }
-    console.log("newColumnInput", newColumnInput);
     if (board._id) {
       const newColumn = {
         boardId: board._id,
@@ -215,6 +217,7 @@ function BoardContent() {
         cardOrder: [],
         cards: [],
       };
+      console.log("newTitle3333", newTitle);
 
       createNewColumn(newColumn).then((column) => {
         console.log("Add a new column: ", column);
@@ -275,7 +278,7 @@ function BoardContent() {
             column={column}
             onCardDragStart={handleCardDragStart}
             onCardDragOver={handleCardDragOver}
-            onDrop={handleCardDragEnd}
+            onDrop={handleCardDrop}
           />
         );
       })}

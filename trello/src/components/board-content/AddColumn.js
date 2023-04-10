@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
 import ClearIcon from "@mui/icons-material/Clear";
 import BtnAdd from "./BtnAdd";
 
@@ -16,6 +15,12 @@ function AddColumn(props) {
     e.preventDefault();
     const newColumnTitle = newColumnInput.current.value;
     console.log("newColumnTitle", newColumnTitle);
+
+    if (newColumnTitle === "") {
+      console.log("newColumnTitle222", newColumnTitle);
+      return;
+    }
+
     handleClickBtnAdd(newColumnTitle);
     setOpenForm(false);
     setNewTitle("");

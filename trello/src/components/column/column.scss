@@ -83,6 +83,7 @@ $card-border-radius: 3px;
   min-width: 150px;
   min-height: 100px;
   background: rgb(255, 255, 255);
+  border-radius: 4px;
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
   z-index: 1;
   ::after {
@@ -107,6 +108,7 @@ $card-border-radius: 3px;
     background-color: white;
     padding: $gap;
     text-align: justify;
+    border-end-end-radius: 4px;
   }
 }
 .new-card {

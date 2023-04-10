@@ -67,8 +67,7 @@ function Column(props) {
   };
 
   const handleColumnTitleBlur = (newTitle) => {
-    if (newTitle === "") {
-    } else if (newTitle === column.title) {
+    if (newTitle === "" || newTitle === column.columnName) {
       return;
     } else {
       const newColumn = {
@@ -111,6 +110,18 @@ function Column(props) {
       });
       newCardInput.current.focus();
     }
+  };
+  const handleUpdateCard = (newCardUpdate) => {
+    const cardIdUpdate = newCardUpdate._id;
+    let newCards = [...cards];
+
+    const cardIndexUpdate = newCards.findIndex(
+      (card) => card._id === cardIdUpdate
+    );
+    if (newCardUpdate._destroy) {
+      newCards.splice(cardIndexUpdate, 1);
+    }
+    setCards(newCards);
   };
 
   return (
@@ -166,7 +177,9 @@ function Column(props) {
           <Card
             key={id}
             card={card}
+            cardName={card.cardName}
             columnId={column._id}
+            onUpdateCardState={handleUpdateCard}
             onDragStart={onCardDragStart}
             onDragOver={onCardDragOver}
           />

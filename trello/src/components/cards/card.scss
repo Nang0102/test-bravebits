@@ -1,19 +1,39 @@
 @import "setting.scss";
 
 $card-border-radius: 3px;
+.item {
+  padding: 5px;
+  li.card-item {
+    background-color: white;
+    padding: $gap;
+    border-radius: $card-border-radius;
+    box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
 
-li.card-item {
-  background-color: white;
-  padding: $gap;
-  margin-bottom: $gap;
-  border-radius: $card-border-radius;
-  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
-
-  img {
-    display: block;
-    width: calc(100% + 2 * #{$gap});
-    margin: -$gap 0 $gap (-$gap);
-    border-top-left-radius: $card-border-radius;
-    border-top-right-radius: $card-border-radius;
+    img {
+      display: block;
+      width: calc(100% + 2 * #{$gap});
+      margin: -$gap 0 $gap (-$gap);
+      border-top-left-radius: $card-border-radius;
+      border-top-right-radius: $card-border-radius;
+    }
+    display: flex;
+  }
+  .card-title {
+    flex: 90%;
+    border: none;
+    outline: none;
+    &:focus {
+      background-color: white;
+      border: 1px solid rgb(219, 214, 214);
+    }
+  }
+  .card-actions {
+    border: none;
+    padding: 3px;
+    box-sizing: content-box;
+    flex: 10%;
+    &:hover {
+      background-color: $bg-color-hover;
+    }
   }
 }

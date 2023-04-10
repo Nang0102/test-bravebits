@@ -9,8 +9,6 @@ function AddCard(props) {
 
   const handleToggleFormCard = () => setOpenFormCard(!openFormCard);
   const handleCardTitleChange = (e) => {
-    console.log("input title", e.target.value);
-
     setNewCardTitle(e.target.value);
   };
   const handleCardAdd = (e) => {
@@ -28,6 +26,7 @@ function AddCard(props) {
           <input
             className="input-new-card"
             placeholder=" Enter title card..."
+            autoFocus
             ref={newCardInput}
             value={newCardTitle}
             onChange={handleCardTitleChange}

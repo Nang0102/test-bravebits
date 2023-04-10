@@ -69,6 +69,9 @@ boardRouter.get("/fullBoard/:id", async (req, res) => {
     transformBoard.columns = transformBoard.columns.filter(
       (column) => !column._destroy
     );
+    transformBoard.cards = transformBoard.cards.filter(
+      (card) => !card._destroy
+    );
     // Add card to each column
     transformBoard.columns.forEach((column) => {
       column.cards = transformBoard.cards.filter(

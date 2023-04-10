@@ -14,8 +14,6 @@ function EditTitleColumn(props) {
   };
 
   const handleContentEnter = (e) => {
-    console.log("target", e.target);
-
     if (e.key === "Enter") {
       e.target.blur();
     }
