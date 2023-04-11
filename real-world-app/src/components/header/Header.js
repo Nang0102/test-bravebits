@@ -11,27 +11,27 @@ function Header() {
         <ul className="nav navbar-nav pull-xs-right">
           <li className="nav-item">
             {/* <!-- Add "active" className when you're on that page" --> */}
-            <NavLink className="nav-link active" to="">
+            <NavLink className="nav-link active" to="/">
               Home
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="">
+            <NavLink className="nav-link" to="/editor">
               <i className="ion-compose"></i>New Article
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="">
+            <NavLink className="nav-link" to="/setting">
               <i className="ion-gear-a"></i>Settings
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="">
+            <NavLink className="nav-link" to="/login">
               Sign in
             </NavLink>
           </li>
           <li className="nav-item">
-            <NavLink className="nav-link" to="">
+            <NavLink className="nav-link" to="/register">
               Sign up
             </NavLink>
           </li>

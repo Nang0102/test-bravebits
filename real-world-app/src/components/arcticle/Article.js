@@ -10,11 +10,11 @@ function Article() {
           <h1>How to build webapps that scale</h1>
 
           <div className="article-meta">
-            <Link href="">
+            <Link to="">
               <img alt="" src="http://i.imgur.com/Qr71crq.jpg" />
             </Link>
             <div className="info">
-              <Link href="" className="author">
+              <Link to="" className="author">
                 Eric Simons
               </Link>
               <span className="date">January 20th</span>
@@ -48,11 +48,11 @@ function Article() {
 
         <div className="article-actions">
           <div className="article-meta">
-            <Link href="profile.html">
+            <Link to="profile.html">
               <img alt="" src="http://i.imgur.com/Qr71crq.jpg" />
             </Link>
             <div className="info">
-              <Link href="" className="author">
+              <Link to="" className="author">
                 Eric Simons
               </Link>
               <span className="date">January 20th</span>
@@ -97,7 +97,7 @@ function Article() {
                 </p>
               </div>
               <div className="card-footer">
-                <Link href="" className="comment-author">
+                <Link to="" className="comment-author">
                   <img
                     alt=""
                     src="http://i.imgur.com/Qr71crq.jpg"
@@ -105,7 +105,7 @@ function Article() {
                   />
                 </Link>
                 &nbsp;
-                <Link href="" className="comment-author">
+                <Link to="" className="comment-author">
                   Jacob Schmidt
                 </Link>
                 <span className="date-posted">Dec 29th</span>
@@ -120,7 +120,7 @@ function Article() {
                 </p>
               </div>
               <div className="card-footer">
-                <Link href="" className="comment-author">
+                <Link to="" className="comment-author">
                   <img
                     alt=""
                     src="http://i.imgur.com/Qr71crq.jpg"
@@ -128,7 +128,7 @@ function Article() {
                   />
                 </Link>
                 &nbsp;
-                <Link href="" className="comment-author">
+                <Link to="" className="comment-author">
                   Jacob Schmidt
                 </Link>
                 <span className="date-posted">Dec 29th</span>
