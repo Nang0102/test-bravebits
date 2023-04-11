@@ -20,9 +20,11 @@ $card-border-radius: 3px;
   }
 
   header {
-    padding: 5px 8px;
+    // padding: 5px 10px;
+    padding-top: 10px;
+    // padding-left: 10px;
     height: $column-header-height;
-    line-height: $column-header-height;
+    // line-height: $column-header-height;
     font-size: 18px;
     font-weight: bold;
     border-top-left-radius: $column-border-radius;
@@ -30,6 +32,8 @@ $card-border-radius: 3px;
     display: flex;
 
     .column-title {
+      padding-left: 10px;
+
       font-weight: bold;
       flex: 90%;
       border: none;
@@ -40,6 +44,9 @@ $card-border-radius: 3px;
         background-color: white;
         border: 1px solid rgb(219, 214, 214);
       }
+    }
+    .column-title-edit {
+      padding-left: 10px;
     }
     .column-actions {
       border: none;
@@ -114,27 +121,29 @@ $card-border-radius: 3px;
 .new-card {
   border-bottom-left-radius: $column-border-radius;
   border-bottom-right-radius: $column-border-radius;
+  padding: 5px;
   cursor: pointer;
+  z-index: 1;
   .new-card-actions {
     &:hover {
       background-color: $bg-color-hover;
     }
   }
-}
-.input-new-card {
-  background-color: white;
-  margin-top: 10px;
-  width: 100%;
-  min-height: 54px;
-  max-height: 200px;
-  padding: $gap;
-  border: none;
-  outline: none;
-  border-radius: $card-border-radius;
-  box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
-  font-size: 18px;
-  &:not(:last-child) {
-    margin-bottom: $gap;
+  .input-new-card {
+    background-color: white;
+    margin-top: 10px;
+    width: 100%;
+    min-height: 54px;
+    max-height: 200px;
+    padding: $gap;
+    border: none;
+    outline: none;
+    border-radius: $card-border-radius;
+    box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
+    font-size: 18px;
+    &:not(:last-child) {
+      margin-bottom: $gap;
+    }
   }
 }
 

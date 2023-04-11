@@ -15,37 +15,33 @@ function Card(props) {
     onDragOver: onCardDragOver,
   } = props;
 
-  const cardTitleRef = useRef(null);
   const [inputCard, setInputCard] = useState("");
-  const [initialCardName, setInitialCardName] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setInputCard(cardName);
-    setInitialCardName(cardName);
   }, [cardName]);
   const handleResetCardTitle = () => {
-    console.log("aaa", initialCardName);
-    setInputCard(initialCardName);
+    setInputCard(cardName);
   };
 
   const handleToggleIcon = () => setShowModal(!showModal);
 
   const handleCardTitle = (newCardTitle) => {
-    console.log("---->", newCardTitle);
+    setIsOpen(false);
     if (newCardTitle === "") {
-      console.log("reset card title");
       handleResetCardTitle();
-      return;
     } else {
       const newCard = {
         ...card,
         cardName: newCardTitle,
       };
       if (card.cardName !== newCardTitle) {
-        updateCardTitle(newCard._id, newCard);
+        updateCardTitle(newCard._id, newCard)
+          .then((res) => setInputCard(res.cardName))
+          .catch((err) => console.log(err));
       }
-      setInitialCardName(newCardTitle);
     }
   };
   const handleActionModalConfirm = (type) => {
@@ -76,12 +72,18 @@ function Card(props) {
         onDragOver={(e) => onCardDragOver(e)}
       >
         {card.cover && <img src={card.cover} className="card-cover" alt="" />}
+        {isOpen ? (
+          <EditTitleCard
+            cardName={card.cardName}
+            inputCard={inputCard}
+            handleCardTitle={handleCardTitle}
+          />
+        ) : (
+          <div className="card-title" onClick={() => setIsOpen(!isOpen)}>
+            {inputCard}
+          </div>
+        )}
 
-        <EditTitleCard
-          inputCard={inputCard}
-          ref={cardTitleRef}
-          handleCardTitle={handleCardTitle}
-        />
         <ClearIcon className="card-actions" onClick={handleToggleIcon} />
         <ConfirmModal
           show={showModal}

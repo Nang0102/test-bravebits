@@ -172,11 +172,13 @@ function BoardContent() {
       targetCardIndex = tempColumns[targetColumnIndex].cards.findIndex(
         (card) => card._id === targetCardId.current
       );
+
       tempColumns[targetColumnIndex].cardOrder.splice(
         targetCardIndex,
         0,
         tempColumns[targetColumnIndex].cardOrder.splice(sourceCardIndex, 1)[0]
       );
+
       tempColumns[targetColumnIndex].cards.splice(
         targetCardIndex,
         0,

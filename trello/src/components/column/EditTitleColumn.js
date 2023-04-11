@@ -23,15 +23,22 @@ function EditTitleColumn(props) {
     e.target.focus();
     e.target.select();
   };
+  const handleBlur = (e) => {
+    if (!e.target.value) {
+      setTitleColumn(title);
+    }
+    handleColumnTitleBlur(titleColumn);
+  };
 
   return (
     <input
-      className="column-title"
+      className="column-title-edit"
       placeholder=" Enter title..."
+      autofocus
       value={titleColumn}
       ref={titleRef}
       onChange={handleColumnTitleInput}
-      onBlur={() => handleColumnTitleBlur(titleColumn)}
+      onBlur={handleBlur}
       onKeyDown={handleContentEnter}
       onClick={handleSelectAllText}
     />

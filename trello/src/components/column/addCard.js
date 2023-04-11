@@ -15,14 +15,19 @@ function AddCard(props) {
     e.preventDefault();
 
     const newTitle = newCardInput.current.value;
+    if (newTitle === "") {
+      console.log("newTitle222----", newTitle);
+      return;
+    }
+
     handleCardClickBtnAdd(newTitle);
     setOpenFormCard(false);
     setNewCardTitle("");
   };
   return (
-    <form className="new-card">
+    <div className="new-card">
       {openFormCard ? (
-        <div className="enter-new-add">
+        <form className="enter-new-add">
           <input
             className="input-new-card"
             placeholder=" Enter title card..."
@@ -40,11 +45,11 @@ function AddCard(props) {
               onClick={handleToggleFormCard}
             />
           </div>
-        </div>
+        </form>
       ) : (
         <BtnAddCard handleToggleFormCard={handleToggleFormCard} />
       )}
-    </form>
+    </div>
   );
 }
 

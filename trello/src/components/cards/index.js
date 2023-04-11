@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 function EditTitleCard(props) {
-  const { cardName, inputCard, handleCardTitle } = props;
+  const { khanh, inputCard, handleCardTitle, cardTitleRef } = props;
   const [cardTitle, setCardTitle] = useState("");
 
   useEffect(() => {
@@ -13,14 +13,14 @@ function EditTitleCard(props) {
   };
 
   const handleContentEnter = (e) => {
-    if (e.keyCode === 13 || e.key === "Enter") {
+    if (e.keyCode === 13 || e.key === "enter") {
       handleCardTitle(cardTitle);
     }
   };
 
   const handleBlur = (e) => {
     if (!e.target.value) {
-      setCardTitle(cardName);
+      setCardTitle(khanh);
     }
     handleCardTitle(cardTitle);
   };
@@ -31,11 +31,11 @@ function EditTitleCard(props) {
   };
 
   return (
-    <textarea
-      autoFocus
+    <input
       className="card-title"
-      placeholder="Enter card title...."
+      placeholder="moi nhap"
       value={cardTitle}
+      ref={cardTitleRef}
       onChange={handleCardTitleInput}
       onBlur={handleBlur}
       onKeyDown={handleContentEnter}

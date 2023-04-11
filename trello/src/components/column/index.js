@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import Card from "components/cards/card";
-// import Card from "components/cards/CardIndex";
 import React, { useState, useRef, useEffect } from "react";
 import ClearIcon from "@mui/icons-material/Clear";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -31,7 +30,6 @@ function Column(props) {
   const [showPopper, setShowPopper] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [openForm, setOpenForm] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
   const [newCardTitleAdd, setNewCardTitleAdd] = useState("");
   const [cards, setCards] = useState([]);
 
@@ -49,6 +47,7 @@ function Column(props) {
   const handleToggleForm = () => {
     console.log("open");
     setOpenForm(!openForm);
+    // setShowModal(!showModal);
   };
 
   useEffect(() => {
@@ -69,21 +68,16 @@ function Column(props) {
   };
 
   const handleColumnTitleBlur = (newTitle) => {
-    setIsOpen(false);
-    if (newTitle === "") {
-      setTitle(title);
+    if (newTitle === "" || newTitle === column.columnName) {
+      console.log("name", column.columnName);
+      setTitle(column.columnName);
     } else {
       const newColumn = {
         ...column,
         columnName: newTitle,
       };
       if (column.columnName !== newTitle) {
-        updateTitle(newColumn._id, newColumn)
-          .then((res) => {
-            console.log("res", res);
-            setTitle(res.columnName);
-          })
-          .catch((error) => console.log(error));
+        updateTitle(newColumn._id, newColumn);
       }
     }
   };
@@ -100,6 +94,7 @@ function Column(props) {
   const handleCardClickBtnAdd = (newCardTitle) => {
     if (!newCardTitle) {
       newCardInput.current.focus();
+      return;
     }
     if (column) {
       const newCardToAdd = {
@@ -149,17 +144,11 @@ function Column(props) {
           return onDragEnd(e, column._id);
         }}
       >
-        {isOpen ? (
-          <EditTitleColumn
-            title={title}
-            handleColumnTitleBlur={handleColumnTitleBlur}
-            titleRef={titleRef}
-          />
-        ) : (
-          <div className="column-title" onClick={() => setIsOpen(!isOpen)}>
-            {title}
-          </div>
-        )}
+        <EditTitleColumn
+          title={title}
+          handleColumnTitleBlur={handleColumnTitleBlur}
+          titleRef={titleRef}
+        />
 
         {!showPopper && (
           <MoreHorizIcon
