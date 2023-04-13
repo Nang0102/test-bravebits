@@ -1,9 +1,9 @@
-import Article from "components/arcticle/Article";
-import Home from "components/home/Home";
-import Login from "components/login/login";
-import Register from "components/register/Register";
-import Setting from "components/setting/Setting";
-import Profile from "components/profile/Profile";
+import Article from "pages/arcticle/Article";
+import Home from "pages/home/Home";
+import Login from "pages/login/Login";
+import Register from "pages/register/Register";
+import Setting from "pages/setting/Setting";
+import Profile from "pages/profile/Profile";
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 

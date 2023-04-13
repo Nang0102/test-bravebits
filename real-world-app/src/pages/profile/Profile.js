@@ -34,7 +34,7 @@ function Profile() {
             <div className="articles-toggle">
               <ul className="nav nav-pills outline-active">
                 <li className="nav-item">
-                  <Link className="nav-link active" to="">
+                  <Link className="nav-link active" to="/">
                     My Articles
                   </Link>
                 </li>

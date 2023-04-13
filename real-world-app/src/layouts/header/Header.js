@@ -5,13 +5,13 @@ function Header() {
   return (
     <nav className="navbar navbar-light">
       <div className="container">
-        <NavLink className="navbar-brand" to="/">
+        <NavLink className="navbar-brand" to="/#">
           conduit
         </NavLink>
         <ul className="nav navbar-nav pull-xs-right">
           <li className="nav-item">
             {/* <!-- Add "active" className when you're on that page" --> */}
-            <NavLink className="nav-link active" to="/">
+            <NavLink className="nav-link active" to="/#">
               Home
             </NavLink>
           </li>

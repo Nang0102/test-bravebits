@@ -1,3 +1,4 @@
+import Input from "components/input/Input";
 import React from "react";
 import "../../App.css";
 
@@ -11,20 +12,23 @@ function Setting() {
 
             <form>
               <fieldset>
-                <fieldset className="form-group">
+                <Input placeholder="URL of profile picture" type="text" />
+                <Input placeholder="Your Name" type="text" />
+                {/* <fieldset className="form-group">
                   <input
                     className="form-control"
                     type="text"
                     placeholder="URL of profile picture"
                   />
-                </fieldset>
-                <fieldset className="form-group">
+                </fieldset> */}
+                {/* <fieldset className="form-group">
                   <input
                     className="form-control form-control-lg"
                     type="text"
                     placeholder="Your Name"
                   />
-                </fieldset>
+                </fieldset> */}
+
                 <fieldset className="form-group">
                   <textarea
                     className="form-control form-control-lg"
@@ -32,7 +36,10 @@ function Setting() {
                     placeholder="Short bio about you"
                   ></textarea>
                 </fieldset>
-                <fieldset className="form-group">
+
+                <Input type="text" placeholder="Email" />
+                <Input type="password" placeholder="Password " />
+                {/* <fieldset className="form-group">
                   <input
                     className="form-control form-control-lg"
                     type="text"
@@ -45,7 +52,7 @@ function Setting() {
                     type="password"
                     placeholder="Password"
                   />
-                </fieldset>
+                </fieldset> */}
                 <button className="btn btn-lg btn-primary pull-xs-right">
                   Update Settings
                 </button>

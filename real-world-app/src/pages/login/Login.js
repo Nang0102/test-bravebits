@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Input from "components/input/Input";
 
 export default function Login() {
   return (
@@ -13,7 +14,9 @@ export default function Login() {
             </p>
 
             <form>
-              <fieldset className="form-group">
+              <Input type="text" placeholder="Email" />
+              <Input type="password" placeholder="Password " />
+              {/* <fieldset className="form-group">
                 <input
                   className="form-control form-control-lg"
                   type="text"
@@ -26,7 +29,7 @@ export default function Login() {
                   type="password"
                   placeholder="Password"
                 />
-              </fieldset>
+              </fieldset> */}
               <button className="btn btn-lg btn-primary pull-xs-right">
                 Sign in
               </button>
