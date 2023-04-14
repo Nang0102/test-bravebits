@@ -1,8 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../App.css";
 
+import { fetchTags } from "../../actions/HttpsRequest";
 function Home() {
+  const [tags, setTags] = useState(null);
+  const [selectTag, setSelectTags] = useState("");
+
+  useEffect(() => {
+    fetchTags()
+      .then((data) => {
+        setTags(data.tags);
+      })
+      .catch((err) => console.log(err));
+  }, []);
   return (
     <div className="home-page">
       <div className="banner">
@@ -83,30 +94,19 @@ function Home() {
               <p>Popular Tags</p>
 
               <div className="tag-list">
-                <Link to="" className="tag-pill tag-default">
-                  programming
-                </Link>
-                <Link to="" className="tag-pill tag-default">
-                  javascript
-                </Link>
-                <Link to="" className="tag-pill tag-default">
-                  emberjs
-                </Link>
-                <Link to="" className="tag-pill tag-default">
-                  angularjs
-                </Link>
-                <Link to="" className="tag-pill tag-default">
-                  react
-                </Link>
-                <Link to="" className="tag-pill tag-default">
-                  mean
-                </Link>
-                <Link to="" className="tag-pill tag-default">
-                  node
-                </Link>
-                <Link to="" className="tag-pill tag-default">
-                  rails
-                </Link>
+                {tags === null ? (
+                  <div className="article-preview">Loading...</div>
+                ) : tags.length !== 0 ? (
+                  tags.map((tag, index) => {
+                    return (
+                      <Link key={index} to="" className="tag-pill tag-default">
+                        {tag}
+                      </Link>
+                    );
+                  })
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>

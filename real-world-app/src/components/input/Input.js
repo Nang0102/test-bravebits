@@ -1,17 +1,7 @@
 import React from "react";
 
 function Input(props) {
-  const {
-    type,
-    placeholder,
-    rows,
-    handleUserNameChange,
-    userName,
-    email,
-    handleEmailChange,
-    password,
-    handlePasswordChange,
-  } = props;
+  const { type, placeholder, rows, value, onChange } = props;
   return (
     <fieldset className="form-group">
       <input
@@ -19,16 +9,8 @@ function Input(props) {
         type={type}
         placeholder={placeholder}
         rows={rows}
-        // userName={userName}
-        // handleUserNameChange={handleUserNameChange}
-        // email={email}
-        // handleEmailChange={handleEmailChange}
-        // password={password}
-        // handlePasswordChange={handlePasswordChange}
-        value={userName || email || password}
-        onChange={
-          handleUserNameChange || handleEmailChange || handlePasswordChange
-        }
+        value={value}
+        onChange={onChange}
       />
     </fieldset>
   );

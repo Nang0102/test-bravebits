@@ -1,8 +1,8 @@
-import Context from "./Context";
-import { useContext } from "react";
+// import AuthContext from "./AuthContext";
+// import { useContext } from "react";
 
-export const useStore = () => {
-  const [state, dispatch] = useContext(Context);
+// export const useStore = () => {
+//   const [state, dispatch] = useContext(AuthContext);
 
-  return [state, dispatch];
-};
+//   return [state, dispatch];
+// };

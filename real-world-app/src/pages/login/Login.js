@@ -1,42 +1,91 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
 import Input from "components/input/Input";
+import { useAuthContext } from "store";
+import { login } from "actions/HttpsRequest";
 
 export default function Login() {
-  return (
-    <div className="auth-page">
-      <div className="container page">
-        <div className="row">
-          <div className="col-md-6 offset-md-3 col-xs-12">
-            <h1 className="text-xs-center">Sign in</h1>
-            <p className="text-xs-center">
-              <Link to="/register">Need an account?</Link>
-            </p>
+  const [errors, setErrors] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { handleLogin, state } = useAuthContext();
+  const { user } = state;
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+    setErrors(null);
+  };
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
+    setErrors(null);
+  };
+  const handleClickBtnLogin = (e) => {
+    e.preventDefault();
+    if (email === "") {
+      setErrors("Email cannot be empty!");
+    }
+    if (password === "") {
+      setErrors("Password cannot be empty!");
+    }
+    const userLogin = {
+      email: email,
+      password: password,
+    };
+    login({ user: userLogin }).then((data) => {
+      if (data.errors) {
+        setErrors(
+          Object.keys(data.errors).toString() +
+            " " +
+            Object.values(data.errors).toString()
+        );
+      } else {
+        handleLogin(data.user);
+        localStorage.setItem("token", data.user.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setErrors(null);
+        setEmail("");
+        setPassword("");
+      }
+    });
+  };
 
-            <form>
-              <Input type="text" placeholder="Email" />
-              <Input type="password" placeholder="Password " />
-              {/* <fieldset className="form-group">
-                <input
-                  className="form-control form-control-lg"
+  return (
+    <>
+      {user && <Navigate to="/" replace={true} />}
+
+      <div className="auth-page">
+        <div className="container page">
+          <div className="row">
+            <div className="col-md-6 offset-md-3 col-xs-12">
+              <h1 className="text-xs-center">Sign in</h1>
+              <p className="text-xs-center">
+                <Link to="/register">Need an account?</Link>
+              </p>
+              <ul className="error-messages">{errors && <li>{errors}</li>}</ul>
+
+              <form onSubmit={handleClickBtnLogin}>
+                <Input
                   type="text"
                   placeholder="Email"
+                  value={email}
+                  onChange={handleEmailChange}
                 />
-              </fieldset>
-              <fieldset className="form-group">
-                <input
-                  className="form-control form-control-lg"
+                <Input
                   type="password"
-                  placeholder="Password"
+                  placeholder="Password "
+                  value={password}
+                  onChange={handlePasswordChange}
                 />
-              </fieldset> */}
-              <button className="btn btn-lg btn-primary pull-xs-right">
-                Sign in
-              </button>
-            </form>
+                <button
+                  className="btn btn-lg btn-primary pull-xs-right"
+                  type="submit"
+                >
+                  Sign in
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

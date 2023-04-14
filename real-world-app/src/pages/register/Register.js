@@ -1,6 +1,8 @@
+import { register } from "actions/HttpsRequest";
 import Input from "components/input/Input";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "store";
 import "../../App.css";
 
 function Register() {
@@ -8,6 +10,8 @@ function Register() {
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { handleLogin } = useAuthContext();
+  const navigate = useNavigate();
 
   const handleUserNameChange = (e) => {
     setUserName(e.target.value);
@@ -39,6 +43,25 @@ function Register() {
       email: email,
       password: password,
     };
+
+    register({ user: userRegister }).then((data) => {
+      if (data.errors) {
+        setErrors(
+          Object.keys(data.errors).toString() +
+            " " +
+            Object.values(data.errors).toString()
+        );
+      } else {
+        handleLogin(data.user);
+        localStorage.setItem("token", data.user.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        setErrors(null);
+        setEmail("");
+        setPassword("");
+        setUserName("");
+        navigate(`/`);
+      }
+    });
   };
   return (
     <div className="auth-page">
@@ -50,10 +73,7 @@ function Register() {
               <Link to="/login">Have an account?</Link>
             </p>
 
-            <ul className="error-messages">
-              {errors && <li>{errors}</li>}
-              {/* <li>That email is already taken</li> */}
-            </ul>
+            <ul className="error-messages">{errors && <li>{errors}</li>}</ul>
 
             <form>
               <Input
