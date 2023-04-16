@@ -1,8 +1,46 @@
-import Input from "components/input/Input";
-import React from "react";
+import React, { useState } from "react";
 import "../../App.css";
+import { updateUser } from "../../actions/HttpsRequest";
+import Input from "components/input/Input";
+import { useAuthContext } from "store";
 
 function Setting() {
+  const currentUser = JSON.parse(localStorage.getItem("user")) || null;
+  const { handleLogout, handleUpdateUser } = useAuthContext();
+  const [errors, setErrors] = useState(null);
+  const [userName, setUserName] = useState(currentUser?.username);
+  const [email, setEmail] = useState(currentUser?.email);
+  const [password, setPassword] = useState("");
+  const [imgUrl, setImgUrl] = useState(currentUser?.image);
+  const [bio, setBio] = useState(currentUser?.bio || "");
+
+  const handleClickBtnUpdate = (e) => {
+    e.preventDefault();
+    if (userName === "") {
+      setUserName(currentUser.username);
+    } else {
+      const userUpdated = {
+        email: email,
+        password: password,
+        username: userName,
+        bio: bio,
+        image: imgUrl,
+      };
+      console.log("userUpdated", userUpdated);
+      updateUser({ user: userUpdated })
+        .then((data) => {
+          console.log("data-setting: ", data.user);
+          handleUpdateUser(data.user);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+  const handleClickBtnLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    handleLogout();
+  };
+
   return (
     <div className="settings-page">
       <div className="container page">
@@ -12,54 +50,63 @@ function Setting() {
 
             <form>
               <fieldset>
-                <Input placeholder="URL of profile picture" type="text" />
-                <Input placeholder="Your Name" type="text" />
-                {/* <fieldset className="form-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="URL of profile picture"
-                  />
-                </fieldset> */}
-                {/* <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="text"
-                    placeholder="Your Name"
-                  />
-                </fieldset> */}
-
+                <Input
+                  placeholder="URL of profile picture"
+                  type="text"
+                  onChange={(e) => {
+                    setImgUrl(e.target.value);
+                    setErrors(null);
+                  }}
+                />
+                <Input
+                  placeholder="Your Name"
+                  type="text"
+                  onChange={(e) => {
+                    setUserName(e.target.value);
+                    setErrors(null);
+                  }}
+                />
                 <fieldset className="form-group">
                   <textarea
                     className="form-control form-control-lg"
                     rows="8"
                     placeholder="Short bio about you"
+                    onChange={(e) => {
+                      setBio(e.target.value);
+                      setErrors(null);
+                    }}
                   ></textarea>
                 </fieldset>
 
-                <Input type="text" placeholder="Email" />
-                <Input type="password" placeholder="Password " />
-                {/* <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="text"
-                    placeholder="Email"
-                  />
-                </fieldset>
-                <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="password"
-                    placeholder="Password"
-                  />
-                </fieldset> */}
-                <button className="btn btn-lg btn-primary pull-xs-right">
+                <Input
+                  type="text"
+                  placeholder="Email"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setErrors(null);
+                  }}
+                />
+                <Input
+                  type="password"
+                  placeholder="Password "
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    setErrors(null);
+                  }}
+                />
+                <button
+                  className="btn btn-lg btn-primary pull-xs-right"
+                  onClick={handleClickBtnUpdate}
+                >
                   Update Settings
                 </button>
               </fieldset>
             </form>
             <hr />
-            <button className="btn btn-outline-danger">
+            <button
+              className="btn btn-outline-danger"
+              onClick={handleClickBtnLogout}
+            >
               Or click here to logout.
             </button>
           </div>
