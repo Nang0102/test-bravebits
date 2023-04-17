@@ -1,5 +1,5 @@
 import {
-  fetchArticle,
+  fetchArticleByUser,
   fetchFavoritedArticle,
   fetchProfiles,
 } from "actions/HttpsRequest";
@@ -25,7 +25,7 @@ function Profile() {
         // const userData = data.profile.username.replaceAll(" ", "+")
         const userData = data.profile.username;
         console.log("userData1111", userData);
-        fetchArticle({ author: userData })
+        fetchArticleByUser({ author: userData })
           .then((data) => {
             setListArticle(data.articles);
           })

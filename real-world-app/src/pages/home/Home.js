@@ -2,23 +2,32 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../App.css";
 
-import { fetchArticleFeed, fetchTags } from "../../actions/HttpsRequest";
+import {
+  fetchArticle,
+  fetchArticleFeed,
+  fetchArticleByTag,
+  fetchTags,
+} from "../../actions/HttpsRequest";
 import { useAuthContext } from "store";
 import Article from "pages/profile/Article";
 import { PAGE_SIZE } from "actions/Constant";
 function Home() {
   const [tags, setTags] = useState(null);
   const [listArticle, setListArticle] = useState(null);
-  const [selectTag, setSelectTag] = useState("");
+  const [currentTag, setCurrentTag] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState();
   const [currentTab, setCurrentTab] = useState("your-feed");
 
   const { state } = useAuthContext();
   const { isAuthenticated, user } = state;
-  console.log("isAuthenticated", isAuthenticated);
-  console.log("listArticle", listArticle);
+  console.log("currentTag", currentTag);
 
+  const handleSelectTag = (e, tag) => {
+    e.preventDefault();
+    setCurrentTag(tag);
+    setCurrentPage(0);
+  };
   useEffect(() => {
     if (currentTab === "your-feed") {
       fetchArticleFeed({
@@ -26,7 +35,6 @@ function Home() {
         offset: 0,
       })
         .then((data) => {
-          console.log("data-feed", data);
           const dataSize = data.articles.length;
           const totalPage = Math.ceil(dataSize / PAGE_SIZE);
           const articlesInPage = data.articles.slice(
@@ -37,8 +45,39 @@ function Home() {
           setTotalPage(totalPage);
         })
         .catch((err) => console.log(err));
+    } else if (currentTag !== "") {
+      console.log("currentTag-----", currentTag);
+      fetchArticleByTag({
+        tag: currentTag,
+        limit: 10,
+        offset: 0,
+      })
+        .then((data) => {
+          console.log("data-----tag", data);
+          const dataSize = data.articles.length;
+          const totalPage = Math.ceil(dataSize / PAGE_SIZE);
+          const articlesInPage = data.articles.slice(
+            currentPage * PAGE_SIZE,
+            (currentPage + 1) * PAGE_SIZE
+          );
+          setListArticle(articlesInPage);
+          setTotalPage(totalPage);
+        })
+        .catch((err) => console.log(err));
+    } else {
+      fetchArticle().then((data) => {
+        const dataSize = data.articles.length;
+        const totalPage = Math.ceil(dataSize / PAGE_SIZE);
+        console.log("totalPage", totalPage);
+        const articlesInPage = data.articles.slice(
+          currentPage * PAGE_SIZE,
+          (currentPage + 1) * PAGE_SIZE
+        );
+        setListArticle(articlesInPage);
+        setTotalPage(totalPage);
+      });
     }
-  }, [currentTab, currentPage, isAuthenticated, selectTag]);
+  }, [currentTab, currentPage, isAuthenticated, currentTag]);
 
   useEffect(() => {
     fetchTags()
@@ -95,6 +134,27 @@ function Home() {
                     Global Feed
                   </Link>
                 </li>
+                {/* {currentTag !== "" ? (
+                  <li className="nav-item">
+                    <Link to="#" className={"nav-link active"}>
+                      <i className="ion-pound"></i>
+                      {currentTag}
+                    </Link>
+                  </li>
+                ) : (
+                  ""
+                )} */}
+
+                {currentTag !== "" ? (
+                  <li className="nav-item">
+                    <Link to="#" className={"nav-link active"}>
+                      <i className="ion-pound"></i>
+                      {JSON.stringify(currentTag)}
+                    </Link>
+                  </li>
+                ) : (
+                  ""
+                )}
               </ul>
             </div>
 
@@ -112,18 +172,31 @@ function Home() {
                   ))}
               </div>
             )}
-          </div>
 
-          <ul className="pagination">
-            {totalPage &&
-              totalPage.map((page, index) => {
-                return (
-                  <li key={index}>
-                    <Link>{page}</Link>
-                  </li>
-                );
-              })}
-          </ul>
+            <ul className="pagination">
+              {/* {totalPage &&
+              totalPage.map((page, index) => { */}
+              {totalPage && totalPage !== 0
+                ? new Array(totalPage).fill(null).map((page, index) => {
+                    return (
+                      <li
+                        className={
+                          currentPage === index
+                            ? "page-item ng-scope active"
+                            : "page-item ng-scope"
+                        }
+                        key={index}
+                        onClick={() => setCurrentPage(index)}
+                      >
+                        <Link to="#" className="page-link ng-binding">
+                          {index + 1}
+                        </Link>
+                      </li>
+                    );
+                  })
+                : ""}
+            </ul>
+          </div>
 
           <div className="col-md-3">
             <div className="sidebar">
@@ -137,11 +210,9 @@ function Home() {
                     return (
                       <Link
                         key={index}
-                        to=""
+                        to="#"
                         className="tag-pill tag-default"
-                        onClick={() => {
-                          setCurrentTab("");
-                        }}
+                        onClick={(e) => handleSelectTag(e, tag)}
                       >
                         {tag}
                       </Link>

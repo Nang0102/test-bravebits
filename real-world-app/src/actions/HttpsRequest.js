@@ -96,7 +96,7 @@ export const fetchProfiles = async (username) => {
   }
 };
 
-export const fetchArticle = async (params) => {
+export const fetchArticleByUser = async (params) => {
   const token = localStorage.getItem("token");
   try {
     const options = {
@@ -180,7 +180,7 @@ export const deleteFavorite = async (slug) => {
   }
 };
 
-export const fetchArticleDetail = async (params) => {
+export const fetchArticle = async (params) => {
   const token = localStorage.getItem("token");
   try {
     const options = {
@@ -190,7 +190,10 @@ export const fetchArticleDetail = async (params) => {
         authorization: token ? `Token ${token}` : null,
       },
     };
-    const response = await fetch(`${BaseURL}/articles`, options);
+    const response = await fetch(
+      `${BaseURL}/articles?limit=200&offset=0`,
+      options
+    );
     const data = await response.json();
     console.log("data", data);
     return data;
@@ -199,8 +202,31 @@ export const fetchArticleDetail = async (params) => {
   }
 };
 
+export const fetchArticleByTag = async (params) => {
+  const token = localStorage.getItem("token");
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token ? `Token ${token}` : null,
+      },
+    };
+    const response = await fetch(
+      `${BaseURL}/articles?tag=${params.tag}&limit=${params.limit}&offset=${params.offset}`,
+      options
+    );
+    const data = await response.json();
+    console.log("data----byTag", data);
+    return data;
+  } catch (error) {
+    console.log("err", error);
+  }
+};
+
 export const fetchArticleFeed = async (params) => {
   const token = localStorage.getItem("token");
+  console.log("token", token);
   try {
     const options = {
       method: "GET",
@@ -214,6 +240,7 @@ export const fetchArticleFeed = async (params) => {
     //   `${BaseURL}/articles/feed?limit=${params.limit}&offset=${params.offset}`,
     //   options
     // );
+    console.log("response", response);
 
     const data = await response.json();
     console.log("data", data);

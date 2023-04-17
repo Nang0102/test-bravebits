@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import FavoriteBtn from "./FavoriteBtn";
 
 function Article({ article }) {
-  console.log("article------", article);
   return (
     <div className="article-preview">
       <div className="article-meta">
