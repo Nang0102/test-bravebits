@@ -26,11 +26,9 @@ function Setting() {
         bio: bio,
         image: imgUrl,
       };
-      console.log("userUpdated", userUpdated);
       updateUser({ user: userUpdated })
         .then((data) => {
-          console.log("data-setting: ", data.user);
-          handleUpdateUser(data.user);
+          handleUpdateUser(data);
         })
         .catch((err) => console.log(err));
     }

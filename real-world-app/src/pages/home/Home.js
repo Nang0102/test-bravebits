@@ -2,10 +2,43 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "../../App.css";
 
-import { fetchTags } from "../../actions/HttpsRequest";
+import { fetchArticleFeed, fetchTags } from "../../actions/HttpsRequest";
+import { useAuthContext } from "store";
+import Article from "pages/profile/Article";
+import { PAGE_SIZE } from "actions/Constant";
 function Home() {
   const [tags, setTags] = useState(null);
-  const [selectTag, setSelectTags] = useState("");
+  const [listArticle, setListArticle] = useState(null);
+  const [selectTag, setSelectTag] = useState("");
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPage, setTotalPage] = useState();
+  const [currentTab, setCurrentTab] = useState("your-feed");
+
+  const { state } = useAuthContext();
+  const { isAuthenticated, user } = state;
+  console.log("isAuthenticated", isAuthenticated);
+  console.log("listArticle", listArticle);
+
+  useEffect(() => {
+    if (currentTab === "your-feed") {
+      fetchArticleFeed({
+        limit: 10,
+        offset: 0,
+      })
+        .then((data) => {
+          console.log("data-feed", data);
+          const dataSize = data.articles.length;
+          const totalPage = Math.ceil(dataSize / PAGE_SIZE);
+          const articlesInPage = data.articles.slice(
+            currentPage * PAGE_SIZE,
+            (currentPage + 1) * PAGE_SIZE
+          );
+          setListArticle(articlesInPage);
+          setTotalPage(totalPage);
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [currentTab, currentPage, isAuthenticated, selectTag]);
 
   useEffect(() => {
     fetchTags()
@@ -28,66 +61,69 @@ function Home() {
           <div className="col-md-9">
             <div className="feed-toggle">
               <ul className="nav nav-pills outline-active">
+                {isAuthenticated ? (
+                  <li className="nav-item">
+                    <Link
+                      to="#"
+                      className={
+                        currentTab === "your-feed"
+                          ? "nav-link active"
+                          : "nav-link"
+                      }
+                      onClick={() => {
+                        setCurrentTab("your-feed");
+                      }}
+                    >
+                      Your Feed
+                    </Link>
+                  </li>
+                ) : (
+                  ""
+                )}
                 <li className="nav-item">
-                  <Link className="nav-link disabled" to="#">
-                    Your Feed
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link active" to="#">
+                  <Link
+                    to="#"
+                    className={
+                      currentTab === "global-feed"
+                        ? "nav-link active"
+                        : "nav-link"
+                    }
+                    onClick={() => {
+                      setCurrentTab("global-feed");
+                    }}
+                  >
                     Global Feed
                   </Link>
                 </li>
               </ul>
             </div>
 
-            <div className="article-preview">
-              <div className="article-meta">
-                <Link to="profile.html">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" alt="" />
-                </Link>
-                <div className="info">
-                  <Link to="" className="author">
-                    Eric Simons
-                  </Link>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 29
-                </button>
+            {listArticle && listArticle.length === 0 ? (
+              <div className="article-preview">
+                No articles are here ... yet
               </div>
-              <Link to="" className="preview-link">
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-              </Link>
-            </div>
-
-            <div className="article-preview">
-              <div className="article-meta">
-                <Link to="profile.html">
-                  <img src="http://i.imgur.com/N4VcUeJ.jpg" alt="" />
-                </Link>
-                <div className="info">
-                  <Link to="" className="author">
-                    Albert Pai
-                  </Link>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 32
-                </button>
+            ) : listArticle === null ? (
+              <div className="article-preview">Loading...</div>
+            ) : (
+              <div>
+                {listArticle &&
+                  listArticle.map((article, index) => (
+                    <Article article={article} key={index} />
+                  ))}
               </div>
-              <Link to="" className="preview-link">
-                <h1>
-                  The song you won't ever stop singing. No matter how hard you
-                  try.
-                </h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-              </Link>
-            </div>
+            )}
           </div>
+
+          <ul className="pagination">
+            {totalPage &&
+              totalPage.map((page, index) => {
+                return (
+                  <li key={index}>
+                    <Link>{page}</Link>
+                  </li>
+                );
+              })}
+          </ul>
 
           <div className="col-md-3">
             <div className="sidebar">
@@ -99,7 +135,14 @@ function Home() {
                 ) : tags.length !== 0 ? (
                   tags.map((tag, index) => {
                     return (
-                      <Link key={index} to="" className="tag-pill tag-default">
+                      <Link
+                        key={index}
+                        to=""
+                        className="tag-pill tag-default"
+                        onClick={() => {
+                          setCurrentTab("");
+                        }}
+                      >
                         {tag}
                       </Link>
                     );

@@ -17,6 +17,17 @@ function authReducer(state, action) {
         isAuthenticated: false,
         user: null,
       };
+    case " LOGIN_SUCCESS":
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload,
+      };
+    case "UPDATE_USER":
+      return {
+        ...state,
+        user: action.payload,
+      };
     default:
       return state;
   }

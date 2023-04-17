@@ -1,104 +1,143 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import {
+  fetchArticle,
+  fetchFavoritedArticle,
+  fetchProfiles,
+} from "actions/HttpsRequest";
+import Article from "./Article";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import { useAuthContext } from "store";
 import "../../App.css";
+import FollowBtn from "./FollowBtn";
 
 function Profile() {
+  const { profile } = useParams();
+  const [author, setAuthor] = useState(null);
+  const [listArticle, setListArticle] = useState(null);
+  const [currentTab, setCurrentTab] = useState("my-article");
+  const { state } = useAuthContext();
+  const { user } = state;
+
+  useEffect(() => {
+    if (currentTab === "my-article") {
+      fetchProfiles(profile).then((data) => {
+        setAuthor(data.profile);
+        // const userData = data.profile.username.replaceAll(" ", "+")
+        const userData = data.profile.username;
+        console.log("userData1111", userData);
+        fetchArticle({ author: userData })
+          .then((data) => {
+            setListArticle(data.articles);
+          })
+          .catch((err) => console.log(err));
+      });
+    } else if (currentTab === "favorited-article") {
+      fetchProfiles(profile)
+        .then((data) => {
+          setAuthor(data.profile);
+          const userData = data.profile.username;
+          console.log("userAPI", userData);
+          fetchFavoritedArticle({
+            author: userData,
+          }) //////////////
+            .then((data) => {
+              setListArticle(data.articles);
+            })
+            .catch((err) => console.log(err));
+        })
+        .catch((err) => console.log(err));
+    }
+  }, [currentTab]);
+
   return (
-    <div className="profile-page">
-      <div className="user-info">
-        <div className="container">
-          <div className="row">
-            <div className="col-xs-12 col-md-10 offset-md-1">
-              <img
-                src="http://i.imgur.com/Qr71crq.jpg"
-                className="user-img"
-                alt=""
-              />
-              <h4>Eric Simons</h4>
-              <p>
-                Cofounder @GoThinkster, lived in Aol's HQ for a few months,
-                kinda looks like Peeta from the Hunger Games
-              </p>
-              <button className="btn btn-sm btn-outline-secondary action-btn">
-                <i className="ion-plus-round"></i>
-                &nbsp; Follow Eric Simons
-              </button>
+    <div>
+      {author && (
+        <div className="profile-page">
+          <div className="user-info">
+            <div className="container">
+              <div className="row">
+                <div className="col-xs-12 col-md-10 offset-md-1">
+                  <img src={author.image} className="user-img" alt="" />
+                  <h4>{author.username}</h4>
+                  <p>{author.bio}</p>
+                  {/* ////////////////// */}
+                  {user && user?.username === author.username ? (
+                    <Link
+                      to="/settings"
+                      className="btn btn-sm btn-outline-secondary action-btn"
+                    >
+                      <i className="ion-plus-round" />
+                      &nbsp; Edit Profile Settings
+                    </Link>
+                  ) : (
+                    <FollowBtn
+                      isFollowing={author.following}
+                      username={author.username}
+                    />
+                  )}
+                  {/* /////////////////////// */}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="container">
+            <div className="row">
+              <div className="col-xs-12 col-md-10 offset-md-1">
+                <div className="articles-toggle">
+                  <ul className="nav nav-pills outline-active">
+                    <li className="nav-item">
+                      <Link
+                        to="#"
+                        className={
+                          currentTab === "my-article"
+                            ? "nav-link active"
+                            : "nav-link"
+                        }
+                        onClick={() => {
+                          setCurrentTab("my-article");
+                        }}
+                      >
+                        My Articles
+                      </Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link
+                        to="#"
+                        className={
+                          currentTab === "favorited-article"
+                            ? "nav-link active"
+                            : "nav-link"
+                        }
+                        onClick={() => {
+                          setCurrentTab("favorited-article");
+                        }}
+                      >
+                        Favorited Articles
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+
+                {listArticle && listArticle.length === 0 ? (
+                  <div className="article-preview">
+                    No articles are here ... yet
+                  </div>
+                ) : listArticle === null ? (
+                  <div className="article-preview">Loading...</div>
+                ) : (
+                  <div>
+                    {listArticle &&
+                      listArticle.map((article, index) => (
+                        <Article article={article} key={index} />
+                      ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="container">
-        <div className="row">
-          <div className="col-xs-12 col-md-10 offset-md-1">
-            <div className="articles-toggle">
-              <ul className="nav nav-pills outline-active">
-                <li className="nav-item">
-                  <Link className="nav-link active" to="/">
-                    My Articles
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="">
-                    Favorited Articles
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            <div className="article-preview">
-              <div className="article-meta">
-                <Link to="">
-                  <img src="http://i.imgur.com/Qr71crq.jpg" alt="" />
-                </Link>
-                <div className="info">
-                  <Link to="" className="author">
-                    Eric Simons
-                  </Link>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 29
-                </button>
-              </div>
-              <Link to="" className="preview-link">
-                <h1>How to build webapps that scale</h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-              </Link>
-            </div>
-
-            <div className="article-preview">
-              <div className="article-meta">
-                <Link to="">
-                  <img src="http://i.imgur.com/N4VcUeJ.jpg" alt="" />
-                </Link>
-                <div className="info">
-                  <Link to="" className="author">
-                    Albert Pai
-                  </Link>
-                  <span className="date">January 20th</span>
-                </div>
-                <button className="btn btn-outline-primary btn-sm pull-xs-right">
-                  <i className="ion-heart"></i> 32
-                </button>
-              </div>
-              <Link to="" className="preview-link">
-                <h1>
-                  The song you won't ever stop singing. No matter how hard you
-                  try.
-                </h1>
-                <p>This is the description for the post.</p>
-                <span>Read more...</span>
-                <ul className="tag-list">
-                  <li className="tag-default tag-pill tag-outline">Music</li>
-                  <li className="tag-default tag-pill tag-outline">Song</li>
-                </ul>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
