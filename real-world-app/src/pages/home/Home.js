@@ -17,11 +17,10 @@ function Home() {
   const [currentTag, setCurrentTag] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const [totalPage, setTotalPage] = useState();
-  const [currentTab, setCurrentTab] = useState("your-feed");
+  const [currentTab, setCurrentTab] = useState("global-feed");
 
   const { state } = useAuthContext();
-  const { isAuthenticated, user } = state;
-  console.log("currentTag", currentTag);
+  const { isAuthenticated } = state;
 
   const handleSelectTag = (e, tag) => {
     e.preventDefault();
@@ -46,14 +45,12 @@ function Home() {
         })
         .catch((err) => console.log(err));
     } else if (currentTag !== "") {
-      console.log("currentTag-----", currentTag);
       fetchArticleByTag({
         tag: currentTag,
         limit: 10,
         offset: 0,
       })
         .then((data) => {
-          console.log("data-----tag", data);
           const dataSize = data.articles.length;
           const totalPage = Math.ceil(dataSize / PAGE_SIZE);
           const articlesInPage = data.articles.slice(
@@ -68,7 +65,6 @@ function Home() {
       fetchArticle().then((data) => {
         const dataSize = data.articles.length;
         const totalPage = Math.ceil(dataSize / PAGE_SIZE);
-        console.log("totalPage", totalPage);
         const articlesInPage = data.articles.slice(
           currentPage * PAGE_SIZE,
           (currentPage + 1) * PAGE_SIZE
@@ -134,16 +130,6 @@ function Home() {
                     Global Feed
                   </Link>
                 </li>
-                {/* {currentTag !== "" ? (
-                  <li className="nav-item">
-                    <Link to="#" className={"nav-link active"}>
-                      <i className="ion-pound"></i>
-                      {currentTag}
-                    </Link>
-                  </li>
-                ) : (
-                  ""
-                )} */}
 
                 {currentTag !== "" ? (
                   <li className="nav-item">
@@ -174,8 +160,6 @@ function Home() {
             )}
 
             <ul className="pagination">
-              {/* {totalPage &&
-              totalPage.map((page, index) => { */}
               {totalPage && totalPage !== 0
                 ? new Array(totalPage).fill(null).map((page, index) => {
                     return (

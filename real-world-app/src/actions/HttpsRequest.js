@@ -1,4 +1,13 @@
 import { BaseURL } from "./Constant";
+import axios from "axios";
+
+const token = localStorage.getItem("token");
+const options = {
+  headers: {
+    "Content-Type": "application/json",
+    authorization: token ? `Token ${token}` : null,
+  },
+};
 
 export const register = async (userRegister) => {
   const token = localStorage.getItem("token");
@@ -195,7 +204,24 @@ export const fetchArticle = async (params) => {
       options
     );
     const data = await response.json();
-    console.log("data", data);
+    return data;
+  } catch (error) {
+    console.log("err", error);
+  }
+};
+
+export const getDataDetail = async (params) => {
+  const token = localStorage.getItem("token");
+  try {
+    const options = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token ? `Token ${token}` : null,
+      },
+    };
+    const response = await fetch(`${BaseURL}/articles/${params}`, options);
+    const data = await response.json();
     return data;
   } catch (error) {
     console.log("err", error);
@@ -235,18 +261,102 @@ export const fetchArticleFeed = async (params) => {
         authorization: token ? `Token ${token}` : null,
       },
     };
-    const response = await fetch(`${BaseURL}/articles/feed`, options);
-    // const response = await fetch(
-    //   `${BaseURL}/articles/feed?limit=${params.limit}&offset=${params.offset}`,
-    //   options
-    // );
-    console.log("response", response);
-
+    // const response = await fetch(`${BaseURL}/articles/feed`, options);
+    const response = await fetch(
+      `${BaseURL}/articles/feed?limit=${params.limit}&offset=${params.offset}`,
+      options
+    );
+    console.log("res", response);
     const data = await response.json();
-    console.log("data", data);
     return data;
   } catch (error) {
     console.log("err", error);
+  }
+};
+
+export const creatArticle = async (slug) => {
+  const token = localStorage.getItem("token");
+  try {
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token ? `Token ${token}` : null,
+      },
+    };
+    const response = await fetch(`${BaseURL}/articles`, options);
+    console.log("res", response);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("err", error);
+  }
+};
+
+export const updateArticle = async (slug, params) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const options = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token ? `Token ${token}` : null,
+      },
+      body: JSON.stringify(params),
+    };
+    const res = await fetch(`${BaseURL}/articles/${slug}`, options);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteArticle = async (slug) => {
+  const token = localStorage.getItem("token");
+  try {
+    const options = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token ? `Token ${token}` : null,
+      },
+    };
+    const response = await fetch(`${BaseURL}/articles/${slug}`, options);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("err", error);
+  }
+};
+
+export const followUser = async (username) => {
+  try {
+    const res = await axios.post(
+      `${BaseURL}/profiles/${username}/follow`,
+      {},
+      {
+        headers: options.headers,
+      }
+    );
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const unFollowUser = async (username) => {
+  try {
+    const res = await axios.delete(
+      `${BaseURL}/profiles/${username}/follow`,
+      options
+    );
+    console.log("data-UNfollow-user----", res.data);
+
+    return res.data;
+  } catch (err) {
+    console.log(err);
   }
 };
 

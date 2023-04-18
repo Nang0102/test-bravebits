@@ -10,7 +10,7 @@ const FollowBtn = ({ isFollowing, username, handleFollow }) => {
       className="btn btn-sm btn-outline-secondary action-btn"
       onClick={() => {
         if (user) {
-          //   handleFollow();
+          handleFollow();
         } else {
           navigate("/login");
         }

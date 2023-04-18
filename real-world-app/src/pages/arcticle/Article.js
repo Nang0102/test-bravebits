@@ -1,148 +1,130 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import { Link, useParams } from "react-router-dom";
 import "../../App.css";
+import ArticleAuthor from "./ArticleAuthor";
+import ArticleComment from "./ArticleComment";
+import ArticleAuthorControl from "./ArticleAuthorControl";
+import { followUser, getDataDetail, unFollowUser } from "actions/HttpsRequest";
+import { useAuthContext } from "store";
 
-function Article() {
+function Articles() {
+  const params = useParams();
+  const [dataArticle, setDataArticle] = useState(null);
+  const { state } = useAuthContext();
+  const { user } = state;
+  const [follow, setFollow] = useState();
+  const [favourite, setFavourite] = useState();
+  const [countFavorite, setCountFavorite] = useState();
+  const [listComments, setListComments] = useState(null);
+
+  useEffect(() => {
+    getDataDetail(params.slug)
+      .then((data) => {
+        console.log("data-slug-article", data);
+        setDataArticle(data.article);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
+  const handleFollow = useCallback(() => {
+    if (follow) {
+      unFollowUser(dataArticle?.author?.username)
+        .then(() => {
+          console.log("follow", follow);
+
+          setFollow(!follow);
+        })
+        .catch((err) => {
+          console.log(err);
+          setFollow(follow);
+        });
+    } else {
+      followUser(dataArticle?.author?.username)
+        .then(() => {
+          console.log("-----Unfollow", follow);
+
+          setFollow(!follow);
+          console.log("-----Unfollow22222", follow);
+        })
+        .catch((err) => {
+          console.log(err);
+          setFollow(follow);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [follow]);
   return (
     <div className="article-page">
-      <div className="banner">
-        <div className="container">
-          <h1>How to build webapps that scale</h1>
-
-          <div className="article-meta">
-            <Link to="">
-              <img alt="" src="http://i.imgur.com/Qr71crq.jpg" />
-            </Link>
-            <div className="info">
-              <Link to="" className="author">
-                Eric Simons
-              </Link>
-              <span className="date">January 20th</span>
-            </div>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-plus-round"></i>
-              &nbsp; Follow Eric Simons <span className="counter">(10)</span>
-            </button>
-            &nbsp;&nbsp;
-            <button className="btn btn-sm btn-outline-primary">
-              <i className="ion-heart"></i>
-              &nbsp; Favorite Post <span className="counter">(29)</span>
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="container page">
-        <div className="row article-content">
-          <div className="col-md-12">
-            <p>
-              Web development technologies have evolved at an incredible clip
-              over the past few years.
-            </p>
-            <h2 id="introducing-ionic">Introducing RealWorld.</h2>
-            <p>It's a great solution for learning how other frameworks work.</p>
-          </div>
-        </div>
-
-        <hr />
-
-        <div className="article-actions">
-          <div className="article-meta">
-            <Link to="profile.html">
-              <img alt="" src="http://i.imgur.com/Qr71crq.jpg" />
-            </Link>
-            <div className="info">
-              <Link to="" className="author">
-                Eric Simons
-              </Link>
-              <span className="date">January 20th</span>
-            </div>
-            <button className="btn btn-sm btn-outline-secondary">
-              <i className="ion-plus-round"></i>
-              &nbsp; Follow Eric Simons
-            </button>
-            &nbsp;
-            <button className="btn btn-sm btn-outline-primary">
-              <i className="ion-heart"></i>
-              &nbsp; Favorite Post <span className="counter">(29)</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-xs-12 col-md-8 offset-md-2">
-            <form className="card comment-form">
-              <div className="card-block">
-                <textarea
-                  className="form-control"
-                  placeholder="Write a comment..."
-                  rows="3"
-                ></textarea>
-              </div>
-              <div className="card-footer">
-                <img
-                  alt=""
-                  src="http://i.imgur.com/Qr71crq.jpg"
-                  className="comment-author-img"
+      {dataArticle ? (
+        <div>
+          <div className="banner">
+            <div className="container">
+              <h1>{dataArticle.title}</h1>
+              {(dataArticle.author?.username ?? null) ===
+              (user?.username ?? null) ? (
+                <ArticleAuthorControl
+                  author={dataArticle.author}
+                  createdAt={dataArticle.createdAt}
+                  title={dataArticle.title}
+                  slug={dataArticle.slug}
                 />
-                <button className="btn btn-sm btn-primary">Post Comment</button>
-              </div>
-            </form>
-
-            <div className="card">
-              <div className="card-block">
-                <p className="card-text">
-                  With supporting text below as a natural lead-in to additional
-                  content.
-                </p>
-              </div>
-              <div className="card-footer">
-                <Link to="" className="comment-author">
-                  <img
-                    alt=""
-                    src="http://i.imgur.com/Qr71crq.jpg"
-                    className="comment-author-img"
-                  />
-                </Link>
-                &nbsp;
-                <Link to="" className="comment-author">
-                  Jacob Schmidt
-                </Link>
-                <span className="date-posted">Dec 29th</span>
-              </div>
-            </div>
-
-            <div className="card">
-              <div className="card-block">
-                <p className="card-text">
-                  With supporting text below as a natural lead-in to additional
-                  content.
-                </p>
-              </div>
-              <div className="card-footer">
-                <Link to="" className="comment-author">
-                  <img
-                    alt=""
-                    src="http://i.imgur.com/Qr71crq.jpg"
-                    className="comment-author-img"
-                  />
-                </Link>
-                &nbsp;
-                <Link to="" className="comment-author">
-                  Jacob Schmidt
-                </Link>
-                <span className="date-posted">Dec 29th</span>
-                <span className="mod-options">
-                  <i className="ion-edit"></i>
-                  <i className="ion-trash-a"></i>
-                </span>
-              </div>
+              ) : (
+                <ArticleAuthor
+                  author={dataArticle.author}
+                  slug={dataArticle.slug}
+                  createdAt={dataArticle.createdAt}
+                  favourite={dataArticle.favorited}
+                  countFavorite={dataArticle.favoritesCount}
+                  follow={follow}
+                  handleFollow={handleFollow}
+                />
+              )}
             </div>
           </div>
+
+          <div className="container page">
+            <div className="row article-content">
+              <div className="col-md-12">
+                <p> {dataArticle.body}</p>
+              </div>
+            </div>
+
+            <hr />
+
+            <div className="article-actions">
+              {dataArticle &&
+              dataArticle.author &&
+              user &&
+              (dataArticle.author?.username ?? null) ===
+                (user?.username ?? null) ? (
+                <ArticleAuthorControl
+                  author={dataArticle.author}
+                  createdAt={dataArticle.createdAt}
+                  title={dataArticle.title}
+                  slug={dataArticle.slug}
+                />
+              ) : (
+                <ArticleAuthor
+                  author={dataArticle.author}
+                  slug={dataArticle.slug}
+                  createdAt={dataArticle.createdAt}
+                  favourite={dataArticle.favorited}
+                  countFavorite={dataArticle.favoritesCount}
+                  follow={follow}
+                  handleFollow={handleFollow}
+                />
+              )}
+            </div>
+            <ArticleComment author={dataArticle.author} />
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="container page">
+          <div className="article-preview">Loading...</div>
+        </div>
+      )}
     </div>
   );
 }
 
-export default Article;
+export default Articles;
