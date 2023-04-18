@@ -4,8 +4,16 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 function ArticleAuthor(props) {
-  const { author, favorited, countFavorite, slug, createdAt, handleFollow } =
-    props;
+  const {
+    author,
+    favorited,
+    countFavorite,
+    slug,
+    createdAt,
+    follow,
+    handleFollow,
+    handleFavorite,
+  } = props;
   return (
     <div className="article-meta">
       <Link to={`/${author.username}`}>
@@ -19,15 +27,16 @@ function ArticleAuthor(props) {
       </div>
 
       <FollowBtn
-        isFollowing={author.following}
+        isFollowing={follow}
         username={author.username}
         handleFollow={handleFollow}
       />
 
       <FavoriteBtn
-        favorited={favorited}
+        isFavorited={favorited}
         favoritesCount={countFavorite}
         slug={slug}
+        handleFavorite={handleFavorite}
       />
     </div>
   );

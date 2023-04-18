@@ -4,7 +4,13 @@ import "../../App.css";
 import ArticleAuthor from "./ArticleAuthor";
 import ArticleComment from "./ArticleComment";
 import ArticleAuthorControl from "./ArticleAuthorControl";
-import { followUser, getDataDetail, unFollowUser } from "actions/HttpsRequest";
+import {
+  followUser,
+  getDataDetail,
+  unFollowUser,
+  addFavorite,
+  deleteFavorite,
+} from "actions/HttpsRequest";
 import { useAuthContext } from "store";
 
 function Articles() {
@@ -13,8 +19,8 @@ function Articles() {
   const { state } = useAuthContext();
   const { user } = state;
   const [follow, setFollow] = useState();
-  const [favourite, setFavourite] = useState();
-  const [countFavorite, setCountFavorite] = useState();
+  const [isFavorite, setIsFavorite] = useState(null);
+  const [countFavorite, setCountFavorite] = useState(null);
   const [listComments, setListComments] = useState(null);
 
   useEffect(() => {
@@ -53,6 +59,37 @@ function Articles() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [follow]);
+
+  useEffect(() => {
+    setIsFavorite(isFavorite);
+    setCountFavorite(countFavorite);
+  }, [countFavorite, isFavorite]);
+
+  const handleFavorite = () => {
+    console.log("isFavorite", isFavorite);
+    if (!isFavorite) {
+      addFavorite(params.slug)
+        .then(() => {
+          setIsFavorite(true);
+          setCountFavorite((prev) => prev + 1);
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsFavorite(false);
+        });
+    } else {
+      deleteFavorite(params.slug)
+        .then(() => {
+          setIsFavorite(false);
+          setCountFavorite((prev) => prev - 1);
+        })
+        .catch((err) => {
+          console.log(err);
+          setIsFavorite(true);
+        });
+      setIsFavorite(!isFavorite);
+    }
+  };
   return (
     <div className="article-page">
       {dataArticle ? (
@@ -77,6 +114,7 @@ function Articles() {
                   countFavorite={dataArticle.favoritesCount}
                   follow={follow}
                   handleFollow={handleFollow}
+                  handleFavorite={handleFavorite}
                 />
               )}
             </div>
@@ -112,6 +150,7 @@ function Articles() {
                   countFavorite={dataArticle.favoritesCount}
                   follow={follow}
                   handleFollow={handleFollow}
+                  handleFavorite={handleFavorite}
                 />
               )}
             </div>

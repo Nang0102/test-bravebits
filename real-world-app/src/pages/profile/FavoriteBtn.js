@@ -16,6 +16,7 @@ function FavoriteBtn(props) {
   }, [favoritesCount, favorited]);
 
   const handleFavorite = () => {
+    console.log("------", isFavorite);
     if (!isFavorite) {
       addFavorite(slug)
         .then(() => {

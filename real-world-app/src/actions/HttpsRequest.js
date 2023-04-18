@@ -147,7 +147,7 @@ export const fetchFavoritedArticle = async (params) => {
   }
 };
 
-export const addFavorite = async (slug) => {
+export const addFavorite = async (params) => {
   const token = localStorage.getItem("token");
   try {
     const options = {
@@ -158,7 +158,7 @@ export const addFavorite = async (slug) => {
       },
     };
     const response = await fetch(
-      `${BaseURL}/articles/${slug}/favorite`,
+      `${BaseURL}/articles/${params}/favorite`,
       options
     );
     const data = await response.json();
@@ -168,7 +168,7 @@ export const addFavorite = async (slug) => {
   }
 };
 
-export const deleteFavorite = async (slug) => {
+export const deleteFavorite = async (params) => {
   const token = localStorage.getItem("token");
   try {
     const options = {
@@ -179,7 +179,7 @@ export const deleteFavorite = async (slug) => {
       },
     };
     const response = await fetch(
-      `${BaseURL}/articles/${slug}/favorite`,
+      `${BaseURL}/articles/${params}/favorite`,
       options
     );
     const data = await response.json();
