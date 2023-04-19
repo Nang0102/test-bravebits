@@ -10,7 +10,7 @@ import { useAuthContext } from "store";
 import "../../App.css";
 import FollowBtn from "./FollowBtn";
 
-function Profile() {
+function Profile(handleFollow) {
   const { profile } = useParams();
   const [author, setAuthor] = useState(null);
   const [listArticle, setListArticle] = useState(null);

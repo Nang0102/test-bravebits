@@ -11,6 +11,8 @@ import {
   addFavorite,
   deleteFavorite,
   getComment,
+  createComment,
+  deleteComment,
 } from "actions/HttpsRequest";
 import { useAuthContext } from "store";
 import InputComment from "./InputComment";
@@ -80,7 +82,6 @@ function Articles() {
         .then(() => {
           setIsFavorite(false);
           setCountFavorite((prev) => prev - 1);
-          console.log("is---delete--àter", countFavorite);
           setIsLoading(false);
         })
         .catch((err) => {
@@ -96,13 +97,35 @@ function Articles() {
   useEffect(() => {
     getComment(params.slug)
       .then((data) => {
-        console.log("data-slug-article", data);
+        console.log("data.comments", data);
         setListComments(data.comments);
       })
       .catch((err) => console.log(err));
   }, []);
-  const handleComment = () => {};
-  const handleDeleteComment = () => {};
+  const handleComment = (newComment) => {
+    if (newComment.trim() !== "") {
+      createComment(params.slug, {
+        comment: { body: newComment },
+      })
+        .then((data) => {
+          const newListComments = [...listComments, data.comment];
+          setListComments(newListComments);
+        })
+        .catch((err) => console.log(err));
+    }
+  };
+  const handleDeleteComment = (id) => {
+    deleteComment(params.slug, id)
+      .then(() => {
+        const indexComment = listComments.findIndex(
+          (comment) => comment.id === id
+        );
+        const newListComments = [...listComments];
+        newListComments.splice(indexComment, 1);
+        setListComments(newListComments);
+      })
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="article-page">

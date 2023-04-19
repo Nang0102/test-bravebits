@@ -9,7 +9,6 @@ const FavoriteArticleBtn = ({
 }) => {
   const user = localStorage.getItem("token");
   const navigate = useNavigate();
-  console.log("user", user);
 
   return (
     <button

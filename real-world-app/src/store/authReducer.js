@@ -5,7 +5,6 @@ export const initState = {
 };
 
 function authReducer(state, action) {
-  console.log("action", action);
   switch (action.type) {
     case LOGIN:
       return {

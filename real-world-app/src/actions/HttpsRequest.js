@@ -278,7 +278,7 @@ export const fetchArticleFeed = async (params) => {
   }
 };
 
-export const creatArticle = async (slug) => {
+export const createArticle = async (params) => {
   const token = localStorage.getItem("token");
   try {
     const options = {
@@ -287,6 +287,7 @@ export const creatArticle = async (slug) => {
         "Content-Type": "application/json",
         authorization: token ? `Token ${token}` : null,
       },
+      body: JSON.stringify(params),
     };
     const response = await fetch(`${BaseURL}/articles`, options);
     console.log("res", response);
@@ -366,39 +367,41 @@ export const unFollowUser = async (username) => {
 
 export const getComment = async (slug) => {
   try {
-    const res = await axios.get(
-      `${BaseURL}/articles/${slug}/comments`,
-      {},
-      {
-        headers: options.headers,
-      }
-    );
+    const res = await axios.get(`${BaseURL}/articles/${slug}/comments`, {
+      headers: options.headers,
+    });
     return res.data;
   } catch (err) {
     console.log(err);
   }
 };
 
-export const createComment = async (params) => {
+export const createComment = async (params, value) => {
+  const token = localStorage.getItem("token");
   try {
-    const res = await axios.post(
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: token ? `Token ${token}` : null,
+      },
+      body: JSON.stringify(value),
+    };
+    const response = await fetch(
       `${BaseURL}/articles/${params}/comments`,
-      {},
-      {
-        headers: options.headers,
-      }
+      options
     );
-    return res.data;
-  } catch (err) {
-    console.log(err);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log("err", error);
   }
 };
 
-export const deleteComment = async (slug, id) => {
+export const deleteComment = async (params, id) => {
   try {
-    const res = await axios.get(
-      `${BaseURL}/articles/${slug}/comments/${id}`,
-      {},
+    const res = await axios.delete(
+      `${BaseURL}/articles/${params}/comments/${id}`,
       {
         headers: options.headers,
       }

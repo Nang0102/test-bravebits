@@ -1,4 +1,3 @@
-import Article from "pages/arcticle/Article";
 import Home from "pages/home/Home";
 import Login from "pages/login/Login";
 import Register from "pages/register/Register";
@@ -14,7 +13,7 @@ function Router() {
     <div>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/editor" element={<Article />} /> */}
+        <Route path="/editor" element={<EditArticle />} />
         <Route path="/editor/:slug" element={<EditArticle />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/register" element={<Register />} />
