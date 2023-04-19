@@ -1,5 +1,7 @@
 import { register } from "actions/HttpsRequest";
-import Input from "components/input/Input";
+import InputUserName from "components/input/InputUsername";
+import InputEmail from "components/input/InputEmail";
+import InputPassword from "components/input/InputPassword";
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "store";
@@ -13,19 +15,6 @@ function Register() {
   const { handleLogin } = useAuthContext();
   const navigate = useNavigate();
 
-  const handleUserNameChange = (e) => {
-    setUserName(e.target.value);
-    setErrors(null);
-  };
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    setErrors(null);
-  };
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    setErrors(null);
-  };
-
   const handleRegister = (e) => {
     e.preventDefault();
     if (userName === "") {
@@ -37,7 +26,7 @@ function Register() {
     if (password === "") {
       setErrors("Password cannot be empty!");
     }
-    // -----------
+
     const userRegister = {
       username: userName,
       email: email,
@@ -76,23 +65,20 @@ function Register() {
             <ul className="error-messages">{errors && <li>{errors}</li>}</ul>
 
             <form>
-              <Input
-                type="text"
-                placeholder="Your Name "
-                value={userName}
-                onChange={handleUserNameChange}
+              <InputUserName
+                setErrors={setErrors}
+                setUserName={setUserName}
+                userName={userName}
               />
-              <Input
-                type="text"
-                placeholder="Email"
-                value={email}
-                onChange={handleEmailChange}
+              <InputEmail
+                email={email}
+                setEmail={setEmail}
+                setErrors={setErrors}
               />
-              <Input
-                type="password"
-                placeholder="Password "
-                value={password}
-                onChange={handlePasswordChange}
+              <InputPassword
+                password={password}
+                setPassword={setPassword}
+                setErrors={setErrors}
               />
               <button
                 className="btn btn-lg btn-primary pull-xs-right"

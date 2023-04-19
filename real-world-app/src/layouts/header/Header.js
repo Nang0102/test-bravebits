@@ -11,6 +11,7 @@ function Header() {
   const { profile } = useParams();
   const { state } = useAuthContext();
   const { isAuthenticated, user } = state;
+
   return (
     <nav className="navbar navbar-light">
       <div className="container">

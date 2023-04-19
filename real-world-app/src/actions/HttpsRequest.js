@@ -69,6 +69,7 @@ export const fetchUser = async (user) => {
 
 export const updateUser = async (params) => {
   const token = localStorage.getItem("token");
+  console.log("token", token);
   try {
     const options = {
       method: "PUT",
@@ -79,7 +80,10 @@ export const updateUser = async (params) => {
       body: JSON.stringify(params),
     };
     const response = await fetch(`${BaseURL}/user`, options);
+    console.log("res", response);
     const data = await response.json();
+    console.log("data", data);
+    console.log("data--user", data.user);
     return data;
   } catch (err) {
     console.log("err", err);
@@ -354,6 +358,51 @@ export const unFollowUser = async (username) => {
     );
     console.log("data-UNfollow-user----", res.data);
 
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const getComment = async (slug) => {
+  try {
+    const res = await axios.get(
+      `${BaseURL}/articles/${slug}/comments`,
+      {},
+      {
+        headers: options.headers,
+      }
+    );
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const createComment = async (params) => {
+  try {
+    const res = await axios.post(
+      `${BaseURL}/articles/${params}/comments`,
+      {},
+      {
+        headers: options.headers,
+      }
+    );
+    return res.data;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const deleteComment = async (slug, id) => {
+  try {
+    const res = await axios.get(
+      `${BaseURL}/articles/${slug}/comments/${id}`,
+      {},
+      {
+        headers: options.headers,
+      }
+    );
     return res.data;
   } catch (err) {
     console.log(err);

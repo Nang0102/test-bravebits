@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import FavoriteBtn from "./FavoriteBtn";
 
-function Article({ article }) {
+function Article({ article, isLoading }) {
   return (
     <div className="article-preview">
       <div className="article-meta">
@@ -17,14 +17,12 @@ function Article({ article }) {
             {new Date(article?.createdAt).toLocaleDateString()}
           </span>
         </div>
-        {/* /////////// */}
-        {/* <button className="btn btn-outline-primary btn-sm pull-xs-right">
-          <i className="ion-heart"></i> 29
-        </button> */}
+
         <FavoriteBtn
           favorited={article.favorited}
           favoritesCount={article.favoritesCount}
           slug={article.slug}
+          isLoading={isLoading}
         />
       </div>
       <Link to={`/article/${article.slug}`} className="preview-link">

@@ -7,14 +7,14 @@ import Profile from "pages/profile/Profile";
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Articles from "pages/arcticle/Article";
-import EditArticle from "pages/arcticle/EditArcticle";
+import EditArticle from "pages/edit-article/EditArcticle";
 
 function Router() {
   return (
     <div>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/editor" element={<Article />} />
+        {/* <Route path="/editor" element={<Article />} /> */}
         <Route path="/editor/:slug" element={<EditArticle />} />
         <Route path="/setting" element={<Setting />} />
         <Route path="/register" element={<Register />} />

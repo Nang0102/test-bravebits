@@ -61,9 +61,9 @@ function Profile() {
                   <h4>{author.username}</h4>
                   <p>{author.bio}</p>
                   {/* ////////////////// */}
-                  {user && user?.username === author.username ? (
+                  {user && user?.username === author?.username ? (
                     <Link
-                      to="/settings"
+                      to="/setting"
                       className="btn btn-sm btn-outline-secondary action-btn"
                     >
                       <i className="ion-plus-round" />

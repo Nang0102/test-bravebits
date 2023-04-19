@@ -1,19 +1,21 @@
-import FavoriteBtn from "pages/profile/FavoriteBtn";
+import FavoriteArticleBtn from "components/favorite/FavoriteArticleBtn";
 import FollowBtn from "pages/profile/FollowBtn";
-import React from "react";
+import React, { useCallback } from "react";
 import { Link } from "react-router-dom";
 
 function ArticleAuthor(props) {
   const {
     author,
-    favorited,
+    isFavorite,
     countFavorite,
     slug,
     createdAt,
     follow,
     handleFollow,
     handleFavorite,
+    isLoading,
   } = props;
+
   return (
     <div className="article-meta">
       <Link to={`/${author.username}`}>
@@ -32,11 +34,12 @@ function ArticleAuthor(props) {
         handleFollow={handleFollow}
       />
 
-      <FavoriteBtn
-        isFavorited={favorited}
+      <FavoriteArticleBtn
+        isFavorited={isFavorite}
         favoritesCount={countFavorite}
         slug={slug}
         handleFavorite={handleFavorite}
+        isLoading={isLoading}
       />
     </div>
   );

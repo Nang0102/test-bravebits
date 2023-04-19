@@ -1,23 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, Navigate } from "react-router-dom";
-import Input from "components/input/Input";
 import { useAuthContext } from "store";
-import { login } from "actions/HttpsRequest";
+import { login, fetchUser } from "actions/HttpsRequest";
+import InputEmail from "components/input/InputEmail";
+import InputPassword from "components/input/InputPassword";
 
 export default function Login() {
   const [errors, setErrors] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleLogin, state } = useAuthContext();
+  const { handleLogin, handleLogout, state } = useAuthContext();
   const { user } = state;
-  const handleEmailChange = (e) => {
-    setEmail(e.target.value);
-    setErrors(null);
-  };
-  const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
-    setErrors(null);
-  };
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem("token");
+  //   const userString = localStorage.getItem("user");
+
+  //   if (token && userString) {
+  //     const user = JSON.parse(userString);
+
+  //     fetchUser(token).then((data) => {
+  //       if (data.user) {
+  //         handleLogin(user);
+  //       } else {
+  //         handleLogout();
+  //       }
+  //     });
+  //   }
+  // }, [handleLogin, handleLogout]);
   const handleClickBtnLogin = (e) => {
     e.preventDefault();
     if (email === "") {
@@ -63,17 +73,15 @@ export default function Login() {
               <ul className="error-messages">{errors && <li>{errors}</li>}</ul>
 
               <form onSubmit={handleClickBtnLogin}>
-                <Input
-                  type="text"
-                  placeholder="Email"
-                  value={email}
-                  onChange={handleEmailChange}
+                <InputEmail
+                  email={email}
+                  setEmail={setEmail}
+                  setErrors={setErrors}
                 />
-                <Input
-                  type="password"
-                  placeholder="Password "
-                  value={password}
-                  onChange={handlePasswordChange}
+                <InputPassword
+                  password={password}
+                  setPassword={setPassword}
+                  setErrors={setErrors}
                 />
                 <button
                   className="btn btn-lg btn-primary pull-xs-right"

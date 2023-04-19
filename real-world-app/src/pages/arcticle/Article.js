@@ -10,8 +10,10 @@ import {
   unFollowUser,
   addFavorite,
   deleteFavorite,
+  getComment,
 } from "actions/HttpsRequest";
 import { useAuthContext } from "store";
+import InputComment from "./InputComment";
 
 function Articles() {
   const params = useParams();
@@ -21,6 +23,7 @@ function Articles() {
   const [follow, setFollow] = useState();
   const [isFavorite, setIsFavorite] = useState(null);
   const [countFavorite, setCountFavorite] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [listComments, setListComments] = useState(null);
 
   useEffect(() => {
@@ -28,6 +31,8 @@ function Articles() {
       .then((data) => {
         console.log("data-slug-article", data);
         setDataArticle(data.article);
+        setIsFavorite(data.article.favorited);
+        setCountFavorite(data.article.favoritesCount);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -36,8 +41,6 @@ function Articles() {
     if (follow) {
       unFollowUser(dataArticle?.author?.username)
         .then(() => {
-          console.log("follow", follow);
-
           setFollow(!follow);
         })
         .catch((err) => {
@@ -47,10 +50,7 @@ function Articles() {
     } else {
       followUser(dataArticle?.author?.username)
         .then(() => {
-          console.log("-----Unfollow", follow);
-
           setFollow(!follow);
-          console.log("-----Unfollow22222", follow);
         })
         .catch((err) => {
           console.log(err);
@@ -60,36 +60,50 @@ function Articles() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [follow]);
 
-  useEffect(() => {
-    setIsFavorite(isFavorite);
-    setCountFavorite(countFavorite);
-  }, [countFavorite, isFavorite]);
-
-  const handleFavorite = () => {
-    console.log("isFavorite", isFavorite);
+  const handleFavorite = useCallback(() => {
     if (!isFavorite) {
+      setIsLoading(true);
       addFavorite(params.slug)
         .then(() => {
           setIsFavorite(true);
           setCountFavorite((prev) => prev + 1);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.log(err);
           setIsFavorite(false);
+          setIsLoading(false);
         });
     } else {
+      setIsLoading(true);
       deleteFavorite(params.slug)
         .then(() => {
           setIsFavorite(false);
           setCountFavorite((prev) => prev - 1);
+          console.log("is---delete--àter", countFavorite);
+          setIsLoading(false);
         })
         .catch((err) => {
           console.log(err);
           setIsFavorite(true);
+          setIsLoading(false);
         });
+
       setIsFavorite(!isFavorite);
     }
-  };
+  }, [countFavorite, isFavorite]);
+
+  useEffect(() => {
+    getComment(params.slug)
+      .then((data) => {
+        console.log("data-slug-article", data);
+        setListComments(data.comments);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+  const handleComment = () => {};
+  const handleDeleteComment = () => {};
+
   return (
     <div className="article-page">
       {dataArticle ? (
@@ -110,11 +124,12 @@ function Articles() {
                   author={dataArticle.author}
                   slug={dataArticle.slug}
                   createdAt={dataArticle.createdAt}
-                  favourite={dataArticle.favorited}
-                  countFavorite={dataArticle.favoritesCount}
+                  isFavorite={isFavorite}
+                  countFavorite={countFavorite}
                   follow={follow}
                   handleFollow={handleFollow}
                   handleFavorite={handleFavorite}
+                  isLoading={isLoading}
                 />
               )}
             </div>
@@ -146,15 +161,42 @@ function Articles() {
                   author={dataArticle.author}
                   slug={dataArticle.slug}
                   createdAt={dataArticle.createdAt}
-                  favourite={dataArticle.favorited}
-                  countFavorite={dataArticle.favoritesCount}
+                  isFavorite={isFavorite}
+                  countFavorite={countFavorite}
                   follow={follow}
                   handleFollow={handleFollow}
                   handleFavorite={handleFavorite}
+                  isLoading={isLoading}
                 />
               )}
             </div>
-            <ArticleComment author={dataArticle.author} />
+            <div className="row">
+              <div className="col-xs-12 col-md-8 offset-md-2">
+                {user ? (
+                  <InputComment
+                    imageUser={dataArticle.author.image}
+                    username={dataArticle.author.username}
+                    handleComment={handleComment}
+                  />
+                ) : (
+                  <p>
+                    <Link to="/login">Sign in</Link> or
+                    <Link to="/register">Sign up</Link> to add comments on this
+                    article.
+                  </p>
+                )}
+
+                {listComments &&
+                  listComments.map((comment, index) => (
+                    <ArticleComment
+                      author={dataArticle.author.username}
+                      comment={comment}
+                      key={index}
+                      handleDeleteComment={handleDeleteComment}
+                    />
+                  ))}
+              </div>
+            </div>
           </div>
         </div>
       ) : (
