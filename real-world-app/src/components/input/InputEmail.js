@@ -18,4 +18,4 @@ const InputEmail = memo((props) => {
   );
 });
 
-export default InputEmail;
+export default memo(InputEmail);

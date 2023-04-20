@@ -1,8 +1,8 @@
 import { addFavorite, deleteFavorite } from "actions/HttpsRequest";
-import React, { useState, useEffect } from "react";
+import React, { memo, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function FavoriteBtn(props) {
+const FavoriteBtn = memo((props) => {
   const { favorited, favoritesCount, slug } = props;
 
   const [isFavorite, setIsFavorite] = useState(null);
@@ -69,6 +69,6 @@ function FavoriteBtn(props) {
       <i className="ion-heart"></i> {countFavorite}
     </button>
   );
-}
+});
 
-export default FavoriteBtn;
+export default memo(FavoriteBtn);

@@ -2,31 +2,40 @@ import {
   fetchArticleByUser,
   fetchFavoritedArticle,
   fetchProfiles,
+  followUser,
+  unFollowUser,
 } from "actions/HttpsRequest";
 import Article from "./Article";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useAuthContext } from "store";
 import "../../App.css";
 import FollowBtn from "./FollowBtn";
+import { normalizeUsername } from "components/nomalize-username/NomalizeUserName";
 
-function Profile(handleFollow) {
+function Profile() {
   const { profile } = useParams();
   const [author, setAuthor] = useState(null);
   const [listArticle, setListArticle] = useState(null);
   const [currentTab, setCurrentTab] = useState("my-article");
+  const [follow, setFollow] = useState(false);
+
   const { state } = useAuthContext();
   const { user } = state;
 
+  console.log("follow", follow);
   useEffect(() => {
     if (currentTab === "my-article") {
       fetchProfiles(profile).then((data) => {
         setAuthor(data.profile);
+        setFollow(data.profile.following);
         // const userData = data.profile.username.replaceAll(" ", "+")
         const userData = data.profile.username;
-        console.log("userData1111", userData);
+        // const userData = normalizeUsername(data.profile.username);
+        console.log("userData", userData);
         fetchArticleByUser({ author: userData })
           .then((data) => {
+            // console.log("data-art-pr", data.articles);
             setListArticle(data.articles);
           })
           .catch((err) => console.log(err));
@@ -35,11 +44,12 @@ function Profile(handleFollow) {
       fetchProfiles(profile)
         .then((data) => {
           setAuthor(data.profile);
-          const userData = data.profile.username;
-          console.log("userAPI", userData);
+
+          const userData = normalizeUsername(data.profile.username);
+
           fetchFavoritedArticle({
             author: userData,
-          }) //////////////
+          })
             .then((data) => {
               setListArticle(data.articles);
             })
@@ -47,7 +57,33 @@ function Profile(handleFollow) {
         })
         .catch((err) => console.log(err));
     }
-  }, [currentTab]);
+  }, [currentTab, follow]);
+
+  const handleFollow = useCallback(() => {
+    if (follow) {
+      unFollowUser(author?.username)
+        .then(() => {
+          setFollow(!follow);
+          console.log("true::::", follow);
+        })
+        .catch((err) => {
+          console.log(err);
+          setFollow(follow);
+        });
+    } else {
+      followUser(author?.username)
+        .then(() => {
+          console.log("false::::", follow);
+
+          setFollow(!follow);
+        })
+        .catch((err) => {
+          console.log(err);
+          setFollow(follow);
+        });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [follow]);
 
   return (
     <div>
@@ -71,8 +107,9 @@ function Profile(handleFollow) {
                     </Link>
                   ) : (
                     <FollowBtn
-                      isFollowing={author.following}
+                      isFollowing={follow}
                       username={author.username}
+                      handleFollow={handleFollow}
                     />
                   )}
                   {/* /////////////////////// */}

@@ -24,6 +24,7 @@ export const loginSuccessfull = (payload) => {
 };
 
 export const updateUser = (payload) => {
+  console.log("payload---update", payload);
   return {
     type: UPDATE_USER,
     payload,

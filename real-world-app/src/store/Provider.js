@@ -20,7 +20,7 @@ function AuthProvider({ children }) {
 
   const handleUpdateUser = (userUpdated) => {
     console.log("userUpdate", userUpdated);
-    // localStorage.setItem("user", JSON.stringify(userUpdated));
+    localStorage.setItem("user", JSON.stringify(userUpdated));
     dispatch(updateUser(userUpdated));
   };
 

@@ -27,6 +27,7 @@ function Articles() {
   const [countFavorite, setCountFavorite] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [listComments, setListComments] = useState(null);
+  console.log("listComment", listComments);
 
   useEffect(() => {
     getDataDetail(params.slug)

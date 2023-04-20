@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-function InputContent({ content, setContent }) {
+const InputContent = memo(({ content, setContent }) => {
   return (
     <fieldset className="form-group">
       <textarea
@@ -12,6 +12,6 @@ function InputContent({ content, setContent }) {
       ></textarea>
     </fieldset>
   );
-}
+});
 
-export default InputContent;
+export default memo(InputContent);

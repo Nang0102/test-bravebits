@@ -18,4 +18,4 @@ const InputPassword = memo((props) => {
   );
 });
 
-export default InputPassword;
+export default memo(InputPassword);

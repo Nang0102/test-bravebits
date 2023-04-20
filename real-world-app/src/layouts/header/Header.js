@@ -1,7 +1,6 @@
 import React from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "../../App.css";
-// import "~/App.css";
 
 import { useAuthContext } from "../../store/index";
 

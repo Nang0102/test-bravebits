@@ -1,7 +1,7 @@
-import React from "react";
+import React, { memo } from "react";
 import { useNavigate } from "react-router-dom";
 
-const FollowBtn = ({ isFollowing, username, handleFollow }) => {
+const FollowBtn = memo(({ isFollowing, username, handleFollow }) => {
   const user = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -17,9 +17,9 @@ const FollowBtn = ({ isFollowing, username, handleFollow }) => {
       }}
     >
       <i className="ion-plus-round" />
-      &nbsp; {isFollowing ? "Unfollowing" : "Following"} {username}
+      &nbsp; {isFollowing ? "Unfollow" : "Follow"} {username}
     </button>
   );
-};
+});
 
-export default FollowBtn;
+export default memo(FollowBtn);

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-function InputTag({ inputTag, setInputTag, handleAddTag }) {
+const InputTag = memo(({ inputTag, setInputTag, handleAddTag }) => {
   return (
     <input
       type="text"
@@ -11,6 +11,6 @@ function InputTag({ inputTag, setInputTag, handleAddTag }) {
       onKeyDown={handleAddTag}
     />
   );
-}
+});
 
-export default InputTag;
+export default memo(InputTag);

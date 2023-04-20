@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-function InputAboutArticle({ setAbout, about }) {
+const InputAboutArticle = memo(({ setAbout, about }) => {
   return (
     <fieldset className="form-group">
       <input
@@ -12,6 +12,6 @@ function InputAboutArticle({ setAbout, about }) {
       />
     </fieldset>
   );
-}
+});
 
-export default InputAboutArticle;
+export default memo(InputAboutArticle);

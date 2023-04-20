@@ -135,7 +135,7 @@ function Home() {
                   <li className="nav-item">
                     <Link to="#" className={"nav-link active"}>
                       <i className="ion-pound"></i>
-                      {JSON.stringify(currentTag)}
+                      {currentTag}
                     </Link>
                   </li>
                 ) : (

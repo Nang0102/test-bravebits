@@ -18,4 +18,4 @@ const InputUserName = memo((props) => {
   );
 });
 
-export default InputUserName;
+export default memo(InputUserName);

@@ -1,13 +1,14 @@
-import React, { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useCallback, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import "../../App.css";
 import InputTitleArticle from "./InputTitleArticle";
 import InputAboutArticle from "./InputAboutArticlle";
 import InputContent from "./InputContent";
 import InputTag from "./InputTag";
-import { createArticle } from "actions/HttpsRequest";
+import { createArticle, getDataDetail } from "actions/HttpsRequest";
 
 function EditArticle() {
+  const [dataArticle, setDataArticle] = useState();
   const [title, setTitle] = useState("");
   const [about, setAbout] = useState("");
   const [content, setContent] = useState("");
@@ -15,6 +16,21 @@ function EditArticle() {
   const [tags, setTags] = useState([]);
   const [errors, setErrors] = useState(null);
   const navigate = useNavigate();
+  const params = useParams();
+
+  useEffect(() => {
+    getDataDetail(params.slug)
+      .then((data) => {
+        console.log("data", data.article);
+
+        setDataArticle(data.article);
+        setTitle(data.article.title);
+        setAbout(data.article.description);
+        setContent(data.article.body);
+        setTags(data.article.tagList);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   const handleAddTag = useCallback(
     (e) => {
@@ -50,6 +66,7 @@ function EditArticle() {
         body: content,
         tagList: tags,
       };
+      console.log("newAr=====", newArticle);
       createArticle({
         article: newArticle,
       })

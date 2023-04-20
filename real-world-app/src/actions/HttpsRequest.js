@@ -69,7 +69,6 @@ export const fetchUser = async (user) => {
 
 export const updateUser = async (params) => {
   const token = localStorage.getItem("token");
-  console.log("token", token);
   try {
     const options = {
       method: "PUT",
@@ -80,11 +79,8 @@ export const updateUser = async (params) => {
       body: JSON.stringify(params),
     };
     const response = await fetch(`${BaseURL}/user`, options);
-    console.log("res", response);
     const data = await response.json();
-    console.log("data", data);
-    console.log("data--user", data.user);
-    return data;
+    return data.user;
   } catch (err) {
     console.log("err", err);
   }
@@ -208,6 +204,7 @@ export const fetchArticle = async (params) => {
       options
     );
     const data = await response.json();
+    console.log("article-user", data);
     return data;
   } catch (error) {
     console.log("err", error);
@@ -247,7 +244,6 @@ export const fetchArticleByTag = async (params) => {
       options
     );
     const data = await response.json();
-    console.log("data----byTag", data);
     return data;
   } catch (error) {
     console.log("err", error);
@@ -256,7 +252,6 @@ export const fetchArticleByTag = async (params) => {
 
 export const fetchArticleFeed = async (params) => {
   const token = localStorage.getItem("token");
-  console.log("token", token);
   try {
     const options = {
       method: "GET",
@@ -280,6 +275,7 @@ export const fetchArticleFeed = async (params) => {
 
 export const createArticle = async (params) => {
   const token = localStorage.getItem("token");
+
   try {
     const options = {
       method: "POST",
@@ -290,7 +286,6 @@ export const createArticle = async (params) => {
       body: JSON.stringify(params),
     };
     const response = await fetch(`${BaseURL}/articles`, options);
-    console.log("res", response);
     const data = await response.json();
     return data;
   } catch (error) {
