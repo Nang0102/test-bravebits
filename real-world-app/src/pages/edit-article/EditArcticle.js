@@ -5,7 +5,11 @@ import InputTitleArticle from "./InputTitleArticle";
 import InputAboutArticle from "./InputAboutArticlle";
 import InputContent from "./InputContent";
 import InputTag from "./InputTag";
-import { createArticle, getDataDetail } from "actions/HttpsRequest";
+import {
+  createArticle,
+  getDataDetail,
+  updateArticle,
+} from "actions/HttpsRequest";
 
 function EditArticle() {
   const [dataArticle, setDataArticle] = useState();
@@ -15,14 +19,18 @@ function EditArticle() {
   const [inputTag, setInputTag] = useState("");
   const [tags, setTags] = useState([]);
   const [errors, setErrors] = useState(null);
+  const [isUpdate, setIsUpdate] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
 
   useEffect(() => {
     getDataDetail(params.slug)
       .then((data) => {
-        console.log("data", data.article);
-
+        if (data.article === undefined) {
+          setIsUpdate(false);
+        } else {
+          setIsUpdate(true);
+        }
         setDataArticle(data.article);
         setTitle(data.article.title);
         setAbout(data.article.description);
@@ -66,22 +74,36 @@ function EditArticle() {
         body: content,
         tagList: tags,
       };
-      console.log("newAr=====", newArticle);
-      createArticle({
-        article: newArticle,
-      })
-        .then((data) => {
-          console.log("data--ssss", data);
+
+      if (!isUpdate) {
+        createArticle({
+          article: newArticle,
+        })
+          .then((data) => {
+            const slug = data.article.slug;
+            navigate(`/article/${slug}`);
+            setTitle("");
+            setAbout("");
+            setContent("");
+            setIsUpdate(false);
+            setInputTag("");
+            setTags(null);
+            setErrors(null);
+          })
+          .catch((err) => console.log(err));
+      } else {
+        updateArticle(params.slug, { article: newArticle }).then((data) => {
           const slug = data.article.slug;
           navigate(`/article/${slug}`);
           setTitle("");
           setAbout("");
           setContent("");
+          setIsUpdate(true);
           setInputTag("");
           setTags(null);
           setErrors(null);
-        })
-        .catch((err) => console.log(err));
+        });
+      }
     }
   };
 

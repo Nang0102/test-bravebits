@@ -69,6 +69,8 @@ export const fetchUser = async (user) => {
 
 export const updateUser = async (params) => {
   const token = localStorage.getItem("token");
+  console.log("token", token);
+  console.log("params", params);
   try {
     const options = {
       method: "PUT",
@@ -80,6 +82,7 @@ export const updateUser = async (params) => {
     };
     const response = await fetch(`${BaseURL}/user`, options);
     const data = await response.json();
+    console.log("data", data);
     return data.user;
   } catch (err) {
     console.log("err", err);

@@ -4,6 +4,7 @@ import {
   fetchProfiles,
   followUser,
   unFollowUser,
+  fetchUser,
 } from "actions/HttpsRequest";
 import Article from "./Article";
 import React, { useEffect, useState, useCallback } from "react";
@@ -11,7 +12,7 @@ import { Link, useParams } from "react-router-dom";
 import { useAuthContext } from "store";
 import "../../App.css";
 import FollowBtn from "./FollowBtn";
-import { normalizeUsername } from "components/nomalize-username/NomalizeUserName";
+// import { normalizeUsername } from "components/nomalize-username/NomalizeUserName";
 
 function Profile() {
   const { profile } = useParams();
@@ -20,10 +21,24 @@ function Profile() {
   const [currentTab, setCurrentTab] = useState("my-article");
   const [follow, setFollow] = useState(false);
 
-  const { state } = useAuthContext();
-  const { user } = state;
+  // const { state } = useAuthContext();
+  // const { user } = state;
+  const token = localStorage.getItem("token");
+  const [user, setUser] = useState({});
 
-  console.log("follow", follow);
+  useEffect(() => {
+    fetchUser(token)
+      .then((data) => {
+        console.log("uuuu", data);
+        setUser(data.user);
+        // setBio(data.user.bio);
+        // setEmail(data.user.email);
+        // setUserName(data.user.username);
+        // setImageURL(data.user.image);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   useEffect(() => {
     if (currentTab === "my-article") {
       fetchProfiles(profile).then((data) => {
@@ -43,9 +58,11 @@ function Profile() {
     } else if (currentTab === "favorited-article") {
       fetchProfiles(profile)
         .then((data) => {
+          console.log("-----", data.profile);
           setAuthor(data.profile);
 
-          const userData = normalizeUsername(data.profile.username);
+          // const userData = normalizeUsername(data.profile.username);
+          const userData = data.profile.username;
 
           fetchFavoritedArticle({
             author: userData,
@@ -64,7 +81,6 @@ function Profile() {
       unFollowUser(author?.username)
         .then(() => {
           setFollow(!follow);
-          console.log("true::::", follow);
         })
         .catch((err) => {
           console.log(err);
@@ -73,8 +89,6 @@ function Profile() {
     } else {
       followUser(author?.username)
         .then(() => {
-          console.log("false::::", follow);
-
           setFollow(!follow);
         })
         .catch((err) => {

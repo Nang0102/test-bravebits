@@ -12,21 +12,22 @@ import InputBio from "./InputBio";
 
 function Setting() {
   const token = localStorage.getItem("token");
+  const [user, setUser] = useState({});
+
   const { handleLogout, handleUpdateUser, state } = useAuthContext();
-  const { user } = state;
-  const currentUser = JSON.parse(localStorage.getItem("user")) || null;
+  // const { user } = state;
+  // const currentUser = JSON.parse(localStorage.getItem("user")) || null;
   // const currentUser = { user };
-  const [imageURL, setImageURL] = useState(currentUser?.image);
-  const [username, setUserName] = useState(
-    // normalizeUsername(currentUser?.username)
-    ""
-  );
-  const [bio, setBio] = useState(currentUser?.bio);
-  const [email, setEmail] = useState(currentUser?.email);
+  const [imageURL, setImageURL] = useState("");
+  const [username, setUserName] = useState("");
+  // const [bio, setBio] = useState(currentUser?.bio);
+  // const [email, setEmail] = useState(currentUser?.email);
+  // const [password, setPassword] = useState("");
+  // const [errors, setErrors] = useState(null);
+  const [bio, setBio] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState(null);
-  // const [isUpdated, setIsUpdated] = useState(false);
-  console.log("user-----", currentUser);
 
   function normalizeUsername(username) {
     return startCase(username).replace(/\s/g, "");
@@ -34,10 +35,12 @@ function Setting() {
   useEffect(() => {
     fetchUser(token)
       .then((data) => {
-        console.log("uuuu", data);
-        setBio(data.bio);
-        setEmail(data.email);
-        setUserName(data.username);
+        console.log("uuuu", data.user.username);
+        setUser(data.user);
+        setBio(data.user.bio);
+        setEmail(data.user.email);
+        setUserName(data.user.username);
+        setImageURL(data.user.image);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -45,12 +48,12 @@ function Setting() {
   const handleUpdateSetting = (e) => {
     e.preventDefault();
     if (username.trim() === "") {
-      setUserName(normalizeUsername(currentUser.username));
+      setUserName(user.username);
     } else {
       const userUpdated = {
         email: email,
         password: password,
-        username: normalizeUsername(username.trim()),
+        username: username,
         bio: bio,
         image: imageURL,
       };
@@ -61,20 +64,14 @@ function Setting() {
         .then((data) => {
           console.log(data);
           handleUpdateUser(data);
-          // setIsUpdated(true);
         })
         .catch((err) => console.log(err));
     }
-    console.log("normalizeUsername", normalizeUsername(currentUser.username));
   };
-  // if (isUpdated) {
-  //   console.log("isUpdated", isUpdated);
-  //   return <Navigate to="/:profile" replace={true} />;
-  // }
 
   return (
     <div className="settings-page">
-      {!currentUser && <Navigate to="/" replace={true} />}
+      {!user && <Navigate to="/" replace={true} />}
       <div className="container page">
         <div className="row">
           <div className="col-md-6 offset-md-3 col-xs-12">

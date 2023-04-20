@@ -36,6 +36,7 @@ function Articles() {
         setDataArticle(data.article);
         setIsFavorite(data.article.favorited);
         setCountFavorite(data.article.favoritesCount);
+        setFollow(data.article.author.following);
       })
       .catch((err) => console.log(err));
   }, []);
