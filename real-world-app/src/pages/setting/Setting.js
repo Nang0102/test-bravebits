@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { startCase } from "lodash";
 import "../../App.css";
 import { fetchUser, updateUser } from "../../actions/HttpsRequest";
 import InputUserName from "components/input/InputUsername";
@@ -11,38 +10,28 @@ import InputPassword from "components/input/InputPassword";
 import InputBio from "./InputBio";
 
 function Setting() {
-  const token = localStorage.getItem("token");
-  const [user, setUser] = useState({});
-
-  const { handleLogout, handleUpdateUser, state } = useAuthContext();
-  // const { user } = state;
-  // const currentUser = JSON.parse(localStorage.getItem("user")) || null;
-  // const currentUser = { user };
+  const { handleUpdateUser, handleLogout, state } = useAuthContext();
   const [imageURL, setImageURL] = useState("");
   const [username, setUserName] = useState("");
-  // const [bio, setBio] = useState(currentUser?.bio);
-  // const [email, setEmail] = useState(currentUser?.email);
-  // const [password, setPassword] = useState("");
-  // const [errors, setErrors] = useState(null);
   const [bio, setBio] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState(null);
+  const token = localStorage.getItem("token");
+  const [user, setUser] = useState({});
 
-  function normalizeUsername(username) {
-    return startCase(username).replace(/\s/g, "");
-  }
   useEffect(() => {
     fetchUser(token)
       .then((data) => {
-        console.log("uuuu", data.user.username);
         setUser(data.user);
         setBio(data.user.bio);
         setEmail(data.user.email);
+        setPassword(data.user.password);
         setUserName(data.user.username);
         setImageURL(data.user.image);
       })
       .catch((err) => console.log(err));
+    console.log("user", user);
   }, []);
 
   const handleUpdateSetting = (e) => {
@@ -110,6 +99,7 @@ function Setting() {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
                 handleLogout();
+                return <Navigate to="/" replace={true} />;
               }}
             >
               Or click here to logout.

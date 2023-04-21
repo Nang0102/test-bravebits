@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { useAuthContext } from "store";
 import { login, fetchUser } from "actions/HttpsRequest";
 import InputEmail from "components/input/InputEmail";
@@ -9,25 +9,21 @@ export default function Login() {
   const [errors, setErrors] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleLogin, handleLogout, state } = useAuthContext();
-  const { user } = state;
+  const { handleLogin, state } = useAuthContext();
+  // const { isAuthenticated,user } = state;
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const [user, setUser] = useState({});
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   const userString = localStorage.getItem("user");
+  useEffect(() => {
+    fetchUser(token)
+      .then((data) => {
+        setUser(data.user);
+        console.log("usesr", user);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
-  //   if (token && userString) {
-  //     const user = JSON.parse(userString);
-
-  //     fetchUser(token).then((data) => {
-  //       if (data.user) {
-  //         handleLogin(user);
-  //       } else {
-  //         handleLogout();
-  //       }
-  //     });
-  //   }
-  // }, [handleLogin, handleLogout]);
   const handleClickBtnLogin = (e) => {
     e.preventDefault();
     if (email === "") {
@@ -41,6 +37,7 @@ export default function Login() {
       password: password,
     };
     login({ user: userLogin }).then((data) => {
+      console.log("login", data);
       if (data.errors) {
         setErrors(
           Object.keys(data.errors).toString() +
@@ -51,6 +48,7 @@ export default function Login() {
         handleLogin(data.user);
         localStorage.setItem("token", data.user.token);
         localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/");
         setErrors(null);
         setEmail("");
         setPassword("");
@@ -60,7 +58,7 @@ export default function Login() {
 
   return (
     <>
-      {user && <Navigate to="/" replace={true} />}
+      {/* {user && <Navigate to="/" replace={true} />} */}
 
       <div className="auth-page">
         <div className="container page">

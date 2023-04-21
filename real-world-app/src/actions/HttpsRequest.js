@@ -43,6 +43,7 @@ export const login = async (userLogin) => {
     };
     const response = await fetch(`${BaseURL}/users/login`, options);
     const data = await response.json();
+    console.log("----", data);
     return data;
   } catch (err) {
     console.log("err", err);
@@ -61,6 +62,7 @@ export const fetchUser = async (user) => {
     };
     const response = await fetch(`${BaseURL}/user`, options);
     const data = await response.json();
+    console.log("httt", data);
     return data;
   } catch (err) {
     console.log("err", err);

@@ -2,6 +2,8 @@ import React, { memo } from "react";
 
 const InputEmail = memo((props) => {
   const { email, setEmail, setErrors } = props;
+  console.log("email", email);
+
   return (
     <fieldset className="form-group">
       <input

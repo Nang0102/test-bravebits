@@ -1,8 +1,7 @@
 import React, { memo } from "react";
 import { Link } from "react-router-dom";
 
-const ArticleComment = memo(({ comment, handleDeleteComment }) => {
-  console.log("comment",comment);
+const ArticleComment = memo(({ comment, handleDeleteComment, user }) => {
   return (
     <div className="card">
       <div className="card-block">
@@ -23,19 +22,23 @@ const ArticleComment = memo(({ comment, handleDeleteComment }) => {
         <span className="date-posted">
           {new Date(comment?.createdAt).toLocaleDateString()}
         </span>
-        <span className="mod-options">
-          <i
-            className="ion-trash-a"
-            onClick={() => {
-              const isDelete = window.confirm(
-                "Are you sure delete this comment"
-              );
-              if (isDelete) {
-                handleDeleteComment(comment?.id);
-              }
-            }}
-          />
-        </span>
+        {user.username === comment?.author?.username ? (
+          <span className="mod-options">
+            <i
+              className="ion-trash-a"
+              onClick={() => {
+                const isDelete = window.confirm(
+                  "Are you sure delete this comment"
+                );
+                if (isDelete) {
+                  handleDeleteComment(comment?.id);
+                }
+              }}
+            />
+          </span>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ import ArticleComment from "./ArticleComment";
 import ArticleAuthorControl from "./ArticleAuthorControl";
 import {
   followUser,
+  fetchUser,
   getDataDetail,
   unFollowUser,
   addFavorite,
@@ -20,19 +21,25 @@ import InputComment from "./InputComment";
 function Articles() {
   const params = useParams();
   const [dataArticle, setDataArticle] = useState(null);
-  const { state } = useAuthContext();
-  const { user } = state;
   const [follow, setFollow] = useState();
   const [isFavorite, setIsFavorite] = useState(null);
   const [countFavorite, setCountFavorite] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [listComments, setListComments] = useState(null);
-  console.log("listComment", listComments);
+  const token = localStorage.getItem("token");
+  const [user, setUser] = useState({});
+
+  useEffect(() => {
+    fetchUser(token)
+      .then((data) => {
+        setUser(data.user);
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   useEffect(() => {
     getDataDetail(params.slug)
       .then((data) => {
-        console.log("data-slug-article", data);
         setDataArticle(data.article);
         setIsFavorite(data.article.favorited);
         setCountFavorite(data.article.favoritesCount);
@@ -214,6 +221,7 @@ function Articles() {
                 {listComments &&
                   listComments.map((comment, index) => (
                     <ArticleComment
+                      user={user}
                       author={dataArticle.author.username}
                       comment={comment}
                       key={index}

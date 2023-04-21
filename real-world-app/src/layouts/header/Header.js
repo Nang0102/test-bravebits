@@ -1,4 +1,5 @@
-import React from "react";
+import { fetchUser } from "actions/HttpsRequest";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import "../../App.css";
 
@@ -10,6 +11,19 @@ function Header() {
   const { profile } = useParams();
   const { state } = useAuthContext();
   const { isAuthenticated, user } = state;
+  // const token = localStorage.getItem("token");
+  // const [user, setUser] = useState({});
+  // console.log("isAuthenticated", isAuthenticated);
+
+  // useEffect(() => {
+  //   fetchUser(token)
+  //     .then((data) => {
+  //       console.log("data--header", data);
+  //       setUser(data.user);
+  //       console.log("usesr1111--hdd", user);
+  //     })
+  //     .catch((err) => console.log(err));
+  // }, []);
 
   return (
     <nav className="navbar navbar-light">
@@ -28,7 +42,7 @@ function Header() {
             </Link>
           </li>
 
-          {isAuthenticated && user ? (
+          {user && isAuthenticated ? (
             <>
               <li className="nav-item">
                 <Link
