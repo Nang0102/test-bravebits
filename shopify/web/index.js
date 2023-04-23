@@ -58,6 +58,7 @@ app.get("/api/products/create", async (_req, res) => {
 });
 
 app.use(shopify.cspHeaders());
+/// Thêm cacsc api ở đây.
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {

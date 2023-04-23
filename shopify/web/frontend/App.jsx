@@ -7,6 +7,7 @@ import {
   QueryProvider,
   PolarisProvider,
 } from "./components";
+import { Frame, Loading } from "@shopify/polaris";
 
 export default function App() {
   // Any .tsx or .jsx files in /pages will become a route
@@ -26,6 +27,7 @@ export default function App() {
                 },
               ]}
             />
+
             <Routes pages={pages} />
           </QueryProvider>
         </AppBridgeProvider>
