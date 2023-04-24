@@ -8,6 +8,7 @@ import shopify from "./shopify.js";
 import productCreator from "./product-creator.js";
 import GDPRWebhookHandlers from "./gdpr.js";
 
+// @ts-ignore
 const PORT = parseInt(process.env.BACKEND_PORT || process.env.PORT, 10);
 
 const STATIC_PATH =
@@ -26,6 +27,7 @@ app.get(
 );
 app.post(
   shopify.config.webhooks.path,
+  // @ts-ignore
   shopify.processWebhooks({ webhookHandlers: GDPRWebhookHandlers })
 );
 
@@ -59,6 +61,25 @@ app.get("/api/products/create", async (_req, res) => {
 
 app.use(shopify.cspHeaders());
 /// Thêm cacsc api ở đây.
+
+app.get("/api/pages", async (req, res) => {
+  const id = req.query.id;
+  const published_status = req.query.published_status;
+  if (id) {
+    let pagesData = await shopify.api.rest.Page.find({
+      session: res.locals.shopify.session,
+      // @ts-ignore
+      id,
+    });
+    res.status(200).send(pagesData);
+  } else {
+    let pagesData = await shopify.api.rest.Page.all({
+      session: res.locals.shopify.session,
+      published_status: published_status,
+    });
+    res.status(200).send(pagesData);
+  }
+});
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {

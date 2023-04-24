@@ -1,7 +1,7 @@
 import { Page } from "@shopify/polaris";
 import { Warning } from "./Warning";
 import React from "react";
-import { ResourceListFilters } from "./ResourceListFilters";
+import { ResourceListFilters } from "./resource-list-filter/ResourceListFilters";
 
 export function Home() {
   return (
