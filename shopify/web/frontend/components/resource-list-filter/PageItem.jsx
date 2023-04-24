@@ -1,6 +1,6 @@
 import { Badge, Text } from "@shopify/polaris";
-import React, { useEffect,useState } from "react";
-import { parserHTML } from "../../ulities/parseHTML";
+import React, { useEffect, useState } from "react";
+import { parserHTML } from "../../utilities/parseHTML";
 
 export function PageItem({ title, body_html, created_at, published_at }) {
   const [contentBody, setContentBody] = useState("");
@@ -32,7 +32,7 @@ export function PageItem({ title, body_html, created_at, published_at }) {
         </div>
       )}
       <Text as="p" variant="bodyMd" color="subdued" fontWeight="regular">
-      {new Date(created_at).toLocaleDateString()}
+        {new Date(created_at).toLocaleDateString()}
       </Text>
     </>
   );

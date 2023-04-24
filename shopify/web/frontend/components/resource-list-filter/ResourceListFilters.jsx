@@ -21,11 +21,12 @@ import {
 import { useState, useCallback } from "react";
 import { PageItem } from "./PageItem";
 import { TextFilter } from "./TextFilter";
+import { useQuery } from "react-query";
 
 export function ResourceListFilters() {
   const [visibleStatus, setVisibleStatus] = useState(null);
   const [queryValue, setQueryValue] = useState(undefined);
-  const  [selectedItems,setSelectedItems]=useState([])
+  const [selectedItems, setSelectedItems] = useState([]);
   const [saveActive, setSaveActive] = useState(false);
   const [sortActive, setSortActive] = useState(false);
   const [sortList, setSortList] = useState(null);
@@ -41,39 +42,42 @@ export function ResourceListFilters() {
   ]);
   const [selected, setSelected] = useState(0);
 
-  function handleTab(){
-    const newTabs= [...tabList];
-    if(newTabs.length !== 1){
-      newTabs.splice(1,1);
-      setTabList(newTabs)
-      setSelected(0)   
+  // function fetchStatus(){
+  //   const {isLoading,error,data}= useQuery("visibleStatus", ()=>{
+  //     fetch(`/api/pages?published_status=${visibleStatus}`)
+  //   })
+  // }
+
+  function handleTab() {
+    const newTabs = [...tabList];
+    if (newTabs.length !== 1) {
+      newTabs.splice(1, 1);
+      setTabList(newTabs);
+      setSelected(0);
     }
   }
-  function  handleMoreTabs(){
+  function handleMoreTabs() {
     const newTab = {
-      id: "customl-search",
+      id: "CUSTOM-SEARCH",
       content: "Custom search",
       accessibilityLabel: "Custom search",
-      panelID: "customl-search",
+      panelID: "CUSTOM-SEARCH",
     };
     const newTabs = [...tabList, newTab];
     setTabList(newTabs);
     setSelected(1);
   }
 
-  const handleTabChange = useCallback(
-    (selectedTabIndex) => {
-      if(selectedTabIndex===0){
-        setQueryValue("");
-      const  newTabs= [...tabList]
-      newTabs.splice(1)
-      setTabList(newTabs)
-      setSelected(selectedTabIndex)
-      handleVisibleStatusRemove()
-      }
-    },
-    [],
-  );
+  const handleTabChange = useCallback((selectedTabIndex) => {
+    if (selectedTabIndex === 0) {
+      setQueryValue("");
+      const newTabs = [...tabList];
+      newTabs.splice(1);
+      setTabList(newTabs);
+      setSelected(selectedTabIndex);
+      handleVisibleStatusRemove();
+    }
+  }, []);
 
   const handleSaveBtn = useCallback(() => {
     setSaveActive((saveActive) => !saveActive);
@@ -89,43 +93,39 @@ export function ResourceListFilters() {
     setSortList(value);
   }, []);
 
-  const handleVisibleStatusChange = useCallback(
-    ((value) => {
+  const handleVisibleStatusChange = useCallback((value) => {
     setIsLoading(true);
-      // setVisibleStatus(value)
-      setVisibleStatus(value)
-     handleMoreTabs()
-    }),[]
-  );
+    // setVisibleStatus(value)
+    setVisibleStatus(value);
+    handleMoreTabs();
+  }, []);
 
-  const handleVisibleStatusRemove = useCallback(
-    () =>{
-      setIsLoading(true)
-      setVisibleStatus(null)
-      handleTab()
+  const handleVisibleStatusRemove = useCallback(() => {
+    setIsLoading(true);
+    setVisibleStatus(null);
+    handleTab();
+  }, [tabList]);
+
+  const handleFiltersQueryChange = useCallback(
+    (value) => {
+      console.log("value", value);
+      setIsLoading(true);
+      setQueryValue(!value);
+      if (tabList.length === 1) {
+        handleMoreTabs();
+        setIsFocus();
+      }
+      if (value.trim() === "") {
+        handleTab();
+      }
     },
-    [tabList]
+    [queryValue]
   );
 
-  const handleFiltersQueryChange = useCallback((value) => {
-    setIsLoading(true)
-    setQueryValue(value);
-    if(tabList.length === 1){
-      handleMoreTabs()
-      setIsFocus()
-    }
-    if(value.trim() === ""){
-      handleTab()
-
-    }
-  }, [queryValue]);
-
-  const handleQueryValueRemove = useCallback(
-    () => {setQueryValue(undefined)
-      handleTab()
-    },
-    [tabList]
-  );
+  const handleQueryValueRemove = useCallback(() => {
+    setQueryValue(undefined);
+    handleTab();
+  }, [tabList]);
   const handleFiltersClearAll = useCallback(() => {
     handleVisibleStatusRemove();
     handleQueryValueRemove();
@@ -157,8 +157,8 @@ export function ResourceListFilters() {
           title="Visibility"
           titleHidden
           choices={[
-            { label: "Visible", value: "visible" },
-            { label: "Hidden", value: "hidden" },
+            { label: "Visible", value: "published" },
+            { label: "Hidden", value: "unpublished" },
           ]}
           selected={visibleStatus || []}
           onChange={handleVisibleStatusChange}
@@ -232,72 +232,74 @@ export function ResourceListFilters() {
       </div>
     </Filters>
   );
+  const items = [
+    {
+      id: 108828309,
+      title: "Sample Page",
+      shop_id: 548380009,
+      handle: "sample",
+      body_html: "<p>this is a <strong>sample</strong> page.</p>",
+      author: "Dennis",
+      created_at: "2008-07-15T20:00:00-04:00",
+      updated_at: "2008-07-16T20:00:00-04:00",
+      published_at: null,
+      template_suffix: null,
+      admin_graphql_api_id: "gid://shopify/OnlineStorePage/108828309",
+    },
+    {
+      id: 169524623,
+      title: "Store hours",
+      shop_id: 548380009,
+      handle: "store-hours",
+      body_html: "<p>We never close.</p>",
+      author: "Jobs",
+      created_at: "2013-12-31T19:00:00-05:00",
+      updated_at: "2013-12-31T19:00:00-05:00",
+      published_at: "2014-02-01T19:00:00-05:00",
+      template_suffix: null,
+      admin_graphql_api_id: "gid://shopify/OnlineStorePage/169524623",
+    },
+  ];
 
   return (
     <div style={{ height: "568px" }}>
-      <Tabs tabs={tabList} selected={selected} onSelect={handleTabChange}>
-      </Tabs>
+      <Tabs
+        tabs={tabList}
+        selected={selected}
+        onSelect={handleTabChange}
+      ></Tabs>
       <LegacyCard>
         <ResourceList
           resourceName={{ singular: "page", plural: "pages" }}
           filterControl={filterControl}
           selectedItems={selectedItems}
           onSelectionChange={setSelectedItems}
-          items={
-             [
-              {
-                "id": 108828309,
-                "title": "Sample Page",
-                "shop_id": 548380009,
-                "handle": "sample",
-                "body_html": "<p>this is a <strong>sample</strong> page.</p>",
-                "author": "Dennis",
-                "created_at": "2008-07-15T20:00:00-04:00",
-                "updated_at": "2008-07-16T20:00:00-04:00",
-                "published_at": null,
-                "template_suffix": null,
-                "admin_graphql_api_id": "gid://shopify/OnlineStorePage/108828309"
-              },
-              {
-                "id": 169524623,
-                "title": "Store hours",
-                "shop_id": 548380009,
-                "handle": "store-hours",
-                "body_html": "<p>We never close.</p>",
-                "author": "Jobs",
-                "created_at": "2013-12-31T19:00:00-05:00",
-                "updated_at": "2013-12-31T19:00:00-05:00",
-                "published_at": "2014-02-01T19:00:00-05:00",
-                "template_suffix": null,
-                "admin_graphql_api_id": "gid://shopify/OnlineStorePage/169524623"
-              }
-            ]
-          }
+          items={items}
           renderItem={(item) => {
-            const { id, title, created_at, body_html, published_at, handle } = item;
-             const shortcutActions = handle
-            ? [
-                {
-                  content: "View Page",
-                  url: `https://practiceapp222222.myshopify.com/pages/${handle}`,
-                },
-              ]
-            : null;
+            const { id, title, created_at, body_html, published_at, handle } =
+              item;
+            const shortcutActions = handle
+              ? [
+                  {
+                    content: "View Page",
+                    url: `https://practiceapp222222.myshopify.com/pages/${handle}`,
+                  },
+                ]
+              : null;
             return (
-              <ResourceItem id={id} shortcutActions={shortcutActions} >
+              <ResourceItem id={id} shortcutActions={shortcutActions}>
                 <PageItem
-                body_html={body_html}
-                created_at={created_at}
-                visibleStatus={visibleStatus}
-                title={title}
-                published_at={published_at}
+                  body_html={body_html}
+                  created_at={created_at}
+                  visibleStatus={visibleStatus}
+                  title={title}
+                  published_at={published_at}
                 />
               </ResourceItem>
             );
           }}
         />
       </LegacyCard>
-
     </div>
   );
 
