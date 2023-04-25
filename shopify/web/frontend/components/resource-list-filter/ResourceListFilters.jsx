@@ -18,6 +18,7 @@ import {
   SortMinor,
   StarOutlineMinor,
 } from "@shopify/polaris-icons";
+import { STORE_URL } from "../utilities/constant";
 import { useState, useCallback } from "react";
 import { PageItem } from "./PageItem";
 import { TextFilter } from "./TextFilter";
@@ -282,7 +283,7 @@ export function ResourceListFilters() {
               ? [
                   {
                     content: "View Page",
-                    url: `https://practiceapp222222.myshopify.com/pages/${handle}`,
+                    url: `{${STORE_URL}/pages/${handle}`,
                   },
                 ]
               : null;
