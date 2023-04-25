@@ -115,7 +115,6 @@ function PageContent() {
                         title: "Paragraph",
                         items: [
                           {
-                            active: true,
                             content: "Heading 1",
                           },
                           { content: "Heading 2" },

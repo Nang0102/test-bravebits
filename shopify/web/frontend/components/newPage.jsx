@@ -6,6 +6,7 @@ import {
   Form,
   Layout,
   ChoiceList,
+  Button,
 } from "@shopify/polaris";
 import React, { useState, useCallback } from "react";
 import { DateSelector } from "./DatePicker";
@@ -66,8 +67,22 @@ export function NewPage() {
                 selected={visibleStatus}
                 onChange={handleVisibleChange}
               />
-              <DateSelector />
-              <TimePickerSelector />
+              <div>
+                <DateSelector />
+                <TimePickerSelector />
+              </div>
+              <div style={{ marginTop: "16px" }}>
+                <Button
+                  plain
+                  // onClick={() => {
+                  //   setIsSetDate(!isSetDate);
+                  //   setVisibleStatus(["Hidden"]);
+                  // }}
+                >
+                  Set visibility date
+                  {/* {isSetDate ? "Clear date..." : "Set visibility date"} */}
+                </Button>
+              </div>
             </LegacyCard>
           </Layout.Section>
         </Layout>
