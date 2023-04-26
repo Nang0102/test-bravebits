@@ -15,7 +15,7 @@ import {
   StarOutlineMinor,
 } from "@shopify/polaris-icons";
 import { STORE_URL } from "../../utilities/constant";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { PageItem } from "./PageItem";
 import { EmptyPage } from "../EmptyPage";
 import { TextFilter } from "./TextFilter";
@@ -72,14 +72,22 @@ export function ResourceListFilters() {
         setDataPages(dataRemaining);
       },
       onError: (error) => {
-        console.log("loi");
         console.log(error);
       },
     },
   });
-
   const refetch = appQuery.refetch;
-  // console.log("refetch", refetch);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch(
+        `/api/pages?published_status=${visibleStatus}`
+      );
+      const data = await response.json();
+      setDataPages(data.data);
+    };
+    fetchData();
+  }, [visibleStatus]);
 
   const handleHiddenPage = () => {};
 
@@ -127,11 +135,39 @@ export function ResourceListFilters() {
     setSortList(value);
   }, []);
 
-  const handleVisibleStatusChange = useCallback((value) => {
-    setIsLoading(true);
-    setVisibleStatus(value);
-    handleMoreTabs();
-  }, []);
+  const handleVisibleStatusChange = useCallback(
+    (status) => {
+      console.log("visible", status);
+      setIsLoading(true);
+      setVisibleStatus(status);
+      let filterData;
+      if (status === "visible") {
+        filterData = dataPages.filter((page) => {
+          console.log("visible1111", page.published_at);
+          page.published_at && page.published_at !== null;
+        });
+      } else {
+        filterData = dataPages.filter((page) => {
+          console.log("hidden", page.published_at);
+
+          !page.published_at || page.published_at === null;
+        });
+      }
+      setDataPages(filterData);
+      handleMoreTabs();
+    },
+    [dataPages]
+  );
+  // const handleVisibleStatusChange = useCallback((status) => {
+  //   setVisibleStatus(status);
+  // }, []);
+
+  // const filteredPages = useMemo(() => {
+  //   if (!dataPages) {
+  //     return [];
+  //   }
+  //   return
+  // }, [dataPages, visibleStatus]);
 
   const handleVisibleStatusRemove = useCallback(() => {
     setIsLoading(true);
