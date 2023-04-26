@@ -60,7 +60,7 @@ export function DateSelector() {
   }, [selectedDate]);
   return (
     <VerticalStack inlineAlign="center" gap="4">
-      <Box minWidth="276px" padding={{ xs: 2 }}>
+      <Box minWidth="100%" paddingBlockEnd={{ xs: 2 }}>
         <Popover
           active={visible}
           autofocusTarget="none"

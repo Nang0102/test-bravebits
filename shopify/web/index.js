@@ -65,6 +65,7 @@ app.use(shopify.cspHeaders());
 app.get("/api/pages", async (req, res) => {
   const id = req.query.id;
   const published_status = req.query.published_status;
+  console.log("id", id);
   if (id) {
     let pagesData = await shopify.api.rest.Page.find({
       session: res.locals.shopify.session,
@@ -77,9 +78,14 @@ app.get("/api/pages", async (req, res) => {
       session: res.locals.shopify.session,
       published_status: published_status,
     });
+    console.log("pagesData", pagesData);
     res.status(200).send(pagesData);
   }
 });
+
+// app.put('/api/pages', async(req,res)=>{
+//   const ids=
+// })
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
 app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {

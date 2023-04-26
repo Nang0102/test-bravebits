@@ -2,7 +2,7 @@ import { useNavigate } from "@shopify/app-bridge-react";
 import { LegacyCard, EmptyState } from "@shopify/polaris";
 import React from "react";
 
-export function EmptyStatePage() {
+export function EmptyPage() {
   const navigate = useNavigate();
 
   return (

@@ -7,6 +7,7 @@ import {
   Layout,
   ChoiceList,
   Button,
+  Select,
 } from "@shopify/polaris";
 import React, { useState, useCallback } from "react";
 import { DateSelector } from "./DatePicker";
@@ -17,6 +18,14 @@ import { TimePickerSelector } from "./TimePicker";
 export function NewPage() {
   const [value, setValue] = useState("");
   const [visibleStatus, setVisibleStatus] = useState("Visible");
+  const [selected, setSelected] = useState("today");
+
+  const handleSelectChange = useCallback((value) => setSelected(value), []);
+
+  const options = [
+    { label: "Default page", value: "Default page" },
+    { label: "contact", value: "contact" },
+  ];
 
   const handleVisibleChange = useCallback(
     (value) => setVisibleStatus(value),
@@ -84,9 +93,22 @@ export function NewPage() {
                 </Button>
               </div>
             </LegacyCard>
+            <LegacyCard title="Online store" sectioned>
+              <Select
+                label="Theme template"
+                options={options}
+                onChange={handleSelectChange}
+                value={selected}
+              />
+              <p>
+                Assign a template from your current theme to define how the page
+                is displayed.
+              </p>
+            </LegacyCard>
           </Layout.Section>
         </Layout>
       </Form>
+
       <PageActions
         primaryAction={{ content: "Save", disabled: true }}
         secondaryActions={[{ content: "Cancel" }]}

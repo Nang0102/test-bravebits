@@ -1,31 +1,32 @@
 import {
   ChoiceList,
-  TextField,
-  RangeSlider,
   LegacyCard,
   ResourceList,
-  LegacyFilters,
-  Avatar,
-  Text,
   Button,
   Filters,
   Popover,
   ResourceItem,
   Tabs,
+  Spinner,
 } from "@shopify/polaris";
 import {
   FavoriteMajor,
   SortMinor,
   StarOutlineMinor,
 } from "@shopify/polaris-icons";
-import { STORE_URL } from "../utilities/constant";
+import { STORE_URL } from "../../utilities/constant";
 import { useState, useCallback } from "react";
 import { PageItem } from "./PageItem";
+import { EmptyPage } from "../EmptyPage";
 import { TextFilter } from "./TextFilter";
-import { useQuery } from "react-query";
+import { useAppQuery } from "../../hooks/useAppQuery";
+import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
 
 export function ResourceListFilters() {
+  const fetch = useAuthenticatedFetch();
   const [visibleStatus, setVisibleStatus] = useState(null);
+  const [dataPages, setDataPages] = useState(undefined);
+  const [isEmptyData, setIsEmptyData] = useState(true);
   const [queryValue, setQueryValue] = useState(undefined);
   const [selectedItems, setSelectedItems] = useState([]);
   const [saveActive, setSaveActive] = useState(false);
@@ -43,11 +44,44 @@ export function ResourceListFilters() {
   ]);
   const [selected, setSelected] = useState(0);
 
-  // function fetchStatus(){
-  //   const {isLoading,error,data}= useQuery("visibleStatus", ()=>{
-  //     fetch(`/api/pages?published_status=${visibleStatus}`)
-  //   })
-  // }
+  const appQuery = useAppQuery({
+    url: `/api/pages?published_status=${visibleStatus}`,
+    reactQueryOptions: {
+      onSuccess: (data) => {
+        console.log("data", data);
+        setIsLoading(false);
+        if (data.data.length === 0) {
+          setIsEmptyData(true);
+        } else {
+          setIsEmptyData(false);
+        }
+        let dataRemaining;
+        if (queryValue !== "" && queryValue !== undefined) {
+          dataRemaining = data.data.filter((page) => {
+            page.title.toLowerCase().includes(queryValue.toLowerCase());
+          });
+        } else {
+          let dataDetail = data.data;
+          dataRemaining = [...dataDetail];
+        }
+
+        if (sortList) {
+          dataRemaining = sortData(dataRemaining, sortList.toString());
+        }
+        console.log("dataRemain", dataRemaining);
+        setDataPages(dataRemaining);
+      },
+      onError: (error) => {
+        console.log("loi");
+        console.log(error);
+      },
+    },
+  });
+
+  const refetch = appQuery.refetch;
+  // console.log("refetch", refetch);
+
+  const handleHiddenPage = () => {};
 
   function handleTab() {
     const newTabs = [...tabList];
@@ -90,13 +124,11 @@ export function ResourceListFilters() {
 
   const handleSortChange = useCallback((value) => {
     setIsLoading(true);
-    // refetch();
     setSortList(value);
   }, []);
 
   const handleVisibleStatusChange = useCallback((value) => {
     setIsLoading(true);
-    // setVisibleStatus(value)
     setVisibleStatus(value);
     handleMoreTabs();
   }, []);
@@ -158,12 +190,11 @@ export function ResourceListFilters() {
           title="Visibility"
           titleHidden
           choices={[
-            { label: "Visible", value: "published" },
-            { label: "Hidden", value: "unpublished" },
+            { label: "Visible", value: "Visible" },
+            { label: "Hidden", value: "Hidden" },
           ]}
           selected={visibleStatus || []}
           onChange={handleVisibleStatusChange}
-          allowMultiple
         />
       ),
       shortcut: true,
@@ -233,74 +264,67 @@ export function ResourceListFilters() {
       </div>
     </Filters>
   );
-  const items = [
-    {
-      id: 108828309,
-      title: "Sample Page",
-      shop_id: 548380009,
-      handle: "sample",
-      body_html: "<p>this is a <strong>sample</strong> page.</p>",
-      author: "Dennis",
-      created_at: "2008-07-15T20:00:00-04:00",
-      updated_at: "2008-07-16T20:00:00-04:00",
-      published_at: null,
-      template_suffix: null,
-      admin_graphql_api_id: "gid://shopify/OnlineStorePage/108828309",
-    },
-    {
-      id: 169524623,
-      title: "Store hours",
-      shop_id: 548380009,
-      handle: "store-hours",
-      body_html: "<p>We never close.</p>",
-      author: "Jobs",
-      created_at: "2013-12-31T19:00:00-05:00",
-      updated_at: "2013-12-31T19:00:00-05:00",
-      published_at: "2014-02-01T19:00:00-05:00",
-      template_suffix: null,
-      admin_graphql_api_id: "gid://shopify/OnlineStorePage/169524623",
-    },
-  ];
 
   return (
-    <div style={{ height: "568px" }}>
-      <Tabs
-        tabs={tabList}
-        selected={selected}
-        onSelect={handleTabChange}
-      ></Tabs>
-      <LegacyCard>
-        <ResourceList
-          resourceName={{ singular: "page", plural: "pages" }}
-          filterControl={filterControl}
-          selectedItems={selectedItems}
-          onSelectionChange={setSelectedItems}
-          items={items}
-          renderItem={(item) => {
-            const { id, title, created_at, body_html, published_at, handle } =
-              item;
-            const shortcutActions = handle
-              ? [
-                  {
-                    content: "View Page",
-                    url: `{${STORE_URL}/pages/${handle}`,
-                  },
-                ]
-              : null;
-            return (
-              <ResourceItem id={id} shortcutActions={shortcutActions}>
-                <PageItem
-                  body_html={body_html}
-                  created_at={created_at}
-                  visibleStatus={visibleStatus}
-                  title={title}
-                  published_at={published_at}
-                />
-              </ResourceItem>
-            );
+    <div>
+      {dataPages === undefined ? (
+        <div
+          style={{
+            width: "100%",
+            margin: "20px auto",
+            textAlign: "center",
           }}
-        />
-      </LegacyCard>
+        >
+          <Spinner size="large" />
+        </div>
+      ) : isEmptyData && !visibleStatus ? (
+        <EmptyPage />
+      ) : (
+        <div>
+          <Tabs tabs={tabList} selected={selected} onSelect={handleTabChange}>
+            <LegacyCard>
+              <ResourceList
+                resourceName={{ singular: "page", plural: "pages" }}
+                // loading={isLoading ? true : false}
+                filterControl={filterControl}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
+                items={dataPages}
+                renderItem={(item) => {
+                  const {
+                    id,
+                    title,
+                    created_at,
+                    body_html,
+                    published_at,
+                    handle,
+                  } = item;
+                  const shortcutActions = handle
+                    ? [
+                        {
+                          content: "View Page",
+                          url: `{${STORE_URL}/pages/${handle}`,
+                        },
+                      ]
+                    : null;
+                  return (
+                    <ResourceItem id={id} shortcutActions={shortcutActions}>
+                      <PageItem
+                        body_html={body_html}
+                        shortcutActions={shortcutActions}
+                        created_at={created_at}
+                        visibleStatus={visibleStatus}
+                        title={title}
+                        published_at={published_at}
+                      />
+                    </ResourceItem>
+                  );
+                }}
+              />
+            </LegacyCard>
+          </Tabs>
+        </div>
+      )}
     </div>
   );
 
