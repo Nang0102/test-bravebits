@@ -38,14 +38,14 @@ app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
 
-app.get("/api/products/count", async (_req, res) => {
+app.get("/api/products/count", async (req, res) => {
   const countData = await shopify.api.rest.Product.count({
     session: res.locals.shopify.session,
   });
   res.status(200).send(countData);
 });
 
-app.get("/api/products/create", async (_req, res) => {
+app.get("/api/products/create", async (req, res) => {
   let status = 200;
   let error = null;
 
@@ -65,7 +65,6 @@ app.use(shopify.cspHeaders());
 app.get("/api/pages", async (req, res) => {
   const id = req.query.id;
   const published_status = req.query.published_status;
-  console.log("id", id);
   if (id) {
     let pagesData = await shopify.api.rest.Page.find({
       session: res.locals.shopify.session,
@@ -83,12 +82,56 @@ app.get("/api/pages", async (req, res) => {
   }
 });
 
-// app.put('/api/pages', async(req,res)=>{
-//   const ids=
-// })
+app.put("/api/pages", async (req, res) => {
+  // @ts-ignore
+  const ids = req.query.id?.split(",");
+  const { title, body_html, published } = req.body;
+
+  if (title || body_html) {
+    const pageData = new shopify.api.rest.Page({
+      session: res.locals.shopify.session,
+    });
+    pageData.id = ids[0];
+    pageData.title = title;
+    pageData.published = published;
+    pageData.body_html = body_html;
+    await pageData.save({
+      update: true,
+    });
+    res.status(200).send(pageData);
+  } else if (ids) {
+    const updatePageData = ids.map(async (id) => {
+      const pageData = new shopify.api.rest.Page({
+        session: res.locals.shopify.session,
+      });
+      pageData.id = id;
+      pageData.published = published;
+
+      await pageData.save({ update: true });
+    });
+    // @ts-ignore
+    const pagesData = await Promise.all(updatePageData);
+    res.status(200).send(pagesData);
+  }
+});
+
+app.delete("/api/pages", async (req, res) => {
+  // @ts-ignore
+  const ids = req.query.id?.split(",");
+  const deletePage = ids.map((id) =>
+    // @ts-ignore
+    shopify.api.rest.Page.delete({
+      session: res.locals.shopify.session,
+      id: id,
+    })
+  );
+  const deletePagesData = await Promise.all(deletePage);
+  res.status(200).send(deletePagesData);
+});
+
 app.use(serveStatic(STATIC_PATH, { index: false }));
 
-app.use("/*", shopify.ensureInstalledOnShop(), async (_req, res, _next) => {
+app.use("/*", shopify.ensureInstalledOnShop(), async (req, res, _next) => {
   return res
     .status(200)
     .set("Content-Type", "text/html")
