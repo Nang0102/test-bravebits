@@ -7,7 +7,11 @@ import { ResourceListFilters } from "./resource-list-filter/ResourceListFilters"
 
 export function Home() {
   return (
-    <Page fullWidth title="Pages" primaryAction={{ content: "Add Page" }}>
+    <Page
+      fullWidth
+      title="Pages"
+      primaryAction={{ content: "Add Page", onAction: () => navigate("/new") }}
+    >
       <Warning />
       <div style={{ margin: "10px 0" }}>
         <ResourceListFilters />

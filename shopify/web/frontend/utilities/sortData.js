@@ -1,16 +1,16 @@
-function sortData(data, sortOption) {
+export function sortData(data, sortOption) {
   switch (sortOption) {
-    case "title-a-z":
+    case "az":
       return data.sort((a, b) => a.title.localeCompare(b.title));
-    case "title-z-a":
+    case "za":
       return data.sort((a, b) => b.title.localeCompare(a.title));
-    case "created_at-newest":
+    case "oldest":
       return data.sort(
-        (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        (a, b) => new Date(a.updated_at) - new Date(b.updated_at)
       );
-    case "created_at-oldest":
+    case "oldest":
       return data.sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
       );
     default:
       return data;

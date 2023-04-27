@@ -23,12 +23,15 @@ import { useAppQuery } from "../../hooks/useAppQuery";
 import { useAuthenticatedFetch } from "../../hooks/useAuthenticatedFetch";
 import { ToastMessage } from "../Toast";
 import { ModalConfirm } from "../ModalConfirm";
+import { sortData } from "../../utilities/sortData";
 
 export function ResourceListFilters() {
   const fetch = useAuthenticatedFetch();
   const [dataPages, setDataPages] = useState(undefined);
   const [queryValue, setQueryValue] = useState(undefined);
   const [visibleStatus, setVisibleStatus] = useState(null);
+  const [sortActive, setSortActive] = useState(false);
+  const [sortList, setSortList] = useState(null);
   const [isEmptyData, setIsEmptyData] = useState(true);
   const [selectedItems, setSelectedItems] = useState([]);
   const [isFocus, setIsFocus] = useState(false);
@@ -57,7 +60,6 @@ export function ResourceListFilters() {
     url: `/api/pages?published_status=${visibleStatus}`,
     reactQueryOptions: {
       onSuccess: (data) => {
-        console.log("data", data);
         setIsLoading(false);
         if (data.data.length === 0) {
           setIsEmptyData(true);
@@ -66,10 +68,10 @@ export function ResourceListFilters() {
         }
         let dataRemaining;
         if (queryValue !== "" && queryValue !== undefined) {
-          console.log("queryValue", queryValue);
           dataRemaining = data.data.filter((page) => {
-            page.title.toLowerCase().includes(queryValue.toLowerCase());
+            return page.title.toLowerCase().includes(queryValue.toLowerCase());
           });
+          console.log("dataQuery", dataRemaining);
         } else {
           let dataDetail = data.data;
           dataRemaining = [...dataDetail];
@@ -79,7 +81,6 @@ export function ResourceListFilters() {
           dataRemaining = sortData(dataRemaining, sortList.toString());
         }
         setDataPages(dataRemaining);
-        console.log("dataRemain", dataRemaining);
       },
       onError: (error) => {
         console.log(error);
@@ -89,8 +90,6 @@ export function ResourceListFilters() {
 
   const handleHiddenPages = async (status) => {
     const { published } = status;
-    console.log("status", status);
-    console.log("sele", selectedItems);
     setIsLoading(true);
     const res = await fetch(`/api/pages?id=${selectedItems.toString()}`, {
       method: "PUT",
@@ -101,8 +100,6 @@ export function ResourceListFilters() {
         published: published,
       }),
     });
-    console.log("response", res);
-
     if (res.ok) {
       setSelectedItems([]);
       refetch();
@@ -113,7 +110,6 @@ export function ResourceListFilters() {
           selectedItems.length
         } ${selectedItems.length === 1 ? "page" : "pages"}`,
       });
-      console.log("toast", toast);
     } else {
       console.log("NOT OK");
     }
@@ -124,7 +120,6 @@ export function ResourceListFilters() {
       method: "DELETE",
     });
 
-    console.log("resdelete", res);
     if (res.ok) {
       refetch();
       setConfirmModal({
@@ -179,7 +174,6 @@ export function ResourceListFilters() {
   }, []);
 
   const handleVisibleStatusChange = useCallback((status) => {
-    console.log("visible--handlestatusChange", status);
     setIsLoading(true);
     setVisibleStatus(status);
     handleMoreTabs();
@@ -193,12 +187,13 @@ export function ResourceListFilters() {
 
   const handleFiltersQueryChange = useCallback(
     (value) => {
+      console.log("value", value);
       setIsLoading(true);
       refetch();
       setQueryValue(value);
       if (tabList.length === 1) {
         handleMoreTabs();
-        setIsFocus();
+        setIsFocus(true);
       }
       if (value.trim() === "") {
         handleTab();
@@ -275,14 +270,14 @@ export function ResourceListFilters() {
     </Button>
   );
 
-  const [sortActive, setSortActive] = useState(false);
-  const [sortList, setSortList] = useState(null);
   const handleSortBtn = useCallback(() => {
     setSortActive((sortActive) => !sortActive);
   }, []);
 
   const handleSortChange = useCallback((value) => {
+    console.log("value sort", value);
     setIsLoading(true);
+    refetch();
     setSortList(value);
   }, []);
 
@@ -398,7 +393,7 @@ export function ResourceListFilters() {
                 <ResourceList
                   resourceName={{ singular: "page", plural: "pages" }}
                   selectable
-                  // loading={isLoading ? true : false}
+                  loading={isLoading ? true : false}
                   bulkActions={bulkActions}
                   filterControl={filterControl}
                   selectedItems={selectedItems}
