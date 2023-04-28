@@ -1,21 +1,23 @@
-import { Layout, Loading } from "@shopify/polaris";
-import { TitleBar } from "@shopify/app-bridge-react";
-import { Home } from "../components";
-
+import { Page } from "@shopify/polaris";
+import { useNavigate } from "@shopify/app-bridge-react";
+import React from "react";
+import { ResourceListFilters, Warning } from "../components";
 export default function HomePage() {
+  const navigate = useNavigate();
   return (
-    <Home>
-      {/* <Loading /> */}
-      {/* <Layout>
-        <TitleBar
-          title="Page name"
-          primaryAction={{
-            size: "large",
-            content: "Add page",
-            onAction: () => console.log("Primary action"),
-          }}
-        />
-      </Layout> */}
-    </Home>
+    <Page
+      fullWidth
+      title="Pages"
+      primaryAction={{
+        content: "Add Page",
+        onAction: () => navigate(`/new`),
+      }}
+    >
+      <Warning />
+      <div style={{ margin: "10px 0" }}>
+        <ResourceListFilters />
+        {/* <PageContent/> */}
+      </div>
+    </Page>
   );
 }

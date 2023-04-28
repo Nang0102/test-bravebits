@@ -25,7 +25,7 @@ import { MdOutlineFormatColorText } from "react-icons/md";
 import { TypeMinor } from "@shopify/polaris-icons";
 import { convertHLS } from "../utilities/convertHLS";
 
-function PageContent() {
+export function PageContent() {
   const [activeHeading, setActiveheading] = useState(true);
   const [activeAlign, setActiveAlign] = useState(true);
   const [activePickColor, setActivePickColor] = useState(true);
@@ -288,5 +288,3 @@ function PageContent() {
     </div>
   );
 }
-
-export default PageContent;

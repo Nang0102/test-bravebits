@@ -4,7 +4,7 @@ export function sortData(data, sortOption) {
       return data.sort((a, b) => a.title.localeCompare(b.title));
     case "za":
       return data.sort((a, b) => b.title.localeCompare(a.title));
-    case "oldest":
+    case "newest":
       return data.sort(
         (a, b) => new Date(a.updated_at) - new Date(b.updated_at)
       );

@@ -21,7 +21,7 @@ export function ModalConfirm({ confirmModal, setConfirmModal }) {
             confirmModal.onConfirm();
           },
           destructive: true,
-          //   loading: confirmModal.loading,
+          loading: confirmModal.loading,
         }}
         secondaryActions={[
           {

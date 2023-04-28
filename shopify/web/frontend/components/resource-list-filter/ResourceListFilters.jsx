@@ -60,6 +60,7 @@ export function ResourceListFilters() {
     url: `/api/pages?published_status=${visibleStatus}`,
     reactQueryOptions: {
       onSuccess: (data) => {
+        console.log("data", data);
         setIsLoading(false);
         if (data.data.length === 0) {
           setIsEmptyData(true);
@@ -68,10 +69,10 @@ export function ResourceListFilters() {
         }
         let dataRemaining;
         if (queryValue !== "" && queryValue !== undefined) {
+          console.log("queryValue", queryValue);
           dataRemaining = data.data.filter((page) => {
             return page.title.toLowerCase().includes(queryValue.toLowerCase());
           });
-          console.log("dataQuery", dataRemaining);
         } else {
           let dataDetail = data.data;
           dataRemaining = [...dataDetail];
@@ -81,6 +82,7 @@ export function ResourceListFilters() {
           dataRemaining = sortData(dataRemaining, sortList.toString());
         }
         setDataPages(dataRemaining);
+        console.log("dataRemain", dataRemaining);
       },
       onError: (error) => {
         console.log(error);
@@ -90,6 +92,8 @@ export function ResourceListFilters() {
 
   const handleHiddenPages = async (status) => {
     const { published } = status;
+    console.log("status", status);
+    console.log("selectedItems", selectedItems);
     setIsLoading(true);
     const res = await fetch(`/api/pages?id=${selectedItems.toString()}`, {
       method: "PUT",
@@ -100,6 +104,8 @@ export function ResourceListFilters() {
         published: published,
       }),
     });
+    console.log("response", res);
+
     if (res.ok) {
       setSelectedItems([]);
       refetch();
@@ -110,6 +116,7 @@ export function ResourceListFilters() {
           selectedItems.length
         } ${selectedItems.length === 1 ? "page" : "pages"}`,
       });
+      console.log("toast", toast);
     } else {
       console.log("NOT OK");
     }
@@ -120,6 +127,7 @@ export function ResourceListFilters() {
       method: "DELETE",
     });
 
+    console.log("resdelete", res);
     if (res.ok) {
       refetch();
       setConfirmModal({
@@ -147,6 +155,7 @@ export function ResourceListFilters() {
       setSelected(0);
     }
   }
+
   function handleMoreTabs() {
     const newTab = {
       id: "CUSTOM-SEARCH",
@@ -174,6 +183,7 @@ export function ResourceListFilters() {
   }, []);
 
   const handleVisibleStatusChange = useCallback((status) => {
+    console.log("visible--handlestatusChange", status);
     setIsLoading(true);
     setVisibleStatus(status);
     handleMoreTabs();
@@ -187,7 +197,6 @@ export function ResourceListFilters() {
 
   const handleFiltersQueryChange = useCallback(
     (value) => {
-      console.log("value", value);
       setIsLoading(true);
       refetch();
       setQueryValue(value);
@@ -207,6 +216,7 @@ export function ResourceListFilters() {
     setQueryValue(undefined);
     handleTab();
   }, [tabList]);
+
   const handleFiltersClearAll = useCallback(() => {
     handleVisibleStatusRemove();
     handleQueryValueRemove();
@@ -275,7 +285,6 @@ export function ResourceListFilters() {
   }, []);
 
   const handleSortChange = useCallback((value) => {
-    console.log("value sort", value);
     setIsLoading(true);
     refetch();
     setSortList(value);
@@ -389,62 +398,60 @@ export function ResourceListFilters() {
         ) : (
           <div>
             <Tabs tabs={tabList} selected={selected} onSelect={handleTabChange}>
-              <LegacyCard>
-                <ResourceList
-                  resourceName={{ singular: "page", plural: "pages" }}
-                  selectable
-                  loading={isLoading ? true : false}
-                  bulkActions={bulkActions}
-                  filterControl={filterControl}
-                  selectedItems={selectedItems}
-                  onSelectionChange={setSelectedItems}
-                  items={dataPages}
-                  renderItem={(item) => {
-                    const {
-                      id,
-                      title,
-                      created_at,
-                      body_html,
-                      published_at,
-                      handle,
-                    } = item;
-                    const shortcutActions = handle
-                      ? [
-                          {
-                            content: "View Page",
-                            url: `{${STORE_URL}/pages/${handle}`,
-                          },
-                        ]
-                      : null;
-                    return (
-                      <ResourceItem
+              <ResourceList
+                resourceName={{ singular: "page", plural: "pages" }}
+                selectable
+                loading={isLoading ? true : false}
+                bulkActions={bulkActions}
+                filterControl={filterControl}
+                selectedItems={selectedItems}
+                onSelectionChange={setSelectedItems}
+                items={dataPages}
+                renderItem={(item) => {
+                  const {
+                    id,
+                    title,
+                    created_at,
+                    body_html,
+                    published_at,
+                    handle,
+                  } = item;
+                  const shortcutActions = handle
+                    ? [
+                        {
+                          content: "View Page",
+                          url: `{${STORE_URL}/pages/${handle}`,
+                        },
+                      ]
+                    : null;
+                  return (
+                    <ResourceItem
+                      id={id}
+                      shortcutActions={shortcutActions}
+                      url={`/${id}`}
+                    >
+                      <PageItem
                         id={id}
+                        body_html={body_html}
                         shortcutActions={shortcutActions}
-                        url={`/${id}`}
-                      >
-                        <PageItem
-                          id={id}
-                          body_html={body_html}
-                          shortcutActions={shortcutActions}
-                          created_at={created_at}
-                          visibleStatus={visibleStatus}
-                          title={title}
-                          published_at={published_at}
-                        />
-                      </ResourceItem>
-                    );
-                  }}
+                        created_at={created_at}
+                        visibleStatus={visibleStatus}
+                        title={title}
+                        published_at={published_at}
+                      />
+                    </ResourceItem>
+                  );
+                }}
+              />
+              {toast.isOpen && (
+                <ToastMessage toast={toast} setToast={setToast} />
+              )}
+              {confirmModal.isOpen && (
+                <ModalConfirm
+                  confirmModal={confirmModal}
+                  setConfirmModal={setConfirmModal}
                 />
-                {toast.isOpen && (
-                  <ToastMessage toast={toast} setToast={setToast} />
-                )}
-                {confirmModal.isOpen && (
-                  <ModalConfirm
-                    confirmModal={confirmModal}
-                    setConfirmModal={setConfirmModal}
-                  />
-                )}
-              </LegacyCard>
+              )}
             </Tabs>
           </div>
         )}

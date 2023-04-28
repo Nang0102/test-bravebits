@@ -62,6 +62,18 @@ app.get("/api/products/create", async (req, res) => {
 app.use(shopify.cspHeaders());
 /// Thêm cacsc api ở đây.
 
+app.post("/api/pages", async (req, res) => {
+  const data = req.body.page;
+  const pagesData = new shopify.api.rest.Page({
+    session: res.locals.shopify.session,
+  });
+  pagesData.title = data?.title;
+  pagesData.body_html = data?.body_html || "";
+  pagesData.published = data?.published;
+  await pagesData.save({ update: true });
+  res.status(200).send(pagesData);
+});
+
 app.get("/api/pages", async (req, res) => {
   const id = req.query.id;
   const published_status = req.query.published_status;
@@ -106,7 +118,6 @@ app.put("/api/pages", async (req, res) => {
       });
       pageData.id = id;
       pageData.published = published;
-
       await pageData.save({ update: true });
     });
     // @ts-ignore
