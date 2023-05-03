@@ -9,19 +9,39 @@ import {
   Button,
   Select,
   HorizontalGrid,
+  Collapsible,
 } from "@shopify/polaris";
 import React, { useState, useCallback } from "react";
 import {
   DateSelector,
+  ModalConfirm,
   PageContent,
   SearchEngine,
   TimePickerSelector,
 } from "../components";
+import { ToastMessage } from "../components/Toast";
 
 export default function NewPage() {
   const [value, setValue] = useState("");
   const [visibleStatus, setVisibleStatus] = useState("Visible");
   const [selected, setSelected] = useState("today");
+
+  const [confirmModal, setConfirmModal] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+    contentAction: "",
+  });
+  const [toast, setToast] = useState({
+    isOpen: false,
+    message: "",
+  });
+
+  const [openDate, setOpenDate] = useState(false);
+  const handleToggleDate = useCallback(
+    () => setOpenDate((openDate) => !openDate),
+    []
+  );
 
   const handleSelectChange = useCallback((value) => setSelected(value), []);
 
@@ -38,7 +58,24 @@ export default function NewPage() {
   return (
     <Page
       // narrowWidth
-      breadcrumbs={[{ content: "Orders", url: "#" }]}
+      // breadcrumbs={[{ content: "Orders", url: "#" }]}
+      backAction={{
+        onAction: () => {
+          // if (title.trim() !== "" || content.trim() !== "") {
+          setConfirmModal({
+            ...confirmModal,
+            isOpen: true,
+            title: "You have unsaved changes",
+            subTitle:
+              "If you leave this page, all unsaved changes will be lost.",
+            contentAction: "Leave page",
+            onConfirm: () => navigate("/"),
+          });
+          // } else {
+          //   navigate("/");
+          // }
+        },
+      }}
       title="Add Page"
     >
       <Form>
@@ -80,10 +117,18 @@ export default function NewPage() {
                   selected={visibleStatus}
                   onChange={handleVisibleChange}
                 />
-                <div>
+                <Collapsible
+                  open={openDate}
+                  id="basic-collapsible"
+                  transition={{
+                    duration: "500ms",
+                    timingFunction: "ease-in-out",
+                  }}
+                  expandOnPrint
+                >
                   <DateSelector />
                   <TimePickerSelector />
-                </div>
+                </Collapsible>
                 <div style={{ marginTop: "16px" }}>
                   <Button
                     plain
@@ -91,9 +136,10 @@ export default function NewPage() {
                     //   setIsSetDate(!isSetDate);
                     //   setVisibleStatus(["Hidden"]);
                     // }}
+                    onClick={handleToggleDate}
                   >
-                    Set visibility date
-                    {/* {isSetDate ? "Clear date..." : "Set visibility date"} */}
+                    {/* Set visibility date */}
+                    {openDate ? "Clear date..." : "Set visibility date"}
                   </Button>
                 </div>
               </LegacyCard>
@@ -118,6 +164,13 @@ export default function NewPage() {
         primaryAction={{ content: "Save", disabled: true }}
         secondaryActions={[{ content: "Cancel" }]}
       />
+      {confirmModal.isOpen && (
+        <ModalConfirm
+          confirmModal={confirmModal}
+          setConfirmModal={setConfirmModal}
+        />
+      )}
+      {toast.isOpen && <ToastMessage toast={toast} setToast={setToast} />}
     </Page>
   );
 }
