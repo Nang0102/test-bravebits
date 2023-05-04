@@ -258,7 +258,7 @@ export function ResourceListFilters() {
           contentAction: `Delete ${selectedItems?.length} ${
             selectedItems?.length === 1 ? "page" : "pages"
           }`,
-          onConfirm: () => handleDeletePage(),
+          onConfirm: handleDeletePage,
         }),
     },
   ];

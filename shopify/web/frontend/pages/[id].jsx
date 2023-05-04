@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useAppQuery } from "../hooks";
 import { STORE_URL } from "../utilities/constant";
 
@@ -43,12 +43,33 @@ export default function PageEdit() {
   });
 
   const navigate = useNavigate();
+  const editorRef = useRef(null);
+
   const [initData, setInitData] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selected, setSelected] = useState("today");
   const handleTitleChange = useCallback((value) => setTitle(value), []);
-  const handleContentChange = useCallback((value) => setContent(value), []);
+  // const handleContentChange = useCallback((value) => {
+  //   console.log("value content", value);
+  //   // setContent(value);
+  // }, []);
+  // console.log("editorRef", editorRef.current);
+  // useEffect(() => {
+  //   if (editorRef.current) {
+  //     setContent(editorRef.current.getContent());
+  //   }
+  // }, []);
+
+  // const handleContentChange = useCallback((value) => {
+  //   console.log("value content", value);
+  //   setContent(value);
+  //   if (editorRef.current) {
+  //     const edit = editorRef.current.setContent(value);
+  //     console.log("edit", edit);
+  //   }
+  // }, []);
+
   const [visibleStatus, setVisibleStatus] = useState(["Visible"]);
   const [initVisible, setInitVisible] = useState([]);
   const [openDate, setOpenDate] = useState(false);
@@ -56,7 +77,6 @@ export default function PageEdit() {
     isOpen: false,
     message: "",
   });
-  const editorRef = useRef(null);
   const handleToggleDate = useCallback(
     () => setOpenDate((openDate) => !openDate),
     []
@@ -92,6 +112,17 @@ export default function PageEdit() {
     []
   );
 
+  // console.log("editorRef", editorRef.current);
+  // useEffect(() => {
+  //   if (editorRef.current) {
+  //     setContent(editorRef.current.getContent());
+  //   }
+  // }, []);
+
+  const handleContentChange = useCallback((value) => {
+    console.log("value content", value);
+    setContent(value);
+  }, []);
   const handleUpdatePage = () => {
     const updatedData = {
       title: title,
@@ -111,6 +142,7 @@ export default function PageEdit() {
       .then((data) => {
         console.log("OK");
         refetch();
+        console.log("data----update", data);
         setLoadingUpdate(false);
         setToast({
           ...toast,
@@ -173,7 +205,6 @@ export default function PageEdit() {
       navigate("/");
     }
   };
-  console.log("init Data", initData);
   return (
     <Page
       backAction={{
@@ -276,7 +307,7 @@ export default function PageEdit() {
           content: "Save",
           disabled:
             title.trim() !== initData.title ||
-            content.trim() !== initData.content ||
+            // content.trim() !== initData.content ||
             initVisible.toString() !== visibleStatus.toString()
               ? false
               : true,

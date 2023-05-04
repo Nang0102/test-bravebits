@@ -28,7 +28,7 @@ import { TypeMinor, EmbedMinor } from "@shopify/polaris-icons";
 import { Icon } from "@shopify/polaris";
 import { convertHLS } from "../utilities/convertHLS";
 
-export function PageContent({ content, editorRef }) {
+export function PageContent({ content, editorRef, handleContentChange }) {
   const [activeHeading, setActiveHeading] = useState(false);
   const [activeAlign, setActiveAlign] = useState(false);
   const [activePickColor, setActivePickColor] = useState(false);
@@ -62,9 +62,13 @@ export function PageContent({ content, editorRef }) {
 
   useEffect(() => {
     editorRef.current.innerHTML = content;
-    console.log(editorRef.current);
-  }, []);
+  }, [content]);
 
+  const handleInput = (event) => {
+    const content = event.target.innerHTML;
+    console.log("content", content);
+    handleContentChange(content);
+  };
   const handleTabChange = useCallback(
     (selectedTabIndex) => setTabColor(selectedTabIndex),
     []
@@ -420,6 +424,7 @@ export function PageContent({ content, editorRef }) {
         <LegacyCard.Subsection>
           <div
             ref={editorRef}
+            onInput={handleInput}
             contentEditable
             className="editor-container"
             spellCheck="false"

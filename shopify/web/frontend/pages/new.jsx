@@ -26,7 +26,7 @@ export default function NewPage() {
   const fetch = useAuthenticatedFetch();
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
-  const [visibleStatus, setVisibleStatus] = useState(["Visible"]);
+  const [visibleStatus, setVisibleStatus] = useState("Visible");
   const [selected, setSelected] = useState("today");
   const [content, setContent] = useState("");
   const editorRef = useRef(null);
@@ -111,6 +111,7 @@ export default function NewPage() {
 
   const handleLeavePage = () => {
     if (title.trim() !== "" || content.trim() !== "") {
+      console.log("itl", title);
       setConfirmModal({
         ...confirmModal,
         isOpen: true,
@@ -120,6 +121,7 @@ export default function NewPage() {
         onConfirm: () => navigate("/"),
       });
     } else {
+      console.log("empty");
       navigate("/");
     }
   };
@@ -156,7 +158,7 @@ export default function NewPage() {
               choices={[
                 {
                   label:
-                    visibleStatus === `Visible`
+                    visibleStatus.toString() === `Visible`
                       ? `Visible (as of ${new Date().toLocaleDateString()}, ${new Date()
                           .toLocaleTimeString()
                           .slice(0, 4)} ${new Date()
@@ -207,7 +209,7 @@ export default function NewPage() {
       <PageActions
         primaryAction={{
           content: "Save",
-          disabled: title.trim() === "" || content.trim() === "" ? true : false,
+          disabled: title.trim() === "" || content.trim() === "" ? false : true,
           loading: loading,
           onClick: handleCreatePage,
         }}

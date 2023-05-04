@@ -23,13 +23,14 @@ export function SearchEngine({ title, content = "" }) {
     setTitleSeo(value);
   }, []);
 
-  const handleChangeDecription = useCallback((value) => {
+  const handleChangeDescription = useCallback((value) => {
     setDescription(value);
   }, []);
 
   const handleChangeUrlSeo = useCallback((value) => {
     setHandleSeo(value);
   }, []);
+  console.log("handleSeo", handleSeo);
   return (
     <div>
       <LegacyCard>
@@ -47,7 +48,7 @@ export function SearchEngine({ title, content = "" }) {
           {titleSeo !== "" && parserHTML(description) !== "" ? (
             <div>
               <p style={{ fontSize: "18px", color: "#1a0dab" }}>{titleSeo}</p>
-              <Text color="success">{`${STORE_URL}/pages/${handleSeo}`}</Text>
+              <Text color="success">{`${STORE_URL}/pages/${title}`}</Text>
               <p>{description}</p>
             </div>
           ) : titleSeo.trim() === "" &&
@@ -56,7 +57,7 @@ export function SearchEngine({ title, content = "" }) {
             content.trim() !== "" ? (
             <div>
               <p style={{ fontSize: "18px", color: "#1a0dab" }}>{title}</p>
-              <Text color="success">{`${STORE_URL}/pages/${handleSeo}`}</Text>
+              <Text color="success">{`${STORE_URL}/pages/${title}`}</Text>
               <p>{content}</p>
             </div>
           ) : (
@@ -89,7 +90,7 @@ export function SearchEngine({ title, content = "" }) {
                 multiline={4}
                 value={parserHTML(description)}
                 placeholder={descrSeoDefault}
-                onChange={handleChangeDecription}
+                onChange={handleChangeDescription}
                 helpText={`${
                   parserHTML(description).length
                 } of 320 characters used`}
@@ -100,7 +101,8 @@ export function SearchEngine({ title, content = "" }) {
                 label="URL and handle"
                 type="text"
                 prefix={`${STORE_URL}/pages`}
-                value={handleSeo}
+                // value={handleSeo}
+                value={title}
                 onChange={handleChangeUrlSeo}
               />
             </div>
