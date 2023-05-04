@@ -34,7 +34,6 @@ export function TimePickerSelector() {
     label: formatAMPM(time),
     value: time.toISOString(),
   }));
-  console.log("option", timeOptions);
 
   const [selected, setSelected] = useState(timeOptions[0]);
   const [popoverActive, setPopoverActive] = useState(false);

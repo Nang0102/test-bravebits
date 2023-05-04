@@ -1,19 +1,35 @@
-import {
-  Page,
-  LegacyCard,
-  PageActions,
-  TextField,
-  Collapsible,
-} from "@shopify/polaris";
-import React, { useState, useCallback } from "react";
+import { LegacyCard, TextField, Collapsible, Text } from "@shopify/polaris";
+import React, { useState, useCallback, useEffect } from "react";
 import { STORE_URL } from "../utilities/constant";
+import { parserHTML } from "../utilities/parseHTML";
 
-export function SearchEngine() {
+export function SearchEngine({ title, content = "" }) {
   const [openEdit, setOpenEdit] = useState(false);
+  const [titleSeo, setTitleSeo] = useState(title);
+  const [description, setDescription] = useState(content);
+  const [titleSeoDefault, setTitleSeoDefault] = useState(title);
+  const [descrSeoDefault, setDecrDefault] = useState(content);
+  const [handleSeo, setHandleSeo] = useState("");
+
+  useEffect(() => {
+    setTitleSeoDefault(title);
+    setDecrDefault(content);
+  }, [title, content]);
   const handleToggleEdit = useCallback(
     () => setOpenEdit((openEdit) => !openEdit),
     []
   );
+  const handleChangeTitleSeo = useCallback((value) => {
+    setTitleSeo(value);
+  }, []);
+
+  const handleChangeDecription = useCallback((value) => {
+    setDescription(value);
+  }, []);
+
+  const handleChangeUrlSeo = useCallback((value) => {
+    setHandleSeo(value);
+  }, []);
   return (
     <div>
       <LegacyCard>
@@ -28,10 +44,27 @@ export function SearchEngine() {
             ,
           ]}
         >
-          <p>
-            Add a title and description to see how this Page might appear in a
-            search engine listing
-          </p>
+          {titleSeo !== "" && parserHTML(description) !== "" ? (
+            <div>
+              <p style={{ fontSize: "18px", color: "#1a0dab" }}>{titleSeo}</p>
+              <Text color="success">{`${STORE_URL}/pages/${handleSeo}`}</Text>
+              <p>{description}</p>
+            </div>
+          ) : titleSeo.trim() === "" &&
+            parserHTML(description).trim() === "" &&
+            title.trim() !== "" &&
+            content.trim() !== "" ? (
+            <div>
+              <p style={{ fontSize: "18px", color: "#1a0dab" }}>{title}</p>
+              <Text color="success">{`${STORE_URL}/pages/${handleSeo}`}</Text>
+              <p>{content}</p>
+            </div>
+          ) : (
+            <p>
+              Add a title and description to see how this Page might appear in a
+              search engine listing
+            </p>
+          )}
         </LegacyCard.Section>
         <Collapsible
           open={openEdit}
@@ -44,22 +77,22 @@ export function SearchEngine() {
               <TextField
                 label="Page title"
                 type="text"
-                // value={titleSeo}
-                // placeholder={titleSeoDefault}
-                // onChange={handleChangeTitleSeo}
-                // helpText={`${titleSeo.length} of 70 characters used`}
-                helpText="0 of 70 characters used"
+                value={titleSeo}
+                placeholder={titleSeoDefault}
+                onChange={handleChangeTitleSeo}
+                helpText={`${titleSeo.length} of 70 characters used`}
               />
             </div>
             <div style={{ marginBottom: "10px" }}>
               <TextField
                 label="Description"
                 multiline={4}
-                // value={parserHTML(descrSeo)}
-                // placeholder={descrSeoDefault}
-                // onChange={handleChangeDecrSeo}
-                // helpText={`${parserHTML(descrSeo).length} of 320 characters used`}
-                helpText={`0 of 320 characters used`}
+                value={parserHTML(description)}
+                placeholder={descrSeoDefault}
+                onChange={handleChangeDecription}
+                helpText={`${
+                  parserHTML(description).length
+                } of 320 characters used`}
               />
             </div>
             <div style={{ marginBottom: "10px" }}>
@@ -67,8 +100,8 @@ export function SearchEngine() {
                 label="URL and handle"
                 type="text"
                 prefix={`${STORE_URL}/pages`}
-                // value={urlSeo}
-                // onChange={handleChangeUrlSeo}
+                value={handleSeo}
+                onChange={handleChangeUrlSeo}
               />
             </div>
           </LegacyCard.Section>

@@ -1,6 +1,6 @@
 /* 
 h: hue đại diện cho màu sắc
-l: lightness: đại diện cho độ sáng
+l: brightness: đại diện cho độ sáng
 s: saturation: đại diện cho độ bão hòa
 c:  độ sáng tối đa có thể đạt được
 x: đại diện cho gia trị  phụ trợ để tính toán các gtri RGB
@@ -10,7 +10,10 @@ padStart(a,b) được sử dụng để thêm ký tự vào đầu chuỗi đ�
        b: ký tự muốn thêm vào đầu chuỗi.
 */
 
-export function convertHLS(h, l, s) {
+export function convertHLS(data) {
+  const l = data.brightness;
+  const h = data.hue;
+  const s = data.saturation;
   const c = (1 - Math.abs(2 * l - 1)) * s;
   const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
   const m = l - c / 2;

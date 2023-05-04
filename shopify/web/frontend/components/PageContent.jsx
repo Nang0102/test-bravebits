@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   LegacyCard,
   Text,
@@ -25,9 +25,10 @@ import { BsTable, BsImage, BsFillCameraVideoFill } from "react-icons/bs";
 import { GrClear } from "react-icons/gr";
 import { MdOutlineFormatColorText } from "react-icons/md";
 import { TypeMinor, EmbedMinor } from "@shopify/polaris-icons";
+import { Icon } from "@shopify/polaris";
 import { convertHLS } from "../utilities/convertHLS";
 
-export function PageContent() {
+export function PageContent({ content, editorRef }) {
   const [activeHeading, setActiveHeading] = useState(false);
   const [activeAlign, setActiveAlign] = useState(false);
   const [activePickColor, setActivePickColor] = useState(false);
@@ -58,6 +59,11 @@ export function PageContent() {
       panelID: "Background",
     },
   ];
+
+  useEffect(() => {
+    editorRef.current.innerHTML = content;
+    console.log(editorRef.current);
+  }, []);
 
   const handleTabChange = useCallback(
     (selectedTabIndex) => setTabColor(selectedTabIndex),
@@ -403,21 +409,17 @@ export function PageContent() {
             ) : (
               ""
             )}
-            <div>
-              <Tooltip content="Show HTML" dismissOnMouseOut>
-                <Button
-                  icon={<EmbedMinor />}
-                  color="base"
-                  onClick={toggleShowEditor}
-                />
-              </Tooltip>
-            </div>
+            <Tooltip content="Show HTML">
+              <Button color="base" onClick={toggleShowEditor}>
+                <Icon source={EmbedMinor} color="base" />
+              </Button>
+            </Tooltip>
           </div>
         </LegacyCard.Section>
 
         <LegacyCard.Subsection>
           <div
-            // ref={editorRef}
+            ref={editorRef}
             contentEditable
             className="editor-container"
             spellCheck="false"

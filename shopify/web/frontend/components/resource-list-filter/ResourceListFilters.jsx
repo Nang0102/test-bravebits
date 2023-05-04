@@ -69,7 +69,6 @@ export function ResourceListFilters() {
         }
         let dataRemaining;
         if (queryValue !== "" && queryValue !== undefined) {
-          console.log("queryValue", queryValue);
           dataRemaining = data.data.filter((page) => {
             return page.title.toLowerCase().includes(queryValue.toLowerCase());
           });
@@ -420,7 +419,7 @@ export function ResourceListFilters() {
                     ? [
                         {
                           content: "View Page",
-                          url: `{${STORE_URL}/pages/${handle}`,
+                          url: `${STORE_URL}/pages/${handle}`,
                         },
                       ]
                     : null;

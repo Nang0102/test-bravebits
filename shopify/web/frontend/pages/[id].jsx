@@ -1,113 +1,163 @@
-import {
-  Page,
-  LegacyCard,
-  PageActions,
-  TextField,
-  Layout,
-  ChoiceList,
-  Button,
-  Select,
-  HorizontalGrid,
-  Divider,
-  Collapsible,
-} from "@shopify/polaris";
+import { useParams } from "react-router-dom";
 import React, { useState, useCallback, useRef } from "react";
+import { useAppQuery } from "../hooks";
+import { STORE_URL } from "../utilities/constant";
+
 import { useAuthenticatedFetch, useNavigate } from "@shopify/app-bridge-react";
 import {
-  DateSelector,
-  ModalConfirm,
-  PageContent,
-  SearchEngine,
-  TimePickerSelector,
-} from "../components";
-import { ToastMessage } from "../components/Toast";
+  Badge,
+  Button,
+  ChoiceList,
+  HorizontalGrid,
+  Layout,
+  LegacyCard,
+  Page,
+  PageActions,
+  Select,
+  TextField,
+  Collapsible,
+} from "@shopify/polaris";
 
-export default function NewPage() {
+import { ViewMajor, DuplicateMinor } from "@shopify/polaris-icons";
+import {
+  PageContent,
+  DateSelector,
+  TimePickerSelector,
+  ModalConfirm,
+  SearchEngine,
+  Skeleton,
+  ToastMessage,
+} from "../components";
+
+export default function PageEdit() {
   const fetch = useAuthenticatedFetch();
-  const navigate = useNavigate();
-  const [title, setTitle] = useState("");
-  const [visibleStatus, setVisibleStatus] = useState(["Visible"]);
-  const [selected, setSelected] = useState("today");
-  const [content, setContent] = useState("");
-  const editorRef = useRef(null);
-  const [loading, setLoading] = useState(false);
+
+  const { id } = useParams();
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
     title: "",
     subTitle: "",
     contentAction: "",
   });
+
+  const navigate = useNavigate();
+  const [initData, setInitData] = useState(null);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [selected, setSelected] = useState("today");
+  const handleTitleChange = useCallback((value) => setTitle(value), []);
+  const handleContentChange = useCallback((value) => setContent(value), []);
+  const [visibleStatus, setVisibleStatus] = useState(["Visible"]);
+  const [initVisible, setInitVisible] = useState([]);
+  const [openDate, setOpenDate] = useState(false);
   const [toast, setToast] = useState({
     isOpen: false,
     message: "",
   });
-
-  const handleTitleChange = useCallback((newValue) => {
-    setTitle(newValue);
-  }, []);
-  const handleContentChange = useCallback((value) => setContent(value), []);
-
-  const [openDate, setOpenDate] = useState(false);
+  const editorRef = useRef(null);
   const handleToggleDate = useCallback(
     () => setOpenDate((openDate) => !openDate),
     []
   );
 
-  const handleSelectChange = useCallback((value) => setSelected(value), []);
+  const { data, refetch } = useAppQuery({
+    url: `/api/pages?id=${id}`,
+    reactQueryOptions: {
+      onSuccess: (data) => {
+        console.log("get data", data);
+        setInitData(data);
+        setTitle(data.title);
+        setContent(data.body_html);
+        setVisibleStatus(data.published_at ? ["Visible"] : ["Hidden"]);
+        setInitVisible(data.published_at ? ["Visible"] : ["Hidden"]);
+        setIsLoading(false);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    },
+  });
 
   const options = [
-    { label: "Default page", value: "Default page" },
+    { label: "Default", value: "today" },
     { label: "contact", value: "contact" },
   ];
+
+  const handleSelectChange = useCallback((value) => setSelected(value), []);
 
   const handleVisibleChange = useCallback(
     (value) => setVisibleStatus(value),
     []
   );
 
-  const handleCreatePage = () => {
-    console.log("create page");
-    // if (title.trim() === "") {
-    //   setIsError(true);
-    // } else {
-    setLoading(true);
-    const newPage = {
+  const handleUpdatePage = () => {
+    const updatedData = {
       title: title,
-      body_html: editorRef.current.innerHTML,
+      body_html: content,
       published: visibleStatus?.toString() !== "Visible" ? null : true,
     };
-
-    console.log(newPage);
-    fetch("/api/pages", {
-      method: "POST",
+    setLoadingUpdate(true);
+    console.log("updateData", updatedData);
+    fetch(`/api/pages?id=${id}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        page: newPage,
-      }),
+      body: JSON.stringify(updatedData),
     })
-      .then((res) => {
-        console.log("res create page", res);
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((data) => {
-        setLoading(false);
-        console.log("OKE");
+        console.log("OK");
+        refetch();
+        setLoadingUpdate(false);
         setToast({
           ...toast,
           isOpen: true,
-          message: "Page was created",
+          message: "Page was saved",
         });
-        // setTimeout(() => {
-        //   navigate(`/${data.id}`);
-        // }, 1000);
       })
       .catch((err) => {
         console.log(err);
       });
-    // }
   };
+
+  const handleDeletePage = async () => {
+    const res = await fetch(`/api/pages?id=${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      console.log("OK");
+      setConfirmModal({
+        ...confirmModal,
+        loading: false,
+      });
+      setToast({
+        ...toast,
+        isOpen: true,
+        message: "Deleted 1 page",
+      });
+      setTimeout(() => {
+        navigate("/");
+      }, 500);
+    } else {
+      console.log("NOT OK");
+    }
+  };
+
+  const handleClickBtnDelete = () =>
+    setConfirmModal({
+      ...confirmModal,
+      isOpen: true,
+      title: `Delete ${title}`,
+      subTitle: `Delete "${title}"? This
+    can't be undone.`,
+      contentAction: "Delete ",
+      onConfirm: () => handleDeletePage(),
+    });
+  if (isLoading) return <Skeleton />;
 
   const handleLeavePage = () => {
     if (title.trim() !== "" || content.trim() !== "") {
@@ -123,12 +173,29 @@ export default function NewPage() {
       navigate("/");
     }
   };
+  console.log("init Data", initData);
   return (
     <Page
       backAction={{
         onAction: handleLeavePage,
       }}
-      title="Add Page"
+      title={data && data.title}
+      titleMetadata={data && data.published_at ? null : <Badge>Hidden</Badge>}
+      secondaryActions={[
+        { content: "Duplicate", icon: DuplicateMinor },
+        {
+          content: "Preview page",
+          icon: ViewMajor,
+          onAction: () => {
+            console.log("navigate");
+            navigate(`${STORE_URL}/pages/${initData.handle}`);
+          },
+        },
+      ]}
+      pagination={{
+        hasPrevious: true,
+        hasNext: true,
+      }}
     >
       <HorizontalGrid columns={["twoThirds", "oneThird"]}>
         <Layout.Section>
@@ -202,16 +269,28 @@ export default function NewPage() {
           </LegacyCard>
         </Layout.Section>
       </HorizontalGrid>
-      <div style={{ margin: "20px 0px" }}></div>
 
+      <div style={{ margin: "20px 0px" }}></div>
       <PageActions
         primaryAction={{
           content: "Save",
-          disabled: title.trim() === "" || content.trim() === "" ? true : false,
-          loading: loading,
-          onClick: handleCreatePage,
+          disabled:
+            title.trim() !== initData.title ||
+            content.trim() !== initData.content ||
+            initVisible.toString() !== visibleStatus.toString()
+              ? false
+              : true,
+          loading: loadingUpdate,
+          onClick: handleUpdatePage,
         }}
-        secondaryActions={[{ content: "Cancel", onClick: handleLeavePage }]}
+        secondaryActions={[
+          {
+            content: "Delete page",
+            onClick: handleClickBtnDelete,
+            destructive: true,
+            outline: true,
+          },
+        ]}
       />
       {confirmModal.isOpen && (
         <ModalConfirm
