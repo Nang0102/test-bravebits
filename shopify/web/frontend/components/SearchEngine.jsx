@@ -30,7 +30,6 @@ export function SearchEngine({ title, content = "" }) {
   const handleChangeUrlSeo = useCallback((value) => {
     setHandleSeo(value);
   }, []);
-  console.log("handleSeo", handleSeo);
   return (
     <div>
       <LegacyCard>
@@ -48,8 +47,8 @@ export function SearchEngine({ title, content = "" }) {
           {titleSeo !== "" && parserHTML(description) !== "" ? (
             <div>
               <p style={{ fontSize: "18px", color: "#1a0dab" }}>{titleSeo}</p>
-              <Text color="success">{`${STORE_URL}/pages/${title}`}</Text>
-              <p>{description}</p>
+              <Text color="success">{`${STORE_URL}/pages/${titleSeo}`}</Text>
+              <p>{parserHTML(description)}</p>
             </div>
           ) : titleSeo.trim() === "" &&
             parserHTML(description).trim() === "" &&
@@ -101,8 +100,7 @@ export function SearchEngine({ title, content = "" }) {
                 label="URL and handle"
                 type="text"
                 prefix={`${STORE_URL}/pages`}
-                // value={handleSeo}
-                value={title}
+                value={handleSeo}
                 onChange={handleChangeUrlSeo}
               />
             </div>

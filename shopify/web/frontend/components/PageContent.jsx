@@ -61,14 +61,15 @@ export function PageContent({ content, editorRef, handleContentChange }) {
   ];
 
   useEffect(() => {
-    editorRef.current.innerHTML = content;
-  }, [content]);
-
+    if (editorRef.current) {
+      editorRef.current.innerHTML = content;
+    }
+  }, []);
   const handleInput = (event) => {
     const content = event.target.innerHTML;
-    console.log("content", content);
     handleContentChange(content);
   };
+
   const handleTabChange = useCallback(
     (selectedTabIndex) => setTabColor(selectedTabIndex),
     []
@@ -116,15 +117,78 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     <Button icon={BsTable} onClick={toggleActiveTable} disclosure></Button>
   );
 
-  const handleFormat = (command, value = null) => {
-    document.execCommand(command, false, value);
+  function clearSelectionFormatting() {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) {
+      return;
+    }
+
+    const range = selection.getRangeAt(0);
+    const styledElement = document.createElement("span");
+    styledElement.textContent = range.toString();
+
+    range.deleteContents();
+    range.insertNode(styledElement);
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function handleFormat(style) {
+    const selection = window.getSelection();
+    if (!selection) {
+      return;
+    }
+    const range = selection.getRangeAt(0);
+    if (!range) {
+      return;
+    }
+    console.log("range", range);
+    const styledElement = document.createElement(style);
+    styledElement.appendChild(range.extractContents());
+    range.insertNode(styledElement);
+
+    clearSelectionFormatting();
+
+    selection.removeAllRanges();
+    selection.addRange(range);
+  }
+
+  function handleIndent() {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const parentNode = range.commonAncestorContainer.parentNode;
+
+    if (parentNode.style.marginLeft) {
+      parentNode.style.marginLeft =
+        parseInt(parentNode.style.marginLeft) + 20 + "px";
+    } else {
+      parentNode.style.marginLeft = "20px";
+    }
+
     editorRef.current.focus();
-  };
+  }
+
+  function handleOutdent() {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const parentNode = range.commonAncestorContainer.parentNode;
+
+    if (parentNode.style.marginLeft) {
+      parentNode.style.marginLeft =
+        parseInt(parentNode.style.marginLeft) - 20 + "px";
+      if (parseInt(parentNode.style.marginLeft) < 20) {
+        parentNode.style.marginLeft = "";
+      }
+    }
+
+    editorRef.current.focus();
+  }
 
   function handleCommand(command, value) {
     document.execCommand(command, false, value);
-    editorRef.current.focus();
   }
+
   return (
     <div style={{ border: "#dde0e4" }}>
       <Text>Content</Text>
@@ -212,19 +276,19 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                   <Tooltip content="Bold" dismissOnMouseOut>
                     <Button
                       icon={<FaBold />}
-                      onClick={() => handleFormat("bold")}
+                      onClick={() => handleFormat("b")}
                     />
                   </Tooltip>
                   <Tooltip content="Italic" dismissOnMouseOut>
                     <Button
                       icon={<FaItalic />}
-                      onClick={() => handleFormat("italic")}
+                      onClick={() => handleFormat("i")}
                     />
                   </Tooltip>
                   <Tooltip content="Underline" dismissOnMouseOut>
                     <Button
                       icon={<FaUnderline />}
-                      onClick={() => handleFormat("underline")}
+                      onClick={() => handleFormat("u")}
                     />
                   </Tooltip>
                 </ButtonGroup>
@@ -232,28 +296,28 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                   <Tooltip content="Bulleted list" dismissOnMouseOut>
                     <Button
                       icon={<FaListUl />}
-                      onClick={() => handleFormat("insertOrderedList")}
+                      onClick={() => handleFormat("li")}
                     />
                   </Tooltip>
 
                   <Tooltip content="Numbered list" dismissOnMouseOut>
                     <Button
                       icon={<FaListOl />}
-                      onClick={() => handleFormat("insertUnorderedList")}
+                      onClick={() => handleFormat("li")}
                     />
                   </Tooltip>
 
                   <Tooltip content="Outdent" dismissOnMouseOut>
                     <Button
                       icon={<FaOutdent />}
-                      onClick={() => handleFormat("outdent")}
+                      onClick={() => handleOutdent()}
                     />
                   </Tooltip>
 
                   <Tooltip content="Indent" dismissOnMouseOut>
                     <Button
                       icon={<FaIndent />}
-                      onClick={() => handleFormat("indent")}
+                      onClick={() => handleIndent()}
                     />
                   </Tooltip>
                 </ButtonGroup>
@@ -336,7 +400,6 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                                     ? convertHLS(color)
                                     : convertHLS(bgColor)
                                 }`,
-                                // background: `red`,
                                 borderRadius: "50%",
                               }}
                             ></div>
@@ -348,10 +411,6 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                 </ButtonGroup>
                 <ButtonGroup segmented>
                   <Tooltip content="Insert tabble" dismissOnMouseOut>
-                    {/* <Button
-                    icon={<BsTable />}
-                    onClick={() => handleFormat("underline")}
-                  /> */}
                     <div>
                       <Popover
                         active={activeTable}
@@ -391,22 +450,13 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                   </Tooltip>
 
                   <Tooltip content="Insert image" dismissOnMouseOut>
-                    <Button
-                      icon={<BsImage />}
-                      // onClick={() => handleFormat("underline")}
-                    />
+                    <Button icon={<BsImage />} />
                   </Tooltip>
                   <Tooltip content="Insert video" dismissOnMouseOut>
-                    <Button
-                      icon={<BsFillCameraVideoFill />}
-                      // onClick={() => handleFormat("underline")}
-                    />
+                    <Button icon={<BsFillCameraVideoFill />} />
                   </Tooltip>
                   <Tooltip content="Clear formating" dismissOnMouseOut>
-                    <Button
-                      icon={<GrClear />}
-                      // onClick={() => handleFormat("underline")}
-                    />
+                    <Button icon={<GrClear />} />
                   </Tooltip>
                 </ButtonGroup>
               </div>

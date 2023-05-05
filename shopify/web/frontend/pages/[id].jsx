@@ -50,25 +50,10 @@ export default function PageEdit() {
   const [content, setContent] = useState("");
   const [selected, setSelected] = useState("today");
   const handleTitleChange = useCallback((value) => setTitle(value), []);
-  // const handleContentChange = useCallback((value) => {
-  //   console.log("value content", value);
-  //   // setContent(value);
-  // }, []);
-  // console.log("editorRef", editorRef.current);
-  // useEffect(() => {
-  //   if (editorRef.current) {
-  //     setContent(editorRef.current.getContent());
-  //   }
-  // }, []);
-
-  // const handleContentChange = useCallback((value) => {
-  //   console.log("value content", value);
-  //   setContent(value);
-  //   if (editorRef.current) {
-  //     const edit = editorRef.current.setContent(value);
-  //     console.log("edit", edit);
-  //   }
-  // }, []);
+  const handleContentChange = useCallback((value) => {
+    console.log("value content", value);
+    setContent(value);
+  }, []);
 
   const [visibleStatus, setVisibleStatus] = useState(["Visible"]);
   const [initVisible, setInitVisible] = useState([]);
@@ -112,17 +97,6 @@ export default function PageEdit() {
     []
   );
 
-  // console.log("editorRef", editorRef.current);
-  // useEffect(() => {
-  //   if (editorRef.current) {
-  //     setContent(editorRef.current.getContent());
-  //   }
-  // }, []);
-
-  const handleContentChange = useCallback((value) => {
-    console.log("value content", value);
-    setContent(value);
-  }, []);
   const handleUpdatePage = () => {
     const updatedData = {
       title: title,
@@ -244,7 +218,7 @@ export default function PageEdit() {
             />
           </LegacyCard>
           <div style={{ paddingTop: "15px" }}>
-            <SearchEngine title={title} content={content} />
+            <SearchEngine title={title} content={content} initData={initData} />
           </div>
         </Layout.Section>
         <Layout.Section>
@@ -307,7 +281,6 @@ export default function PageEdit() {
           content: "Save",
           disabled:
             title.trim() !== initData.title ||
-            // content.trim() !== initData.content ||
             initVisible.toString() !== visibleStatus.toString()
               ? false
               : true,

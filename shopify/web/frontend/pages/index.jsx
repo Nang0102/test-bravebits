@@ -16,7 +16,6 @@ export default function HomePage() {
       <Warning />
       <div style={{ margin: "10px 0" }}>
         <ResourceListFilters />
-        {/* <PageContent/> */}
       </div>
     </Page>
   );

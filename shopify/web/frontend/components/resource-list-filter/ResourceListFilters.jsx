@@ -182,7 +182,6 @@ export function ResourceListFilters() {
   }, []);
 
   const handleVisibleStatusChange = useCallback((status) => {
-    console.log("visible--handlestatusChange", status);
     setIsLoading(true);
     setVisibleStatus(status);
     handleMoreTabs();

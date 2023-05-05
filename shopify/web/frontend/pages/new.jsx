@@ -8,8 +8,8 @@ import {
   Button,
   Select,
   HorizontalGrid,
-  Divider,
   Collapsible,
+  Banner,
 } from "@shopify/polaris";
 import React, { useState, useCallback, useRef } from "react";
 import { useAuthenticatedFetch, useNavigate } from "@shopify/app-bridge-react";
@@ -31,6 +31,7 @@ export default function NewPage() {
   const [content, setContent] = useState("");
   const editorRef = useRef(null);
   const [loading, setLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
     title: "",
@@ -67,46 +68,42 @@ export default function NewPage() {
 
   const handleCreatePage = () => {
     console.log("create page");
-    // if (title.trim() === "") {
-    //   setIsError(true);
-    // } else {
-    setLoading(true);
-    const newPage = {
-      title: title,
-      body_html: editorRef.current.innerHTML,
-      published: visibleStatus?.toString() !== "Visible" ? null : true,
-    };
+    if (title.trim() === "") {
+      setIsError(true);
+    } else {
+      setLoading(true);
+      const newPage = {
+        title: title,
+        body_html: editorRef.current.innerHTML,
+        published: visibleStatus?.toString() !== "Visible" ? null : true,
+      };
 
-    console.log(newPage);
-    fetch("/api/pages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        page: newPage,
-      }),
-    })
-      .then((res) => {
-        console.log("res create page", res);
-        return res.json();
+      console.log(newPage);
+      fetch("/api/pages", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          page: newPage,
+        }),
       })
-      .then((data) => {
-        setLoading(false);
-        console.log("OKE");
-        setToast({
-          ...toast,
-          isOpen: true,
-          message: "Page was created",
+        .then((res) => {
+          console.log("res create page", res);
+          return res.json();
+        })
+        .then((data) => {
+          setLoading(false);
+          setToast({
+            ...toast,
+            isOpen: true,
+            message: "Page was created",
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-        // setTimeout(() => {
-        //   navigate(`/${data.id}`);
-        // }, 1000);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    // }
+    }
   };
 
   const handleLeavePage = () => {
@@ -132,6 +129,13 @@ export default function NewPage() {
       }}
       title="Add Page"
     >
+      {isError && (
+        <div style={{ marginBottom: "16px" }}>
+          <Banner title="There is 1 error:" status="critical">
+            <li>Title can't be blank</li>
+          </Banner>
+        </div>
+      )}
       <HorizontalGrid columns={["twoThirds", "oneThird"]}>
         <Layout.Section>
           <LegacyCard sectioned>
@@ -161,7 +165,7 @@ export default function NewPage() {
                     visibleStatus.toString() === `Visible`
                       ? `Visible (as of ${new Date().toLocaleDateString()}, ${new Date()
                           .toLocaleTimeString()
-                          .slice(0, 4)} ${new Date()
+                          .slice(0, 5)} ${new Date()
                           .toLocaleTimeString()
                           .slice(-3)} EDT)`
                       : `Visible`,
@@ -209,7 +213,7 @@ export default function NewPage() {
       <PageActions
         primaryAction={{
           content: "Save",
-          disabled: title.trim() === "" || content.trim() === "" ? false : true,
+          disabled: title.trim() !== "" || content.trim() !== "" ? false : true,
           loading: loading,
           onClick: handleCreatePage,
         }}
