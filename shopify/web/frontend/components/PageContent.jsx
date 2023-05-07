@@ -117,6 +117,118 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     <Button icon={BsTable} onClick={toggleActiveTable} disclosure></Button>
   );
 
+  function isActiveBold() {
+    var selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      var range = selection.getRangeAt(0);
+      const elementTag = document.getElementsByTagName("b");
+      const parentElement = range.commonAncestorContainer.parentElement;
+      var isBold = false;
+      console.log("checkTagName", elementTag);
+      console.log("parent", parentElement);
+      console.log("checkparent", parentElement.getElementsByTagName("b"));
+      if (
+        elementTag.length !== 0 ||
+        parentElement.tagName === "b" ||
+        parentElement.style.fontWeight === "bold"
+      ) {
+        isBold = true;
+      }
+      console.log("isBold", isBold);
+      return isBold;
+    }
+    // return false;
+  }
+
+  function applyBold() {
+    const selection = window.getSelection();
+
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const boldElement = document.createElement("b");
+      boldElement.appendChild(range.extractContents());
+      range.insertNode(boldElement);
+      console.log("bold", boldElement);
+    }
+    editorRef.current.focus();
+  }
+
+  function removeBold() {
+    console.log("remove");
+
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      // const parentElement = range.commonAncestorContainer.parentElement;
+      const styledElement = document.createElement("span");
+      styledElement.style.fontWeight = "normal";
+
+      styledElement.textContent = range.toString();
+      range.deleteContents();
+      range.insertNode(styledElement);
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    editorRef.current.focus();
+  }
+
+  // function handleFormat() {
+  //   const highlight = window.getSelection();
+  //   console.log("parent node element: ", highlight.anchorNode.parentElement);
+  //   console.log("parent node: ", highlight.anchorNode.parentNode);
+  //   console.log(
+  //     "parent node tag name: ",
+  //     highlight.anchorNode.parentNode.tagName
+  //   );
+  //   console.log(
+  //     "parent node tag attribute: ",
+  //     highlight.anchorNode.parentNode.ATTRIBUTE_NODE
+  //   );
+  //   const span =
+  //     '<span class="bold" style="font-weight: bold">' + highlight + "</span>";
+
+  //   const text = $(".editor-container").html();
+
+  //   // const parent = getSelectionParentElement();
+  //   console.log("parent", parent);
+
+  //   if ($(parent).hasClass("bold")) {
+  //     console.log("Already bold");
+  //     console.log("text: ", text);
+  //     console.log("span: ", span);
+  //     console.log("highlight: ", highlight);
+  //     console.log("latest text: ", text.replace(highlight, span));
+  //     $(".editor-container").html(text.replace(span, highlight));
+  //   } else {
+  //     console.log("Not bold");
+  //     console.log("text: ", text);
+  //     console.log("span: ", span);
+  //     console.log("highlight: ", highlight);
+  //     console.log("latest text: ", text.replace(highlight, span));
+  //     $(".editor-container").html(text.replace(highlight, span));
+  //   }
+  // }
+
+  function getSelectionParentElement() {
+    var parentEl = null,
+      sel;
+    if (window.getSelection) {
+      sel = window.getSelection();
+
+      // sel.anchorNode.parentNode.ATTRIBUTE_NODE
+      if (sel.rangeCount) {
+        parentEl = sel.getRangeAt(0).commonAncestorContainer;
+        console.log("parentEl", parentEl);
+        console.log("parentEl.nodeType", parentEl.nodeType);
+
+        if (parentEl.nodeType != 1) {
+          parentEl = parentEl.parentNode;
+        }
+      }
+    }
+    return parentEl;
+  }
+
   function clearSelectionFormatting() {
     const selection = window.getSelection();
     if (selection.rangeCount === 0) {
@@ -124,17 +236,35 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     }
 
     const range = selection.getRangeAt(0);
+    //
     const styledElement = document.createElement("span");
+    console.log("style", style);
+    switch (style) {
+      case "b":
+        styledElement.style.fontWeight = "normal"; // Remove bold style
+
+        break;
+      case "i":
+        styledElement.style.fontStyle = "normal"; // Remove italic style
+
+      case "u":
+        // Remove underline style
+        styledElement.style.textDecoration = "none";
+        styledElement.style.display = "inline-block";
+      default:
+        break;
+    }
+
     styledElement.textContent = range.toString();
 
     range.deleteContents();
     range.insertNode(styledElement);
-
+    // range.ins
     selection.removeAllRanges();
     selection.addRange(range);
   }
 
-  function handleFormat(style) {
+  function handleFormat() {
     const selection = window.getSelection();
     if (!selection) {
       return;
@@ -143,15 +273,58 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     if (!range) {
       return;
     }
-    console.log("range", range);
-    const styledElement = document.createElement(style);
-    styledElement.appendChild(range.extractContents());
-    range.insertNode(styledElement);
+    console.log("parent node: ", selection.anchorNode.parentNode);
+    console.log(
+      "parent node tag name: ",
+      selection.anchorNode.parentNode.tagName
+    );
+    if (selection.anchorNode.parentNode.tagName != "SPAN") {
+      console.log("bold");
+      const styledElement = document.createElement("span");
 
-    clearSelectionFormatting();
+      styledElement.style.fontWeight = "bold";
 
+      // apply a new style
+      styledElement.appendChild(range.extractContents());
+      range.insertNode(styledElement);
+    } else {
+      console.log("========================================");
+      const parentNode = selection.anchorNode.parentNode;
+      console.log("parent node: ", parentNode);
+      let currentParentFontWeight = parentNode.style.fontWeight;
+      console.log("current parent font weight: ", currentParentFontWeight);
+      const newSpan = document.createElement("span");
+      newSpan.textContent = range.toString();
+
+      if (currentParentFontWeight == "bold") {
+        newSpan.style.fontWeight = "normal";
+        console.log("new bold span", newSpan);
+      } else {
+        newSpan.style.fontWeight = "bold";
+        console.log("new normal span", newSpan);
+      }
+
+      range.deleteContents();
+      range.insertNode(newSpan);
+    }
+    deSelectText();
     selection.removeAllRanges();
     selection.addRange(range);
+  }
+
+  function deSelectText() {
+    if (window.getSelection) {
+      if (window.getSelection().empty) {
+        // Chrome
+        window.getSelection().empty();
+      } else if (window.getSelection().removeAllRanges) {
+        // Firefox
+        window.getSelection().removeAllRanges();
+      }
+    } else if (document.selection) {
+      // IE?
+      document.selection.empty();
+    }
   }
 
   function handleIndent() {
@@ -187,15 +360,21 @@ export function PageContent({ content, editorRef, handleContentChange }) {
 
   function handleCommand(command, value) {
     document.execCommand(command, false, value);
+    editorRef.current.focus();
   }
 
   return (
-    <div style={{ border: "#dde0e4" }}>
-      <Text>Content</Text>
+    <div style={{ border: "#dde0e4", marginTop: 15 }}>
+      <div style={{ marginBottom: 5 }}>Content</div>
 
       <LegacyCard>
         <LegacyCard.Section>
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
             {showEditor ? (
               <div
                 style={{
@@ -276,7 +455,9 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                   <Tooltip content="Bold" dismissOnMouseOut>
                     <Button
                       icon={<FaBold />}
-                      onClick={() => handleFormat("b")}
+                      onClick={() => {
+                        handleFormat();
+                      }}
                     />
                   </Tooltip>
                   <Tooltip content="Italic" dismissOnMouseOut>
@@ -288,7 +469,8 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                   <Tooltip content="Underline" dismissOnMouseOut>
                     <Button
                       icon={<FaUnderline />}
-                      onClick={() => handleFormat("u")}
+                      // onClick={() => handleFormat("u")}
+                      onClick={() => clearSelectionFormatting("u")}
                     />
                   </Tooltip>
                 </ButtonGroup>
