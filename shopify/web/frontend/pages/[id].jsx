@@ -54,7 +54,7 @@ export default function PageEdit() {
     console.log("value content", value);
     setContent(value);
   }, []);
-
+  console.log("editorRef----", editorRef.current);
   const [visibleStatus, setVisibleStatus] = useState(["Visible"]);
   const [initVisible, setInitVisible] = useState([]);
   const [openDate, setOpenDate] = useState(false);
@@ -98,6 +98,7 @@ export default function PageEdit() {
   );
 
   const handleUpdatePage = () => {
+    console.log("cpntentApi===", content);
     const updatedData = {
       title: title,
       body_html: content,

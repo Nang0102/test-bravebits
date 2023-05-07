@@ -264,7 +264,7 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     selection.addRange(range);
   }
 
-  function handleFormat() {
+  function handleFormat(style) {
     const selection = window.getSelection();
     if (!selection) {
       return;
@@ -273,6 +273,7 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     if (!range) {
       return;
     }
+    console.log("parent anchorNode: ", selection.anchorNode);
     console.log("parent node: ", selection.anchorNode.parentNode);
     console.log(
       "parent node tag name: ",
@@ -282,7 +283,20 @@ export function PageContent({ content, editorRef, handleContentChange }) {
       console.log("bold");
       const styledElement = document.createElement("span");
 
-      styledElement.style.fontWeight = "bold";
+      switch (style) {
+        case "b":
+          styledElement.style.fontWeight = "bold";
+          break;
+        case "i":
+          styledElement.style.fontStyle = "italic";
+          break;
+        case "u":
+          styledElement.style.textDecoration = "underline";
+          styledElement.style.display = "inline-block";
+          break;
+        default:
+          break;
+      }
 
       // apply a new style
       styledElement.appendChild(range.extractContents());
@@ -291,25 +305,60 @@ export function PageContent({ content, editorRef, handleContentChange }) {
       console.log("========================================");
       const parentNode = selection.anchorNode.parentNode;
       console.log("parent node: ", parentNode);
-      let currentParentFontWeight = parentNode.style.fontWeight;
-      console.log("current parent font weight: ", currentParentFontWeight);
-      const newSpan = document.createElement("span");
-      newSpan.textContent = range.toString();
 
-      if (currentParentFontWeight == "bold") {
-        newSpan.style.fontWeight = "normal";
-        console.log("new bold span", newSpan);
-      } else {
-        newSpan.style.fontWeight = "bold";
-        console.log("new normal span", newSpan);
+      switch (style) {
+        case "b":
+          let currentParentFontWeight = parentNode.style.fontWeight;
+          console.log("current parent font weight: ", currentParentFontWeight);
+          const newSpan = document.createElement("span");
+          newSpan.textContent = range.toString();
+
+          currentParentFontWeight == "bold"
+            ? (newSpan.style.fontWeight = "normal")
+            : (newSpan.style.fontWeight = "bold");
+          range.deleteContents();
+          range.insertNode(newSpan);
+          break;
+        case "i":
+          let currentParentFontStyle = parentNode.style.fontStyle;
+          console.log(
+            "current parent currentParentFontStyle: ",
+            currentParentFontStyle
+          );
+          const newStyle = document.createElement("span");
+          newStyle.textContent = range.toString();
+
+          currentParentFontStyle == "italic"
+            ? (newStyle.style.fontStyle = "normal")
+            : (newStyle.style.fontStyle = "italic");
+          range.deleteContents();
+          range.insertNode(newStyle);
+
+          break;
+        case "u":
+          let currentParentTextDecoration = parentNode.style.textDecoration;
+          let display = (parentNode.style.display = "inline-block");
+          const newTextDecoration = document.createElement("span");
+          newTextDecoration.textContent = range.toString();
+
+          if (currentParentTextDecoration == "underline" && display) {
+            newTextDecoration.style.textDecoration = "normal";
+          } else {
+            newTextDecoration.style.textDecoration = "underline";
+          }
+          newTextDecoration.style.display = "inline-block";
+          range.deleteContents();
+          range.insertNode(newTextDecoration);
+          break;
+        default:
+          break;
       }
-
-      range.deleteContents();
-      range.insertNode(newSpan);
     }
-    deSelectText();
     selection.removeAllRanges();
     selection.addRange(range);
+
+    deSelectText();
+    editorRef.current.focus();
   }
 
   function deSelectText() {
@@ -456,7 +505,7 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                     <Button
                       icon={<FaBold />}
                       onClick={() => {
-                        handleFormat();
+                        handleFormat("b");
                       }}
                     />
                   </Tooltip>
@@ -469,8 +518,8 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                   <Tooltip content="Underline" dismissOnMouseOut>
                     <Button
                       icon={<FaUnderline />}
-                      // onClick={() => handleFormat("u")}
-                      onClick={() => clearSelectionFormatting("u")}
+                      onClick={() => handleFormat("u")}
+                      // onClick={() => clearSelectionFormatting("u")}
                     />
                   </Tooltip>
                 </ButtonGroup>
