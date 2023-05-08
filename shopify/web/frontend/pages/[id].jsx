@@ -49,14 +49,17 @@ export default function PageEdit() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selected, setSelected] = useState("today");
-  const handleTitleChange = useCallback((value) => setTitle(value), []);
+  const handleTitleChange = useCallback((value) => {
+    setTitle(value);
+    setIsUpdated(false);
+  }, []);
   const handleContentChange = useCallback((value) => {
     console.log("value content", value);
     setContent(value);
+    setIsUpdated(false);
   }, []);
-  console.log("editorRef----", editorRef.current);
+
   const [visibleStatus, setVisibleStatus] = useState(["Visible"]);
-  const [initVisible, setInitVisible] = useState([]);
   const [openDate, setOpenDate] = useState(false);
   const [toast, setToast] = useState({
     isOpen: false,
@@ -66,6 +69,7 @@ export default function PageEdit() {
     () => setOpenDate((openDate) => !openDate),
     []
   );
+  const [isUpdated, setIsUpdated] = useState(true);
 
   const { data, refetch } = useAppQuery({
     url: `/api/pages?id=${id}`,
@@ -76,7 +80,6 @@ export default function PageEdit() {
         setTitle(data.title);
         setContent(data.body_html);
         setVisibleStatus(data.published_at ? ["Visible"] : ["Hidden"]);
-        setInitVisible(data.published_at ? ["Visible"] : ["Hidden"]);
         setIsLoading(false);
       },
       onError: (error) => {
@@ -92,18 +95,28 @@ export default function PageEdit() {
 
   const handleSelectChange = useCallback((value) => setSelected(value), []);
 
-  const handleVisibleChange = useCallback(
-    (value) => setVisibleStatus(value),
-    []
-  );
+  const handleVisibleChange = useCallback((value) => {
+    setVisibleStatus(value);
+    setIsUpdated(false);
+  }, []);
+
+  const getSpanEl = (data) => {
+    const regexSpan =
+      /<div[^>]*contenteditable=["']true["'][^>]*>(.*?)<\/div>/i;
+    console.log("aaa", regexSpan.exec(data)[1]);
+
+    return regexSpan.exec(data)[1];
+  };
 
   const handleUpdatePage = () => {
-    console.log("cpntentApi===", content);
     const updatedData = {
       title: title,
-      body_html: content,
+      body_html: getSpanEl(
+        new XMLSerializer().serializeToString(editorRef.current)
+      ),
       published: visibleStatus?.toString() !== "Visible" ? null : true,
     };
+    setIsUpdated(true);
     setLoadingUpdate(true);
     console.log("updateData", updatedData);
     fetch(`/api/pages?id=${id}`, {
@@ -119,11 +132,16 @@ export default function PageEdit() {
         refetch();
         console.log("data----update", data);
         setLoadingUpdate(false);
+
         setToast({
           ...toast,
           isOpen: true,
           message: "Page was saved",
         });
+        setTimeout(() => {
+          console.log("navigate home page");
+          navigate("/");
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
@@ -167,7 +185,7 @@ export default function PageEdit() {
   if (isLoading) return <Skeleton />;
 
   const handleLeavePage = () => {
-    if (title.trim() !== "" || content.trim() !== "") {
+    if (!isUpdated) {
       setConfirmModal({
         ...confirmModal,
         isOpen: true,
@@ -180,6 +198,7 @@ export default function PageEdit() {
       navigate("/");
     }
   };
+
   return (
     <Page
       backAction={{
@@ -193,7 +212,6 @@ export default function PageEdit() {
           content: "Preview page",
           icon: ViewMajor,
           onAction: () => {
-            console.log("navigate");
             navigate(`${STORE_URL}/pages/${initData.handle}`);
           },
         },
@@ -216,10 +234,11 @@ export default function PageEdit() {
               handleContentChange={handleContentChange}
               content={content}
               editorRef={editorRef}
+              setIsUpdated={setIsUpdated}
             />
           </LegacyCard>
           <div style={{ paddingTop: "15px" }}>
-            <SearchEngine title={title} content={content} initData={initData} />
+            <SearchEngine title={title} content={content} />
           </div>
         </Layout.Section>
         <Layout.Section>
@@ -280,11 +299,7 @@ export default function PageEdit() {
       <PageActions
         primaryAction={{
           content: "Save",
-          disabled:
-            title.trim() !== initData.title ||
-            initVisible.toString() !== visibleStatus.toString()
-              ? false
-              : true,
+          disabled: isUpdated,
           loading: loadingUpdate,
           onClick: handleUpdatePage,
         }}

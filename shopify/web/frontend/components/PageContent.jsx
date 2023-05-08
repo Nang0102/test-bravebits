@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import {
   LegacyCard,
-  Text,
   ButtonGroup,
   ActionList,
   Popover,
@@ -28,7 +27,12 @@ import { TypeMinor, EmbedMinor } from "@shopify/polaris-icons";
 import { Icon } from "@shopify/polaris";
 import { convertHLS } from "../utilities/convertHLS";
 
-export function PageContent({ content, editorRef, handleContentChange }) {
+export function PageContent({
+  content,
+  editorRef,
+  handleContentChange,
+  setIsUpdated,
+}) {
   const [activeHeading, setActiveHeading] = useState(false);
   const [activeAlign, setActiveAlign] = useState(false);
   const [activePickColor, setActivePickColor] = useState(false);
@@ -117,153 +121,6 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     <Button icon={BsTable} onClick={toggleActiveTable} disclosure></Button>
   );
 
-  function isActiveBold() {
-    var selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      var range = selection.getRangeAt(0);
-      const elementTag = document.getElementsByTagName("b");
-      const parentElement = range.commonAncestorContainer.parentElement;
-      var isBold = false;
-      console.log("checkTagName", elementTag);
-      console.log("parent", parentElement);
-      console.log("checkparent", parentElement.getElementsByTagName("b"));
-      if (
-        elementTag.length !== 0 ||
-        parentElement.tagName === "b" ||
-        parentElement.style.fontWeight === "bold"
-      ) {
-        isBold = true;
-      }
-      console.log("isBold", isBold);
-      return isBold;
-    }
-    // return false;
-  }
-
-  function applyBold() {
-    const selection = window.getSelection();
-
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const boldElement = document.createElement("b");
-      boldElement.appendChild(range.extractContents());
-      range.insertNode(boldElement);
-      console.log("bold", boldElement);
-    }
-    editorRef.current.focus();
-  }
-
-  function removeBold() {
-    console.log("remove");
-
-    const selection = window.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      // const parentElement = range.commonAncestorContainer.parentElement;
-      const styledElement = document.createElement("span");
-      styledElement.style.fontWeight = "normal";
-
-      styledElement.textContent = range.toString();
-      range.deleteContents();
-      range.insertNode(styledElement);
-      selection.removeAllRanges();
-      selection.addRange(range);
-    }
-    editorRef.current.focus();
-  }
-
-  // function handleFormat() {
-  //   const highlight = window.getSelection();
-  //   console.log("parent node element: ", highlight.anchorNode.parentElement);
-  //   console.log("parent node: ", highlight.anchorNode.parentNode);
-  //   console.log(
-  //     "parent node tag name: ",
-  //     highlight.anchorNode.parentNode.tagName
-  //   );
-  //   console.log(
-  //     "parent node tag attribute: ",
-  //     highlight.anchorNode.parentNode.ATTRIBUTE_NODE
-  //   );
-  //   const span =
-  //     '<span class="bold" style="font-weight: bold">' + highlight + "</span>";
-
-  //   const text = $(".editor-container").html();
-
-  //   // const parent = getSelectionParentElement();
-  //   console.log("parent", parent);
-
-  //   if ($(parent).hasClass("bold")) {
-  //     console.log("Already bold");
-  //     console.log("text: ", text);
-  //     console.log("span: ", span);
-  //     console.log("highlight: ", highlight);
-  //     console.log("latest text: ", text.replace(highlight, span));
-  //     $(".editor-container").html(text.replace(span, highlight));
-  //   } else {
-  //     console.log("Not bold");
-  //     console.log("text: ", text);
-  //     console.log("span: ", span);
-  //     console.log("highlight: ", highlight);
-  //     console.log("latest text: ", text.replace(highlight, span));
-  //     $(".editor-container").html(text.replace(highlight, span));
-  //   }
-  // }
-
-  function getSelectionParentElement() {
-    var parentEl = null,
-      sel;
-    if (window.getSelection) {
-      sel = window.getSelection();
-
-      // sel.anchorNode.parentNode.ATTRIBUTE_NODE
-      if (sel.rangeCount) {
-        parentEl = sel.getRangeAt(0).commonAncestorContainer;
-        console.log("parentEl", parentEl);
-        console.log("parentEl.nodeType", parentEl.nodeType);
-
-        if (parentEl.nodeType != 1) {
-          parentEl = parentEl.parentNode;
-        }
-      }
-    }
-    return parentEl;
-  }
-
-  function clearSelectionFormatting() {
-    const selection = window.getSelection();
-    if (selection.rangeCount === 0) {
-      return;
-    }
-
-    const range = selection.getRangeAt(0);
-    //
-    const styledElement = document.createElement("span");
-    console.log("style", style);
-    switch (style) {
-      case "b":
-        styledElement.style.fontWeight = "normal"; // Remove bold style
-
-        break;
-      case "i":
-        styledElement.style.fontStyle = "normal"; // Remove italic style
-
-      case "u":
-        // Remove underline style
-        styledElement.style.textDecoration = "none";
-        styledElement.style.display = "inline-block";
-      default:
-        break;
-    }
-
-    styledElement.textContent = range.toString();
-
-    range.deleteContents();
-    range.insertNode(styledElement);
-    // range.ins
-    selection.removeAllRanges();
-    selection.addRange(range);
-  }
-
   function handleFormat(style) {
     const selection = window.getSelection();
     if (!selection) {
@@ -273,14 +130,7 @@ export function PageContent({ content, editorRef, handleContentChange }) {
     if (!range) {
       return;
     }
-    console.log("parent anchorNode: ", selection.anchorNode);
-    console.log("parent node: ", selection.anchorNode.parentNode);
-    console.log(
-      "parent node tag name: ",
-      selection.anchorNode.parentNode.tagName
-    );
     if (selection.anchorNode.parentNode.tagName != "SPAN") {
-      console.log("bold");
       const styledElement = document.createElement("span");
 
       switch (style) {
@@ -297,19 +147,17 @@ export function PageContent({ content, editorRef, handleContentChange }) {
         default:
           break;
       }
+      setIsUpdated(false);
 
       // apply a new style
       styledElement.appendChild(range.extractContents());
       range.insertNode(styledElement);
     } else {
-      console.log("========================================");
       const parentNode = selection.anchorNode.parentNode;
-      console.log("parent node: ", parentNode);
 
       switch (style) {
         case "b":
           let currentParentFontWeight = parentNode.style.fontWeight;
-          console.log("current parent font weight: ", currentParentFontWeight);
           const newSpan = document.createElement("span");
           newSpan.textContent = range.toString();
 
@@ -321,10 +169,7 @@ export function PageContent({ content, editorRef, handleContentChange }) {
           break;
         case "i":
           let currentParentFontStyle = parentNode.style.fontStyle;
-          console.log(
-            "current parent currentParentFontStyle: ",
-            currentParentFontStyle
-          );
+
           const newStyle = document.createElement("span");
           newStyle.textContent = range.toString();
 
@@ -337,11 +182,14 @@ export function PageContent({ content, editorRef, handleContentChange }) {
           break;
         case "u":
           let currentParentTextDecoration = parentNode.style.textDecoration;
-          let display = (parentNode.style.display = "inline-block");
+          let display = parentNode.style.display;
           const newTextDecoration = document.createElement("span");
           newTextDecoration.textContent = range.toString();
 
-          if (currentParentTextDecoration == "underline" && display) {
+          if (
+            currentParentTextDecoration == "underline" &&
+            display == "inline-block"
+          ) {
             newTextDecoration.style.textDecoration = "normal";
           } else {
             newTextDecoration.style.textDecoration = "underline";
@@ -354,11 +202,11 @@ export function PageContent({ content, editorRef, handleContentChange }) {
           break;
       }
     }
+    setIsUpdated(false);
     selection.removeAllRanges();
     selection.addRange(range);
 
     deSelectText();
-    editorRef.current.focus();
   }
 
   function deSelectText() {
@@ -374,37 +222,6 @@ export function PageContent({ content, editorRef, handleContentChange }) {
       // IE?
       document.selection.empty();
     }
-  }
-
-  function handleIndent() {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    const parentNode = range.commonAncestorContainer.parentNode;
-
-    if (parentNode.style.marginLeft) {
-      parentNode.style.marginLeft =
-        parseInt(parentNode.style.marginLeft) + 20 + "px";
-    } else {
-      parentNode.style.marginLeft = "20px";
-    }
-
-    editorRef.current.focus();
-  }
-
-  function handleOutdent() {
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
-    const parentNode = range.commonAncestorContainer.parentNode;
-
-    if (parentNode.style.marginLeft) {
-      parentNode.style.marginLeft =
-        parseInt(parentNode.style.marginLeft) - 20 + "px";
-      if (parseInt(parentNode.style.marginLeft) < 20) {
-        parentNode.style.marginLeft = "";
-      }
-    }
-
-    editorRef.current.focus();
   }
 
   function handleCommand(command, value) {
@@ -519,7 +336,6 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                     <Button
                       icon={<FaUnderline />}
                       onClick={() => handleFormat("u")}
-                      // onClick={() => clearSelectionFormatting("u")}
                     />
                   </Tooltip>
                 </ButtonGroup>
@@ -541,14 +357,14 @@ export function PageContent({ content, editorRef, handleContentChange }) {
                   <Tooltip content="Outdent" dismissOnMouseOut>
                     <Button
                       icon={<FaOutdent />}
-                      onClick={() => handleOutdent()}
+                      onClick={() => handleFormat()}
                     />
                   </Tooltip>
 
                   <Tooltip content="Indent" dismissOnMouseOut>
                     <Button
                       icon={<FaIndent />}
-                      onClick={() => handleIndent()}
+                      onClick={() => handleFormat()}
                     />
                   </Tooltip>
                 </ButtonGroup>

@@ -66,6 +66,14 @@ export default function NewPage() {
     []
   );
 
+  //   const getSpanEl = (data) => {
+  //   const regexSpan =
+  //     /<div[^>]*contenteditable=["']true["'][^>]*>(.*?)<\/div>/i;
+  //   console.log("aaa", regexSpan.exec(data)[1]);
+
+  //   return regexSpan.exec(data)[1];
+  // };
+
   const handleCreatePage = () => {
     console.log("create page");
     if (title.trim() === "") {
@@ -99,6 +107,10 @@ export default function NewPage() {
             isOpen: true,
             message: "Page was created",
           });
+          setTimeout(() => {
+            console.log("navigate home page");
+            navigate("/");
+          }, 500);
         })
         .catch((err) => {
           console.log(err);
