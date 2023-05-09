@@ -1,0 +1,204 @@
+* {
+  font-family: "IBM Plex Serif";
+  font-weight: 400;
+  font-style: normal;
+  padding: 0;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 80px;
+  gap: 140px;
+}
+
+.header-title {
+  font-family: "Koulen";
+  font-size: 32px;
+  line-height: 150%;
+}
+
+.header-content {
+  font-size: 16px;
+  line-height: 150%;
+  order: 1;
+}
+
+.shoe-detail-container {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0px;
+  gap: 30px;
+}
+.shoe-detail-item {
+  display: flex;
+  flex-direction: row;
+}
+
+.shoe-detail-image {
+  width: 270px;
+  height: 324px;
+  flex: none;
+  order: 1;
+  flex-grow: 0;
+  z-index: 1;
+}
+.sale-off {
+  font-family: "IBM Plex Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  color: #ffffff;
+  background: #3d0000;
+}
+
+.shoe-detail-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 24px;
+}
+
+.shoe-detail-price {
+  display: flex;
+  font-size: 20px;
+  line-height: 150%;
+  color: #1a1a1a;
+}
+.shoe-detail-price-sale-off {
+  text-decoration: line-through;
+  margin-left: 15px;
+}
+
+.shoe-detail-name {
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 150%;
+  color: #666666;
+}
+
+.shoe-detail-desc {
+  font-size: 16px;
+  line-height: 150%;
+  color: #1a1a1a;
+}
+
+.add-card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 24px;
+  gap: 10px;
+
+  width: 270px;
+  height: 48px;
+
+  border: 1px solid #1a1a1a;
+}
+
+.craft-container {
+  padding: 0;
+  position: absolute;
+  margin-top: 30px;
+  background: #1a1a1a;
+  color: white;
+  padding: 80px;
+}
+
+.craft-content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.craft-detail-row {
+  display: flex;
+  flex-basis: 100%;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.carft-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+.craft-detail-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 8px;
+}
+
+.carft-detail-name {
+  font-size: 16px;
+  line-height: 150%;
+}
+
+.craft-detail-time {
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+  text-align: center;
+
+  color: #dedd91;
+}
+@media only screen and (max-width: 600px) {
+  .shoes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: absolute;
+    font-size: 16px;
+  }
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .header-title {
+    font-size: 16px;
+    width: fit-content;
+  }
+  .shoe-detail-container {
+    flex-direction: column;
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .item {
+    margin-top: 10px;
+  }
+  .shoe-detail-info {
+    gap: 16px;
+  }
+  .add-card {
+    margin-top: 16px;
+    width: 189px;
+    font-size: 16px;
+    line-height: 150%;
+  }
+  .craft-detail-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 80px 15px;
+    gap: 40px;
+  }
+  /* .carft-detail {
+    gap: 30px;
+  } */
+}
