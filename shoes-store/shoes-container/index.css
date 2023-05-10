@@ -1,13 +1,23 @@
 * {
   font-family: "IBM Plex Serif";
-  font-weight: 400;
+  /* font-weight: 400; */
   font-style: normal;
+  font-size: 16px;
+  line-height: 150%;
   padding: 0;
+}
+body {
+  width: 100%;
+  height: 100%;
+}
+.lg {
+  font-size: 42px;
 }
 
 .header-bg {
   width: 100%;
   height: 680px;
+  /* height: 680px; */
   background: linear-gradient(
     0deg,
     rgba(26, 26, 26, 0.5),
@@ -23,10 +33,10 @@
   padding: 0;
   gap: 16px;
   position: absolute;
-  width: 30%;
+  width: 35%;
   height: 15%;
-  left: 50%;
-  top: 20%;
+  left: 55%;
+  top: 15%;
   color: white;
 }
 .title {
@@ -35,7 +45,7 @@
   line-height: 150%;
 }
 .content-header-bg {
-  width: 70%;
+  width: 95%;
   height: 15%;
   font-size: 20px;
   line-height: 150%;
@@ -50,10 +60,10 @@
   justify-content: center;
   align-items: center;
   position: absolute;
-  width: 30%;
-  height: 48%;
+  width: 35%;
+  height: 40%;
   left: 35%;
-  top: 75%;
+  top: 80%;
   background: #1a1a1a;
   color: #ffff;
 }
@@ -124,40 +134,44 @@
 }
 
 .shoes-container {
+  /* margin-top: 180px; */
   margin-top: 180px;
 }
 .header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: flex-start;
   padding: 80px;
-  gap: 140px;
 }
 
 .header-title {
   font-family: "Koulen";
   font-size: 32px;
   line-height: 150%;
+  width: 40%;
 }
 
 .header-content {
+  width: 70%;
   font-size: 16px;
   line-height: 150%;
+  margin-left: 30%;
   order: 1;
 }
 
 .shoe-detail-container {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 0px;
+  justify-content: flex-start;
+  padding: 80px;
   gap: 30px;
 }
-.shoe-detail-item {
-  display: flex;
-  flex-direction: row;
+
+.item {
+  flex-basis: calc(
+    50% - 15px
+  ); /* Chia chiều rộng thành 50% trừ khoảng cách 15px */
+  max-width: calc(50% - 15px); /* Đặt giới hạn chiều rộng tối đa */
 }
 
 .shoe-detail-image {
@@ -193,6 +207,7 @@
   color: #1a1a1a;
 }
 .shoe-detail-price-sale-off {
+  align-self: center;
   text-decoration: line-through;
   margin-left: 15px;
 }
@@ -221,12 +236,14 @@
 
   width: 270px;
   height: 48px;
-
+  background-color: white;
   border: 1px solid #1a1a1a;
 }
 
+/* Craft------- */
+
 .craft-container {
-  padding: 0;
+  /* padding: 0; */
   position: absolute;
   margin-top: 30px;
   background: #1a1a1a;
@@ -237,22 +254,47 @@
 .craft-content {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
 }
 
-.craft-detail-row {
+.craft-detail {
+  /* width: calc((100% - 20px) / 3); */
+  margin-bottom: 20px;
+  flex-grow: 0;
+  align-self: flex-start;
+}
+
+.craft-detail:nth-last-child(-n + 2) {
+  /* flex-grow: 1; */
+  align-self: stretch;
+  /* width: calc((100% - 20px) / 2); */
+}
+
+/* .craft-detail-row {
   display: flex;
   flex-basis: 100%;
   justify-content: space-between;
   margin-bottom: 20px;
-}
+} */
 
-.carft-detail {
+/* .craft-detail {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 10px;
+} */
+
+/* .craft-detail {
+  margin-bottom: 20px;
+  order: 1;
+  flex-grow: 0;
+  align-self: flex-start;
 }
+.craft-detail:nth-last-child(-n + 2) {
+  order: 1;
+  flex-grow: 1;
+} */
+
 .craft-detail-title {
   display: flex;
   flex-direction: column;
@@ -261,7 +303,7 @@
   gap: 8px;
 }
 
-.carft-detail-name {
+.craft-detail-name {
   font-size: 16px;
   line-height: 150%;
 }
@@ -274,35 +316,38 @@
 
   color: #dedd91;
 }
+
 @media only screen and (max-width: 600px) {
   .shoes-container {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    position: absolute;
     font-size: 16px;
   }
   .header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    padding: 0;
     gap: 24px;
   }
   .header-title {
     font-size: 16px;
-    width: fit-content;
   }
+  .header-content {
+    margin-left: 0;
+  }
+
   .shoe-detail-container {
-    flex-direction: column;
-    align-items: flex-start;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
+    flex-wrap: wrap;
+    padding: 0;
   }
   .item {
-    margin-top: 10px;
+    flex-basis: 100%;
+    max-width: 100%;
   }
+
   .shoe-detail-info {
     gap: 16px;
   }
@@ -312,6 +357,20 @@
     font-size: 16px;
     line-height: 150%;
   }
+
+  .craft-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 80px 15px;
+    gap: 40px;
+    position: absolute;
+    /* width: 390px;
+    height: 2743px; */
+    left: 0px;
+    /* top: 1990px; */
+  }
+
   .craft-detail-row {
     display: flex;
     flex-direction: column;
@@ -319,7 +378,157 @@
     padding: 80px 15px;
     gap: 40px;
   }
-  /* .carft-detail {
+  /* .craft-detail {
     gap: 30px;
   } */
+}
+
+/* ////// cambridge-shoe */
+
+.cambridge-shoe {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 80px;
+  /* gap: 30px; */
+  /* width: 50%; */
+  position: absolute;
+  top: 460%;
+}
+
+.cambridge-shoe-image {
+  display: flex;
+  gap: 15px;
+}
+
+/* .cambridge-shoe-image-small {
+  padding: 40px;
+  gap: 8px;
+} */
+
+.cambridge-shoe-image-small-detail {
+  padding: 20px;
+}
+
+.cambridge-shoe-image-large {
+  /* padding: 120px 25px; */
+  margin: 150px 55px;
+  /* width: 565px;
+  height: 677px; */
+}
+
+.cambridge-shoe-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 100px;
+  gap: 30px;
+}
+.cambridge-shoe-info-header {
+  width: 80%;
+}
+
+.cambridge-shoe-info-content {
+  width: 70%;
+}
+.border {
+  width: 470px;
+  border: 1px solid #1a1a1a;
+}
+
+/* /// */
+.cambridge-shoe-price {
+}
+
+.cambridge-shoe-leather-image {
+}
+
+.cambridge-shoe-add-card {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 16px;
+}
+
+.cambridge-shoe-add-card-change-num {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 8px;
+  font-size: 48px;
+}
+.dec {
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 48px;
+  height: 48px;
+}
+
+.num {
+  width: 48px;
+  height: 48px;
+}
+
+.inc {
+  width: 48px;
+  height: 48px;
+}
+
+.cambridge-shoe-add-card-btn {
+}
+
+.add-card {
+}
+
+.cambridge-shoe-sale-container {
+}
+
+.cambridge-shoe-title-sale {
+  font-family: "IBM Plex Serif";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 150%;
+}
+
+@media only screen and (max-width: 600px) {
+  .cambridge-shoe {
+    top: 875%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: 24px;
+  }
+
+  .cambridge-shoe-image {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+  .cambridge-shoe-image-large {
+    margin: 50px 25px;
+  }
+  .cambridge-shoe-info {
+    /* display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0px;
+    gap: 30px; */
+    width: 360px;
+    height: 723px;
+  }
+  .cambridge-shoe-info-header {
+    font-size: 32px;
+  }
+  .border {
+    width: 360px;
+  }
+
+  .cambridge-shoe-info {
+    padding-left: 0;
+    gap: 30px;
+  }
 }
