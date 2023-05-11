@@ -71,7 +71,7 @@
 
 .item1 {
   height: 360px;
-  width: 90%;
+  width: 100%;
   background-image: url("../image/collections/collections-01.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -80,7 +80,7 @@
 
 .item2 {
   height: 360px;
-  width: 90%;
+  width: 100%;
   background-image: url("../image/collections/collections-02.png");
   background-size: cover;
   background-repeat: no-repeat;
@@ -89,7 +89,7 @@
 
 .item3 {
   height: 360px;
-  width: 90%;
+  width: 100%;
   background-image: url("../image/collections/collections-03.png");
   background-size: cover;
   background-repeat: no-repeat;
