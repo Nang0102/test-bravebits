@@ -1,0 +1,126 @@
+.container {
+  align-items: center;
+  padding: 120px 80px;
+  gap: 80px;
+  background: #1a1a1a;
+}
+.text-white {
+  color: white;
+}
+.title-header {
+  font-family: "Koulen";
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 150%;
+
+  text-align: center;
+}
+
+.investment-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 30px;
+  margin-top: 80px;
+}
+
+.investment-content-item-1 {
+  gap: 30px;
+  font-size: 16px;
+}
+
+.fl-revers {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.pad-top {
+  padding-top: 55px;
+}
+
+@media only screen and (max-width: 600px) {
+  .container {
+    align-items: flex-start;
+    padding: 80px 15px;
+    gap: 40px;
+  }
+
+  .title-investment {
+    text-align: left;
+  }
+
+  .investment-content {
+    flex-direction: column;
+    margin-top: 30px;
+  }
+}
+/* collections---------- */
+.collections-container {
+  padding: 80px;
+  gap: 80px;
+}
+
+.collections-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 80px;
+  isolation: isolate;
+}
+
+.item1 {
+  height: 360px;
+  width: 90%;
+  background-image: url("../image/collections/collections-01.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.item2 {
+  height: 360px;
+  width: 90%;
+  background-image: url("../image/collections/collections-02.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.item3 {
+  height: 360px;
+  width: 90%;
+  background-image: url("../image/collections/collections-03.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.collections-content-item-title {
+  font-family: "Koulen";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 150%;
+  position: absolute;
+  top: 60%;
+  left: 20px;
+}
+.collections-content-item-content {
+  position: absolute;
+  width: 80%;
+  bottom: 50px;
+  left: 20px;
+}
+
+@media only screen and (max-width: 600px) {
+  .collections-container {
+    padding: 10px;
+    gap: 80px;
+  }
+
+  .collections-content {
+    flex-direction: column;
+    margin-top: 10px;
+  }
+}
