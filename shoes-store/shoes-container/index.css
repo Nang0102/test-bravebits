@@ -1,6 +1,7 @@
 * {
   font-family: "IBM Plex Serif";
   font-style: normal;
+  font-weight: 400;
   font-size: 16px;
   line-height: 150%;
   padding: 0;
@@ -17,26 +18,30 @@ body {
 .header-bg {
   width: 100%;
   height: 680px;
+
   background: linear-gradient(
-    0deg,
-    rgba(26, 26, 26, 0.5),
-    rgba(26, 26, 26, 0.5)
-  );
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-image: url("../image/Rectangle 4.png");
-  position: relative;
+      0deg,
+      rgba(26, 26, 26, 0.5),
+      rgba(26, 26, 26, 0.5)
+    ),
+    url("../image/Rectangle 4.png");
+  transform: matrix(1, 0, 0, 1, 0, 0);
 }
 
 .title-header-bg {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   padding: 0;
   gap: 16px;
   position: absolute;
-  width: 35%;
   height: 15%;
   left: 55%;
-  top: 15%;
+  top: 25%;
   color: white;
+}
+.w {
+  width: 85%;
 }
 .title {
   font-family: "Koulen";
@@ -44,7 +49,7 @@ body {
   line-height: 150%;
 }
 .content-header-bg {
-  width: 95%;
+  width: 100%;
   height: 15%;
   font-size: 20px;
   line-height: 150%;
@@ -58,13 +63,14 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: absolute;
-  width: 35%;
-  height: 40%;
-  left: 35%;
-  top: 80%;
+  padding: 60px 120px;
+  gap: 32px;
   background: #1a1a1a;
   color: #ffff;
+
+  position: absolute;
+  left: 31%;
+  top: 76%;
 }
 
 .title-sale {
@@ -102,79 +108,136 @@ body {
 }
 
 @media only screen and (max-width: 600px) {
+  .header-bg {
+    width: 100%;
+    height: 512px;
+  }
+
+  .w {
+    width: 100%;
+  }
+
+  .content-header-bg {
+    width: 100%;
+  }
   .title-header-bg {
     left: 15px;
+    height: 100%;
   }
   .title {
     font-size: 32px;
   }
   .time-content {
-    font-size: 20px;
+    font-size: 48px;
   }
   .title-sale {
-    font-size: 20px;
+    font-size: 32px;
   }
-
-  .sale-container {
+  .content-sale {
+    gap: 16px;
+  }
+  /* .sale-container {
     gap: 16px;
     width: 85%;
     height: 35%;
     left: 5%;
     top: 85%;
+  }  */
+  .sale-container {
+    gap: 16px;
+    padding: 0;
+    width: 342px;
+    height: 292px;
+    left: 20px;
+    top: 462px;
   }
 }
 
-.shoes-container {
+.pa {
+  padding: 80px 135px;
+}
+.shoes-ma {
   margin-top: 180px;
+}
+.shoes-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 80px;
 }
 .header {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   align-items: flex-start;
-  padding: 80px;
 }
 
 .header-title {
   font-family: "Koulen";
   font-size: 32px;
   line-height: 150%;
-  width: 40%;
 }
 
 .header-content {
-  width: 70%;
+  width: 55%;
   font-size: 16px;
   line-height: 150%;
-  margin-left: 30%;
   order: 1;
 }
 
+/* Shoes-----item */
 .shoe-detail-container {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  padding: 80px;
+  padding: 0px;
   gap: 30px;
+}
+
+.couple-item {
+  display: flex;
+  gap: 30px;
+}
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 32px;
+}
+.shoes-item-1 {
+  background-image: url("../image/shoes/shoe-3.png");
+}
+.shoes-item-2 {
+  background-image: url("../image/shoes/shoe-4.png");
+}
+.shoes-item-3 {
+  background-image: url("../image/shoes/shoe-1.png");
+}
+.shoes-item-4 {
+  background-image: url("../image/shoes/shoe-2.png");
 }
 
 .shoe-detail-image {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  background-repeat: no-repeat;
   padding: 0px;
-  gap: 32px;
+  /* gap: 24px; */
   isolation: isolate;
-  width: 40%;
-  height: 65%;
+  width: 270px;
+  height: 324px;
+}
+.w-s {
+  width: 270px;
+  height: 260px;
 }
 .sale-off {
-  font-family: "IBM Plex Serif";
-  font-style: normal;
-  font-weight: 400;
   font-size: 14px;
-  line-height: 150%;
   color: #ffffff;
   background: #3d0000;
+  padding: 4px;
 }
 
 .shoe-detail-info {
@@ -183,18 +246,33 @@ body {
   align-items: flex-start;
   padding: 0px;
   gap: 24px;
+  width: 270px;
+}
+.shoe-detail-info-i {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 16px;
 }
 
 .shoe-detail-price {
   display: flex;
   font-size: 20px;
   line-height: 150%;
+  gap: 8px;
   color: #1a1a1a;
+}
+.name {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 8px;
 }
 .shoe-detail-price-sale-off {
   align-self: center;
   text-decoration: line-through;
-  margin-left: 15px;
 }
 
 .shoe-detail-name {
@@ -204,7 +282,6 @@ body {
 }
 
 .shoe-detail-desc {
-  margin-bottom: 20px;
   font-size: 16px;
   line-height: 150%;
   color: #1a1a1a;
@@ -224,49 +301,129 @@ body {
   background-color: white;
   border: 1px solid #1a1a1a;
 }
+@media only screen and (max-width: 600px) {
+  .shoes-ma {
+    margin-top: 240px;
+  }
+  .pa {
+    padding: 80px 15px;
+  }
+  .shoes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    gap: 24px;
+  }
+  .header-title {
+    font-size: 32px;
+    width: 100%;
+  }
+  .header-content {
+    font-size: 16px;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .shoe-detail-container {
+    /* margin-top: 50px; */
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+    gap: 15px;
+  }
+  .couple-item {
+    gap: 15px;
+  }
+
+  .item {
+    gap: 24px;
+  }
+
+  .shoe-detail-info {
+    gap: 16px;
+    width: 173px;
+  }
+  .shoe-detail-info-i {
+    gap: 16px;
+  }
+  .shoe-detail-image {
+    width: 173px;
+    height: 208px;
+  }
+
+  .shoes-item-1 {
+    background-image: url("../image/shoes/shoe-mb1.png");
+  }
+  .shoes-item-2 {
+    background-image: url("../image/shoes/shoe-mb2.png");
+  }
+  .shoes-item-3 {
+    background-image: url("../image/shoes/shoe-mb3.png");
+  }
+  .shoes-item-4 {
+    background-image: url("../image/shoes/shoe-mb4.png");
+  }
+
+  .add-card {
+    margin-top: 16px;
+    width: 170px;
+    font-size: 16px;
+    line-height: 150%;
+  }
+  .sale-off {
+    margin-top: 10px;
+  }
+}
 
 /* Craft------- */
 
 .craft-container {
-  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 120px 135px;
+  gap: 80px;
   background: #1a1a1a;
   color: white;
-  padding: 80px;
 }
 
 .craft-content {
-  display: flex;
+  /* display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.craft-detail {
-  /* width: calc((100% - 20px) / 3); */
-  margin-bottom: 20px;
-  flex-grow: 0;
-  align-self: flex-start;
-}
-
-.craft-detail-image {
-}
-.craft-detail-image:nth-last-child(-n + 2) {
-  /* flex-grow: 1; */
-  /* align-self: stretch; */
-  /* width: calc((100% - 20px) / 2); */
-  /* background-color: red;
-  width: 150%; */
-}
-
-.img-res {
-  width: 130%;
-}
-
-/* .craft-detail {
+  justify-content: space-around; */
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 10px;
-} */
+  padding: 0px;
+  gap: 30px;
+}
+.craft-content-f {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 30px;
+}
+.craft-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 24px;
+}
+
+.img-res {
+  width: 570px;
+  height: 557px;
+}
 
 .craft-detail-title {
   display: flex;
@@ -274,11 +431,6 @@ body {
   align-items: center;
   padding: 0px;
   gap: 8px;
-}
-
-.craft-detail-name {
-  font-size: 16px;
-  line-height: 150%;
 }
 
 .craft-detail-time {
@@ -291,69 +443,24 @@ body {
 }
 
 @media only screen and (max-width: 600px) {
-  .shoes-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    font-size: 16px;
-    padding: 15px;
-  }
-  .header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 0;
-    gap: 24px;
-  }
-  .header-title {
-    font-size: 16px;
-  }
-  .header-content {
-    margin-left: 0;
-  }
-
-  .shoe-detail-container {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0;
-  }
-  .shoe-detail-image {
-    height: 55%;
-  }
-
-  .shoe-detail-info {
-    gap: 16px;
-  }
-  .add-card {
-    margin-top: 16px;
-    width: 189px;
-    font-size: 16px;
-    line-height: 150%;
-  }
-
   .craft-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    /* padding: 80px 15px; */
-    padding: 80px 5px;
-    gap: 40px;
-    left: 0px;
-  }
-
-  .craft-detail-row {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 80px 15px;
     gap: 40px;
+    left: 0px;
+  }
+
+  .craft-content-f {
+    display: flex;
+    flex-direction: column;
   }
   .img-res {
-    width: 100%;
+    /* width: 100%; */
+    width: 360px;
+    height: 360px;
   }
-  /* .craft-detail {
-    gap: 30px;
-  } */
 }
 
 /* ////// cambridge-shoe */
@@ -362,54 +469,60 @@ body {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  padding: 80px;
+  padding: 120px 135px;
+  gap: 30px;
 }
 
 .cambridge-shoe-image {
   display: flex;
   gap: 15px;
+  width: 670px;
+  height: 677px;
 }
 
-/* .cambridge-shoe-image-small {
-  padding: 40px;
+.cambridge-shoe-image-small {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
   gap: 8px;
-} */
+}
 
 .cambridge-shoe-image-small-detail {
   padding: 20px;
+  /* width: 90px;
+  height: 108px; */
+}
+#large-image {
+  width: 440px;
+  height: 200px;
 }
 
 .cambridge-shoe-image-large {
-  /* padding: 120px 25px; */
-  margin: 150px 55px;
-  /* width: 565px;
-  height: 677px; */
+  display: flex;
+  flex-direction: column;
+  align-self: center;
 }
 
 .cambridge-shoe-info {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding-left: 100px;
-  gap: 30px;
-}
-.cambridge-shoe-info-header {
-  width: 80%;
+  padding: 0px;
+  gap: 40px;
 }
 
-.cambridge-shoe-info-content {
-  width: 70%;
+.cambridge-shoe-info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px;
+  gap: 32px;
 }
+
 .border {
   width: 470px;
   border: 1px solid #1a1a1a;
-}
-
-/* /// */
-.cambridge-shoe-price {
-}
-
-.cambridge-shoe-leather-image {
 }
 
 .cambridge-shoe-add-card {
@@ -423,75 +536,86 @@ body {
 .cambridge-shoe-add-card-change-num {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-self: center;
   padding: 0px;
   gap: 8px;
-  font-size: 48px;
 }
 .dec {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 10px;
+  font-size: 20px;
+  color: #666666;
   width: 48px;
   height: 48px;
 }
 
 .num {
-  width: 48px;
+  width: 34px;
+}
+
+.cam-btn {
+  width: 308px;
   height: 48px;
-}
-
-.inc {
-  width: 48px;
-  height: 48px;
-}
-
-.cambridge-shoe-add-card-btn {
-}
-
-.add-card {
-}
-
-.cambridge-shoe-sale-container {
 }
 
 .cambridge-shoe-title-sale {
-  font-family: "IBM Plex Serif";
-  font-style: normal;
   font-weight: 700;
   font-size: 20px;
-  line-height: 150%;
 }
 
 @media only screen and (max-width: 600px) {
   .cambridge-shoe {
     display: flex;
     flex-direction: column;
-    padding: 15px;
-    gap: 24px;
+    justify-content: flex-start;
+    padding: 80px 15px;
+    gap: 30px;
   }
 
   .cambridge-shoe-image {
-    display: flex;
     flex-direction: column-reverse;
+
+    width: 100%;
+    height: auto;
   }
+  .cambridge-shoe-image-small {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+
   .cambridge-shoe-image-large {
-    margin: 50px 25px;
-  }
-  .cambridge-shoe-info {
+    justify-content: center;
+    align-self: flex-start;
     width: 360px;
-    height: 723px;
+    height: 432px;
   }
+  #large-image {
+    width: 280px;
+    height: 127px;
+  }
+
   .cambridge-shoe-info-header {
     font-size: 32px;
   }
   .border {
-    width: 360px;
+    width: 345px;
+    border: 1px solid #1a1a1a;
   }
-
-  .cambridge-shoe-info {
-    padding-left: 0;
-    gap: 30px;
+  .lg {
+    font-size: 32px;
+  }
+  .cambridge-shoe-info-content {
+    font-weight: 400;
+    font-size: 16px;
+  }
+  .cam-btn {
+    width: 198px;
+  }
+  .center {
+    align-self: center;
   }
 }
 
@@ -499,10 +623,29 @@ body {
   margin-top: 30px;
 }
 
+.acs-1 {
+  width: 100%;
+  background-image: url("../image/accessories/acs-01.png");
+}
+
+.acs-2 {
+  background-image: url("../image/accessories/acs-02.png");
+}
+
+.acs-3 {
+  background-image: url("../image/accessories/ace-03.png");
+}
+
+.acs-4 {
+  background-image: url("../image/accessories/acs-04.png");
+}
+
 /* customer */
 .container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 80px;
+  padding: 80px 135px;
   gap: 80px;
   background: #1a1a1a;
 }
@@ -515,7 +658,7 @@ body {
   flex-direction: row;
   align-items: center;
   gap: 32px;
-  padding-top: 80px;
+  /* padding-top: 80px; */
 }
 
 .customer-info-user {
@@ -557,29 +700,29 @@ body {
 
 @media only screen and (max-width: 600px) {
   .container {
-    margin-top: 30px;
-    padding: 80px 0px;
-    /* width: 60%; */
-    height: 80%;
+    padding: 80px 15px;
+    /* height: 80%; */
   }
-  /* .customer-info {
- width: 60%;
- height: 80%;
-  } */
+
   .hide-none {
     display: none;
   }
 }
-/* question */
+
 .question {
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  padding: 80px;
+  padding: 120px 135px;
   gap: 31px;
 }
 .question-title {
-  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 8px 16px;
+  gap: 18px;
+  /* width: 100%; */
 }
 
 .frequently-question {
@@ -589,114 +732,152 @@ body {
   padding: 0px 50px 0px 0px;
   gap: 40px;
   width: 50%;
-  /* height: 672px; */
 }
 
 .frequently-question-question1 {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
-
+.frequently-question1-des {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 .frequently-question-question1-input {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 8px 16px;
   border: 1px solid #1a1a1a;
-  margin-top: 16px;
+  gap: 18px;
 }
 
-/* .sp-icon {
-  margin-right: 40px;
-} */
 .frequently-question-question1-desc {
-  margin-top: 16px;
+  display: flex;
   padding: 16px 24px;
   gap: 10px;
-
   background: #f5f5f5;
 }
 
-.other-question-container {
-  width: 80%;
-}
+/* .other-question-container {
+  width: 100%;
+} */
 
 .other-question {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  padding: 80px 50px;
   gap: 40px;
-
-  width: 50%;
-  /* height: 672px; */
   background: #1a1a1a;
+}
+.question-title-about {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 8px;
 }
 
 .question-content {
   width: 90%;
+  text-align: center;
+}
+.other-question-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 32px;
 }
 
-.other {
-  text-align: center;
-  font-size: 32px;
+.question-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0px;
+  gap: 16px;
 }
-.siz {
-  font-size: 32px;
-}
+
 .form-group {
   display: flex;
-  padding: 16px 16px 16px 0;
   flex-direction: column;
   align-items: flex-start;
+  padding: 0px;
+  gap: 8px;
+  width: 392px;
 }
 
 .form-control {
   background-color: #1a1a1a;
   border: 1px solid #ffffff;
-  margin-top: 10px;
-  width: 90%;
+  width: 100%;
 }
 
 .submit {
-  padding: 10px;
-  margin-bottom: 60px;
-  width: 20%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 24px;
+  gap: 10px;
 }
 
 @media only screen and (max-width: 600px) {
   .question {
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    padding: 80px 15px;
+    gap: 30px;
+  }
+  .question-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 8px 16px;
+    gap: 18px;
+  }
+  .f {
+    font-size: 30px;
   }
 
   .frequently-question {
-    gap: 0;
-    padding: 0px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
     width: 100%;
+  }
+
+  .frequently-question-question1 {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .hide-none {
+    display: none;
   }
   .frequently-question-question1-input {
     padding: 0px 16px;
   }
 
   .other-question {
-    gap: 0;
+    padding: 80px 24px;
+  }
+
+  .question-content {
     width: 100%;
   }
-  .question-title-about {
+  .form-group {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     padding: 0px;
-  }
-  .other {
-    text-align: left;
+    gap: 8px;
+    width: 310px;
   }
   .form-control {
-    margin-top: 5px;
-  }
-
-  .submit {
-    padding: 8px;
-    width: 40%;
+    width: 100%;
   }
 }

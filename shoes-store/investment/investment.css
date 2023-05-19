@@ -8,8 +8,10 @@
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 120px 80px;
+  padding: 120px 135px;
   gap: 80px;
   background: #1a1a1a;
 }
@@ -29,12 +31,15 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  padding: 5px;
   gap: 30px;
-  margin-top: 80px;
+  /* width: 1170px;
+  height: 644px; */
 }
 
 .investment-content-item-1 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 30px;
   font-size: 16px;
 }
@@ -44,22 +49,12 @@
   flex-direction: column-reverse;
 }
 
-.pad-top {
-  padding-top: 55px;
-}
-
 @media only screen and (max-width: 600px) {
   .container {
     align-items: flex-start;
-    padding: 80px 0px;
-    gap: 40px;
-  }
-
-  /* .container {
-    align-items: flex-start;
     padding: 80px 15px;
     gap: 40px;
-  } */
+  }
 
   .title-investment {
     text-align: left;
@@ -67,21 +62,18 @@
 
   .investment-content {
     flex-direction: column;
-    margin-top: 30px;
+  }
+  .investment-content-item-image {
+    width: 360px;
   }
 }
 /* collections---------- */
 .collections-container {
-  padding: 80px;
-  gap: 80px;
-}
-
-.collections-content {
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  margin-top: 80px;
-  isolation: isolate;
+  flex-direction: column;
+  align-items: center;
+  padding: 120px 135px;
+  gap: 80px;
 }
 
 .item1 {
@@ -110,6 +102,31 @@
   background-repeat: no-repeat;
   position: relative;
 }
+.collections-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0;
+}
+.collections-content-item {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0px;
+  isolation: isolate;
+}
+.collections-content-item-content {
+  /* left: 20px; */
+}
+.collections-item-i {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0px 24px 24px;
+  left: 0px;
+  margin-top: 65%;
+  gap: 8px;
+}
 
 .collections-content-item-title {
   font-family: "Koulen";
@@ -117,20 +134,14 @@
   font-weight: 400;
   font-size: 24px;
   line-height: 150%;
-  position: absolute;
-  top: 60%;
-  left: 20px;
-}
-.collections-content-item-content {
-  position: absolute;
-  width: 80%;
-  bottom: 50px;
+  /* position: absolute; */
+  /* top: 60%; */
   left: 20px;
 }
 
 @media only screen and (max-width: 600px) {
   .collections-container {
-    padding: 10px;
+    padding: 80px 15px;
     gap: 80px;
   }
 

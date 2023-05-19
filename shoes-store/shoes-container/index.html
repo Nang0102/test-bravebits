@@ -15,10 +15,16 @@
     <title>Shoes Store</title>
   </head>
   <body>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif&family=Koulen&display=swap"
+      rel="stylesheet"
+    />
     <div>
       <div class="header-bg">
         <div class="title-header-bg">
-          <h1 class="title">HANDCRAFTED LEATHER SHOES & ACCESSORIES</h1>
+          <h1 class="title w">HANDCRAFTED LEATHER SHOES & ACCESSORIES</h1>
           <p class="content-header-bg">
             Enjoy our complimentary personalisation service and gift wrapping
             service
@@ -47,7 +53,8 @@
           </div>
         </div>
       </div>
-      <div class="shoes-container">
+      <!-- Shoes -->
+      <div class="shoes-container shoes-ma pa">
         <div class="header">
           <div class="header-title">Flash Sale Season</div>
           <div class="header-content">
@@ -58,72 +65,91 @@
         </div>
         <div class="shoes-detail">
           <div class="shoe-detail-container">
-            <div class="item">
-              <div class="shoe-detail-image">
-                <img src="../image/shoes/shoe-3.png" />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">$460.99</div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
-              </div>
-              <button class="add-card">Add To Card</button>
-            </div>
+            <div class="couple-item">
+              <div class="item">
+                <div class="shoe-detail-image shoes-item-1"></div>
 
-            <div class="item">
-              <div class="shoe-detail-image">
-                <img
-                  src="../image/shoes/shoe-4.png"
-                  style="margin-top: -20px"
-                />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">$460.99</div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
-              </div>
-              <button class="add-card">Add To Card</button>
-            </div>
-
-            <div class="item">
-              <div class="shoe-detail-image">
-                <button class="sale-off">Sale off</button>
-                <img src="../image/shoes/shoe-1.png" />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">
-                  $460.99
-                  <div class="shoe-detail-price-sale-off">$638.99</div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">$460.99</div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
+                  <button class="add-card">Add To Card</button>
                 </div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
               </div>
-              <button class="add-card">Add To Card</button>
+
+              <div class="item">
+                <div class="shoe-detail-image shoes-item-2"></div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">$460.99</div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
+                  <button class="add-card">Add To Card</button>
+                </div>
+              </div>
             </div>
 
-            <div class="item">
-              <div class="shoe-detail-image">
-                <button class="sale-off">Sale off</button>
-                <img src="../image/shoes/shoe-2.png" />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">
-                  $460.99
-                  <div class="shoe-detail-price-sale-off">$520.99</div>
+            <div class="couple-item">
+              <div class="item">
+                <button class="sale-off">Sale Off</button>
+
+                <div class="shoe-detail-image shoes-item-3 w-s"></div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">
+                      $460.99
+                      <div class="shoe-detail-price-sale-off">$520.99</div>
+                    </div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="add-card">Add To Card</button>
                 </div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
               </div>
-              <button class="add-card">Add To Card</button>
+
+              <div class="item">
+                <button class="sale-off">Sale Off</button>
+                <div class="shoe-detail-image shoes-item-4 w-s"></div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">
+                      $460.99
+                      <div class="shoe-detail-price-sale-off">$520.99</div>
+                    </div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="add-card">Add To Card</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- Craft -->
       <div class="craft-container">
-        <div
-          class="header craft-header"
-          style="padding: 0; margin-bottom: 20px"
-        >
+        <div class="header craft-header">
           <div class="header-title">Craftsmanship meets casual</div>
           <div class="header-content">
             High quality leather stays strong against demanding work
@@ -133,57 +159,67 @@
           </div>
         </div>
         <div class="craft-content">
-          <div class="craft-detail">
-            <img
-              class="craft-detail-image"
-              src="../image/crafts/carft-01.png"
-            />
+          <div class="craft-content-f">
+            <div class="craft-detail">
+              <img
+                class="craft-detail-image"
+                src="../image/crafts/carft-01.png"
+              />
 
-            <div class="craft-detail-title">
-              <div class="craft-detail-name">Full-grain leather</div>
-              <div class="craft-detail-time">100 years</div>
+              <div class="craft-detail-title">
+                <div class="craft-detail-name">Full-grain leather</div>
+                <div class="craft-detail-time">100 years</div>
+              </div>
+            </div>
+            <div class="craft-detail">
+              <img
+                class="craft-detail-image"
+                src="../image/crafts/craft-02.png"
+              />
+              <div class="craft-detail-title">
+                <div class="craft-detail-name">Top-grain leather</div>
+                <div class="craft-detail-time">20 - 30 years</div>
+              </div>
+            </div>
+            <div class="craft-detail">
+              <img
+                class="craft-detail-image"
+                src="../image/crafts/craft-03.png"
+              />
+
+              <div class="craft-detail-title">
+                <div class="craft-detail-name">Genuine leather</div>
+                <div class="craft-detail-time">5 - 10 years</div>
+              </div>
             </div>
           </div>
-          <div class="craft-detail">
-            <img class="craft-detail-image" src="../image/crafts/carft-2.png" />
-            <div class="craft-detail-title">
-              <div class="craft-detail-name">Top-grain leather</div>
-              <div class="craft-detail-time">20 - 30 years</div>
-            </div>
-          </div>
-          <div class="craft-detail">
-            <img class="craft-detail-image" src="../image/crafts/carft-3.png" />
+          <div class="craft-content-f">
+            <div class="craft-detail">
+              <img
+                class="craft-detail-image img-res"
+                src="../image/crafts/carft-05.png"
+              />
 
-            <div class="craft-detail-title">
-              <div class="craft-detail-name">Genuine leather</div>
-              <div class="craft-detail-time">5 - 10 years</div>
+              <div class="craft-detail-title">
+                <div class="craft-detail-name">Bonded leather</div>
+                <div class="craft-detail-time">5 - 10 years</div>
+              </div>
             </div>
-          </div>
-          <div class="craft-detail">
-            <img
-              class="craft-detail-image img-res"
-              src="../image/crafts/carft-05.png"
-            />
+            <div class="craft-detail">
+              <img
+                class="craft-detail-image img-res"
+                src="../image/crafts/craft-04.png"
+              />
 
-            <div class="craft-detail-title">
-              <div class="craft-detail-name">Bonded leather</div>
-              <div class="craft-detail-time">5 - 10 years</div>
-            </div>
-          </div>
-          <div class="craft-detail">
-            <img
-              class="craft-detail-image img-res"
-              src="../image/crafts/craft-04.png"
-            />
-
-            <div class="craft-detail-title">
-              <div class="craft-detail-name">PU Leather</div>
-              <div class="craft-detail-time">2 - 3 years</div>
+              <div class="craft-detail-title">
+                <div class="craft-detail-name">PU Leather</div>
+                <div class="craft-detail-time">2 - 3 years</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
+      <!-- Cambridge -->
       <div class="cambridge-shoe">
         <div class="cambridge-shoe-image">
           <div class="cambridge-shoe-image-small">
@@ -208,37 +244,40 @@
           </div>
         </div>
         <div class="cambridge-shoe-info">
-          <div class="cambridge-shoe-info-header lg">
-            Cambridge Leather Oxford Shoes
-          </div>
-          <div class="cambridge-shoe-info-content">
-            The smartest of the bunch, Oxfords are the quintessential dress shoe
-            and perfect for business or formal occasions. Make the very best
-            impression in Markian’s edit.
-          </div>
-          <div class="border"></div>
-          <div class="shoe-detail-price" style="font-size: 42px">
-            $498.99
-            <div
-              class="shoe-detail-price-sale-off"
-              style="color: #666666; font-size: 20px"
-            >
-              $638.99
+          <div class="cambridge-shoe-info-item">
+            <div class="cambridge-shoe-info-header lg">
+              Cambridge Leather Oxford Shoes
             </div>
-          </div>
-          <div class="cambridge-shoe-leather-image">
-            <img src="../image/cambridge-shoe/cambridge-leather-1.png" />
-            <img src="../image/cambridge-shoe/cambridge-leather-2.png" />
-          </div>
-          <div class="border"></div>
-          <div class="cambridge-shoe-add-card">
-            <div class="cambridge-shoe-add-card-change-num">
-              <p class="num">-</p>
-              <p class="num">1</p>
-              <p class="num">+</p>
+            <div class="border"></div>
+
+            <div class="cambridge-shoe-info-content">
+              The smartest of the bunch, Oxfords are the quintessential dress
+              shoe and perfect for business or formal occasions. Make the very
+              best impression in Markian’s edit.
             </div>
-            <div class="cambridge-shoe-add-card-btn">
-              <button class="add-card">Add To Card</button>
+            <div class="shoe-detail-price" style="font-size: 42px">
+              $498.99
+              <div
+                class="shoe-detail-price-sale-off"
+                style="color: #666666; font-size: 20px"
+              >
+                $638.99
+              </div>
+            </div>
+            <div class="cambridge-shoe-leather-image">
+              <img src="../image/cambridge-shoe/cambridge-leather-1.png" />
+              <img src="../image/cambridge-shoe/cambridge-leather-2.png" />
+            </div>
+            <div class="border"></div>
+            <div class="cambridge-shoe-add-card">
+              <div class="cambridge-shoe-add-card-change-num">
+                <p class="dec">-</p>
+                <p class="dec num">1</p>
+                <p class="dec">+</p>
+              </div>
+              <!-- <div class="cambridge-shoe-add-card-btn"> -->
+              <button class="add-card cam-btn">Add To Card</button>
+              <!-- </div> -->
             </div>
           </div>
           <div class="cambridge-shoe-sale-container">
@@ -266,7 +305,7 @@
       </div>
       <div id="investment"></div>
 
-      <div class="shoes-container acessories">
+      <div class="shoes-container pa">
         <div class="header">
           <div class="header-title">High-end Accessories</div>
           <div class="header-content">
@@ -277,71 +316,94 @@
         </div>
         <div class="shoes-detail">
           <div class="shoe-detail-container">
-            <div class="item">
-              <div class="shoe-detail-image">
-                <button class="sale-off">Sale off</button>
-                <img src="../image/accessories/accessories-1.png" />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">
-                  $460.99
-                  <div class="shoe-detail-price-sale-off">$638.99</div>
+            <div class="couple-item">
+              <div class="item">
+                <button class="sale-off">Sale Off</button>
+
+                <div class="shoe-detail-image acs-1 w-s"></div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">
+                      $460.99
+                      <div class="shoe-detail-price-sale-off">$520.99</div>
+                    </div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="add-card">Add To Card</button>
                 </div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
               </div>
-              <button class="add-card">Add To Card</button>
+
+              <div class="item">
+                <button class="sale-off">Sale Off</button>
+                <div class="shoe-detail-image acs-2 w-s"></div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">
+                      $460.99
+                      <div class="shoe-detail-price-sale-off">$520.99</div>
+                    </div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="add-card">Add To Card</button>
+                </div>
+              </div>
             </div>
 
-            <div class="item">
-              <div class="shoe-detail-image">
-                <button class="sale-off">Sale off</button>
-                <img src="../image/accessories/accessories-2.png" />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">
-                  $460.99
-                  <div class="shoe-detail-price-sale-off">$520.99</div>
-                </div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
-              </div>
-              <button class="add-card">Add To Card</button>
-            </div>
+            <div class="couple-item">
+              <div class="item">
+                <button class="sale-off">Sale Off</button>
 
-            <div class="item">
-              <div class="shoe-detail-image">
-                <button class="sale-off">Sale off</button>
-                <img
-                  src="../image/accessories/accessories-3.png"
-                  class="m-ac bag"
-                />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">
-                  $460.99
-                  <div class="shoe-detail-price-sale-off">$638.99</div>
-                </div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
-              </div>
-              <button class="add-card">Add To Card</button>
-            </div>
+                <div class="shoe-detail-image acs-3 w-s"></div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">
+                      $460.99
+                      <div class="shoe-detail-price-sale-off">$520.99</div>
+                    </div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="item">
-              <div class="shoe-detail-image">
-                <button class="sale-off">Sale off</button>
-                <img src="../image/accessories/accessories-4.png" />
-              </div>
-              <div class="shoe-detail-info">
-                <div class="shoe-detail-price">
-                  $460.99
-                  <div class="shoe-detail-price-sale-off">$520.99</div>
+                  <button class="add-card">Add To Card</button>
                 </div>
-                <div class="shoe-detail-name">Saint Laurent</div>
-                <div class="shoe-detail-desc">Wyatt Leather Chelsea Boots</div>
               </div>
-              <button class="add-card">Add To Card</button>
+
+              <div class="item">
+                <button class="sale-off">Sale Off</button>
+                <div class="shoe-detail-image acs-4 w-s"></div>
+                <div class="shoe-detail-info">
+                  <div class="shoe-detail-info-i">
+                    <div class="shoe-detail-price">
+                      $460.99
+                      <div class="shoe-detail-price-sale-off">$520.99</div>
+                    </div>
+                    <div class="name">
+                      <div class="shoe-detail-name">Saint Laurent</div>
+                      <div class="shoe-detail-desc">
+                        Wyatt Leather Chelsea Boots
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="add-card">Add To Card</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -407,17 +469,19 @@
             Frequently Asked Question
           </div>
           <div class="frequently-question-question1">
-            <div class="frequently-question-question1-input">
-              <p class="question-title">
-                How long does it take my order to ship out?
-              </p>
-              <img src="../image/questions/Vector.png" class="sp-icon" />
-            </div>
-            <div class="frequently-question-question1-desc hide-none">
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry. Lorem Ipsum has been the industry's standard dummy text
-              ever since the 1500s, when an unknown printer took a galley of
-              type and scrambled it to make a type specimen book.
+            <div class="frequently-question1-des">
+              <div class="frequently-question-question1-input">
+                <p class="question-title">
+                  How long does it take my order to ship out?
+                </p>
+                <img src="../image/questions/Vector.png" class="sp-icon" />
+              </div>
+              <div class="frequently-question-question1-desc hide-none">
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+                text ever since the 1500s, when an unknown printer took a galley
+                of type and scrambled it to make a type specimen book.
+              </div>
             </div>
             <div class="frequently-question-question1-input">
               <p class="question-title">
@@ -438,32 +502,31 @@
           </div>
         </div>
         <div class="other-question text-white">
-          <div class="other-question-container">
-            <div class="question-title-about">
-              <p class="question-title header-title other">
-                Have any other questions?
-              </p>
+          <div class="question-title-about">
+            <p class="header-title f">Have any other questions?</p>
 
-              <p class="question-content">
-                Feel free to leave your questions to us. We will reply you
-                within 24 hours!
-              </p>
-            </div>
-
-            <div class="form-group">
-              <label>Your Name</label>
-              <input type="text" class="form-control" />
-            </div>
-            <div class="form-group">
-              <label>Your Email</label>
-              <input type="email" class="form-control" />
-            </div>
-            <div class="form-group">
-              <label>Your Message</label>
-              <textarea class="form-control" rows="3"></textarea>
-            </div>
+            <p class="question-content">
+              Feel free to leave your questions to us. We will reply you within
+              24 hours!
+            </p>
           </div>
-          <button class="submit">Send Us</button>
+          <div class="other-question-container">
+            <div class="question-form text-white">
+              <div class="form-group">
+                <label>Your Name</label>
+                <input type="text" class="form-control text-white" />
+              </div>
+              <div class="form-group">
+                <label>Your Email</label>
+                <input type="email" class="form-control text-white" />
+              </div>
+              <div class="form-group">
+                <label>Your Message</label>
+                <textarea class="form-control text-white" rows="3"></textarea>
+              </div>
+            </div>
+            <button class="submit">Send Us</button>
+          </div>
         </div>
       </div>
     </div>
