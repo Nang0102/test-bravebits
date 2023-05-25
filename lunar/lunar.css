@@ -23,11 +23,15 @@ body {
 .celebration-header-container {
   display: flex;
   flex-direction: row;
-  height: 725px;
+  width: 100%;
+  /* max-width: 1440px; */
 }
 
 .celebration-header-title-container {
-  width: 80%;
+  background-image: url("./images/celebration/decor-3.png");
+  background-repeat: no-repeat;
+  background-position: 80% 100%;
+  width: 70%;
   color: #f2e8df;
 }
 
@@ -40,6 +44,7 @@ body {
   width: 70%;
   margin-top: 5%;
   margin-left: 15%;
+  margin-bottom: 15%;
 }
 
 .celebration-header-title {
@@ -51,6 +56,7 @@ body {
   line-height: 160%;
   margin: 60px auto;
   align-self: stretch;
+  /* -webkit-font-smoothing: antialiased; */
 }
 
 .celebration-header-btn {
@@ -71,6 +77,7 @@ body {
 }
 
 .celebration-header-image {
+  width: 30%;
 }
 
 .decor-2 {
@@ -87,7 +94,7 @@ body {
 
   .celebration-header-title-container {
     width: 100%;
-    color: #f2e8df;
+    background-size: 45%;
   }
 
   .decor-1 {
@@ -148,9 +155,6 @@ body {
 
   width: 20%;
 }
-/* .sp-fea {
-  margin-top: -10px;
-} */
 
 .features-detail-icon {
 }
@@ -190,7 +194,7 @@ body {
   gap: 10px;
 } */
 .spac {
-  padding: 88px;
+  padding: 88px 135px;
   gap: 10px;
 }
 .gif {
@@ -238,18 +242,13 @@ body {
 }
 
 .gif-container-img-detail-item {
+  display: flex;
   font-weight: 500;
   font-size: 24px;
   line-height: 32px;
-  text-align: center;
   text-transform: uppercase;
-}
-.img-text-1 {
-  margin-top: 40%;
-}
-
-.img-text-2 {
-  margin-top: 60%;
+  align-items: center;
+  justify-content: center;
 }
 .item-1 {
   /* width: 570px; */
@@ -300,12 +299,7 @@ body {
   .gif-container-img {
     flex-direction: column;
   }
-  .img-text-4 {
-    margin-top: 60%;
-  }
-  .img-text-3 {
-    margin-top: 40%;
-  }
+
   .item-1 {
     width: 345px;
     height: 242px;
@@ -494,12 +488,10 @@ body {
 /* generic */
 
 .generic {
-  /* padding: 0px 135px 80px; */
-  display: flex;
+  /* display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  padding: 0 88px 80px;
-  gap: 10px;
+  align-items: flex-start; */
+  padding: 88px 80px;
 }
 .gen-contain {
   display: flex;
@@ -889,6 +881,7 @@ body {
 .exp-container {
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: 0px;
   gap: 60px;
 }
@@ -1017,8 +1010,14 @@ body {
 .final-spac {
   display: flex;
   flex-direction: column;
+  /* align-items: center;
+  justify-content: center; */
   gap: 60px;
   padding: 88px 135px;
+  background-image: url("./images/celebration/Decor-2.png");
+  background-repeat: no-repeat;
+  background-position: 5% 0%;
+  background-size: 30%;
 }
 
 .final-content {
@@ -1033,7 +1032,6 @@ body {
   flex-direction: column;
   text-align: center;
   gap: 8px;
-  margin-top: -18%;
   color: #f2e8df;
 }
 
@@ -1073,7 +1071,6 @@ body {
   }
   .co-fi {
     gap: 4px;
-    margin-top: -25%;
   }
 
   .fi-fo {
